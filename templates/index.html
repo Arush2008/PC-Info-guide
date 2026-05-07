@@ -5,48 +5,88 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <section clsss="Web">
-        <div class="overlay"></div>
+    <section class="Web">
 
+            <!-- nav bar -->
         <header class="navbar">
             <div class="logo">PC<span>FORGE</span></div>
 
-            <nav class="nav-section">
+            <nav class="nav_section">
                 <ul>
                     <li><a href="#">Home</a></li>
                     <li><a href="#">Learn</a></li>
                     <li><a href="#">PC</a></li>
                 </ul>
             </nav>
-
-            <div>
-                <ul>
-                    <li><a href="#">Login</a></li>
-                    <li><a href="#">Sign Up</a></li>
-                </ul>
-            </div>
             
+
+            <!-- Side bar to choose parts -->
         </header>
+        <div class="sidebar_homepage">
+            <div>PC Parts</div>
+            <div>GPU</div>
+            <div>CPU</div>
+            <div>RAM</div>
+            <div>Storage</div>
+            <div>Motherboard</div>
+            <div>Power Supply</div>
+            <div>Cooling</div>
+            <div>Case</div>
+        </div>
+    </section>
 
-        <div class="web-content">
-            <div>Interactive learning PC platform</div>
+            <!-- Main content in the center-->
+    <section>
+        <h1 class="title_homepage">PC Information</h1>
 
-             <h1>
-                LEARN.<br>
-                <span>BUILD.</span><br>
-                DOMINATE.
-            </h1>
-
+        <div>
+            <div class="image_box">IMG</div>
+            <h2>CPU</h2>
             <p>
-                The ultimate platform to learn every PC component, build your custom
-                gaming rig, simulate real FPS across top games, and track your progress.
+                This is the CPU section. A CPU stands for Central Processing Unit which is responsible for executing instructions 
+                and performing calculations. It is often referred to as the "brain" of the computer. The CPU processes data and 
+                controls the flow of information between different components of the computer. It is a crucial component that determines 
+                the overall performance of a computer system.
             </p>
+        </div>
 
-            <div class="buttons">
-                <a href="#" class="btn primary">Start Learning Free</a>
-                <a href="#" class="btn secondary">Join & Earn XP</a>
-            </div>
+        <div>
+            
+            <h2>GPU</h2>
+            <p>
+                This is a GPU section. A GPU stands for Graphics Processing Unit which is responsible for rendering images, videos,
+                and animations. It is designed to handle complex graphical computations and is commonly used in gaming, video editing,
+                and other graphically intensive tasks. The GPU works alongside the CPU to offload graphical processing tasks, allowing
+                for smoother and more efficient performance when it comes to visual content. It is an essential component for tasks
+                that require high-quality graphics.
+            </p>
+            <div class="image_box">IMG</div>
+        </div>
 
+        <div>
+            <div class="image_box">IMG</div>
+            <h2>RAM</h2>
+            <p>
+                This is a RAM section. RAM stands for Random Access Memory, which is a type of computer memory that is used to store data
+                that is actively being used or processed by the computer. It allows for quick access to data and instructions, enabling
+                the computer to perform tasks efficiently. RAM is volatile memory, meaning that it loses its contents when the computer is
+                turned off. It plays a crucial role in determining the overall performance of a computer system, as it allows for faster
+                data retrieval and multitasking capabilities.
+            </p>
+        </div>
+
+        <div>
+            
+            <h2>Storage</h2>
+            <p>
+                This is a Storage section. Storage refers to the component of a computer system that is responsible for storing data and files.
+                It can be in the form of hard disk drives (HDDs) or solid-state drives (SSDs). Storage devices provide long-term storage for
+                operating systems, applications, and user data. They allow users to save and retrieve information even when the computer is
+                powered off. The capacity and speed of storage devices can vary, with SSDs generally offering faster performance compared to
+                traditional HDDs. Storage is an essential component for any computer system as it allows users to store and access their data
+                efficiently.
+            </p>
+            <div class="image_box">IMG</div>
         </div>
 
     </section>
