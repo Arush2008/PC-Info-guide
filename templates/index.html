@@ -4,10 +4,12 @@
     <title>My Website</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
+
     <section class="Web">
 
-            <!-- nav bar -->
+        <!-- nav bar -->
         <header class="navbar">
             <div class="logo">PC<span>FORGE</span></div>
 
@@ -18,10 +20,9 @@
                     <li><a href="#">PC</a></li>
                 </ul>
             </nav>
-            
-
-            <!-- Side bar to choose parts -->
         </header>
+
+        <!-- Side bar -->
         <div class="sidebar_homepage">
             <div>PC Parts</div>
             <div>GPU</div>
@@ -33,62 +34,87 @@
             <div>Cooling</div>
             <div>Case</div>
         </div>
+
     </section>
 
-            <!-- Main content in the center-->
-    <section>
+    <!-- Main content -->
+    <section class="content_homepage">
+
         <h1 class="title_homepage">PC Information</h1>
 
-        <div>
+        <!-- CPU -->
+        <div class="content_block">
+
             <div class="image_box">IMG</div>
-            <h2>CPU</h2>
-            <p>
-                This is the CPU section. A CPU stands for Central Processing Unit which is responsible for executing instructions 
-                and performing calculations. It is often referred to as the "brain" of the computer. The CPU processes data and 
-                controls the flow of information between different components of the computer. It is a crucial component that determines 
-                the overall performance of a computer system.
-            </p>
+
+            <div class="text_block">
+                <h2>CPU</h2>
+                <p>
+                    This is the CPU section. A CPU stands for Central Processing Unit which is responsible for executing instructions 
+                    and performing calculations. It is often referred to as the "brain" of the computer. The CPU processes data and 
+                    controls the flow of information between different components of the computer. It is a crucial component that determines 
+                    the overall performance of a computer system.
+                </p>
+            </div>
+
         </div>
 
-        <div>
-            
-            <h2>GPU</h2>
-            <p>
-                This is a GPU section. A GPU stands for Graphics Processing Unit which is responsible for rendering images, videos,
-                and animations. It is designed to handle complex graphical computations and is commonly used in gaming, video editing,
-                and other graphically intensive tasks. The GPU works alongside the CPU to offload graphical processing tasks, allowing
-                for smoother and more efficient performance when it comes to visual content. It is an essential component for tasks
-                that require high-quality graphics.
-            </p>
+        <!-- GPU -->
+        <div class="content_block reverse">
+
             <div class="image_box">IMG</div>
+
+            <div class="text_block">
+                <h2>GPU</h2>
+                <p>
+                    This is a GPU section. A GPU stands for Graphics Processing Unit which is responsible for rendering images, videos,
+                    and animations. It is designed to handle complex graphical computations and is commonly used in gaming, video editing,
+                    and other graphically intensive tasks. The GPU works alongside the CPU to offload graphical processing tasks, allowing
+                    for smoother and more efficient performance when it comes to visual content. It is an essential component for tasks
+                    that require high-quality graphics.
+                </p>
+            </div>
+
         </div>
 
-        <div>
+        <!-- RAM -->
+        <div class="content_block">
+
             <div class="image_box">IMG</div>
-            <h2>RAM</h2>
-            <p>
-                This is a RAM section. RAM stands for Random Access Memory, which is a type of computer memory that is used to store data
-                that is actively being used or processed by the computer. It allows for quick access to data and instructions, enabling
-                the computer to perform tasks efficiently. RAM is volatile memory, meaning that it loses its contents when the computer is
-                turned off. It plays a crucial role in determining the overall performance of a computer system, as it allows for faster
-                data retrieval and multitasking capabilities.
-            </p>
+
+            <div class="text_block">
+                <h2>RAM</h2>
+                <p>
+                    This is a RAM section. RAM stands for Random Access Memory, which is a type of computer memory that is used to store data
+                    that is actively being used or processed by the computer. It allows for quick access to data and instructions, enabling
+                    the computer to perform tasks efficiently. RAM is volatile memory, meaning that it loses its contents when the computer is
+                    turned off. It plays a crucial role in determining the overall performance of a computer system, as it allows for faster
+                    data retrieval and multitasking capabilities.
+                </p>
+            </div>
+
         </div>
 
-        <div>
-            
-            <h2>Storage</h2>
-            <p>
-                This is a Storage section. Storage refers to the component of a computer system that is responsible for storing data and files.
-                It can be in the form of hard disk drives (HDDs) or solid-state drives (SSDs). Storage devices provide long-term storage for
-                operating systems, applications, and user data. They allow users to save and retrieve information even when the computer is
-                powered off. The capacity and speed of storage devices can vary, with SSDs generally offering faster performance compared to
-                traditional HDDs. Storage is an essential component for any computer system as it allows users to store and access their data
-                efficiently.
-            </p>
+        <!-- Storage -->
+        <div class="content_block reverse">
+
             <div class="image_box">IMG</div>
+
+            <div class="text_block">
+                <h2>Storage</h2>
+                <p>
+                    This is a Storage section. Storage refers to the component of a computer system that is responsible for storing data and files.
+                    It can be in the form of hard disk drives (HDDs) or solid-state drives (SSDs). Storage devices provide long-term storage for
+                    operating systems, applications, and user data. They allow users to save and retrieve information even when the computer is
+                    powered off. The capacity and speed of storage devices can vary, with SSDs generally offering faster performance compared to
+                    traditional HDDs. Storage is an essential component for any computer system as it allows users to store and access their data
+                    efficiently.
+                </p>
+            </div>
+
         </div>
 
     </section>
+
 </body>
 </html>
