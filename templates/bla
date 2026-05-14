@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>PCforce webpage</title>    
+    </head>
+
+    <body>
+
+
+        
+        <nav class="top_nav_bar">
+            <h1 class="logo">PCforce</h1>
+
+            <ul>
+                <a href="html.html.html">Home</a>
+                <a href="learning.html">Learn</a>
+                <a href="components.html">components</a>
+            </ul>
+        </nav>
+
+
+
+        <section class="title_of">
+            <div>PC LEARNING PAGE</div>
+            <h1>Learn Every PC Component</h1>
+            <p>Learn all 9 major PC components.</p>
+        </section>
+
+
+
+        <section class="side_bar">
+           <div>components</div> 
+
+            <div class="cpu">
+                <h2>Central Processing unit</h2>
+                <p>The brain of PC</p>
+            </div>
+
+            <div class="gpu">
+                <h2>graphics Processing unit</h2>
+                <p>The visual powerhouse</p>
+            </div>
+
+            <div class="motherboard">
+                <h2>Motherboard</h2>
+                <p>The foundation to connect everything</p>
+            </div>
+
+            <div class="ram">
+                <h2>Random Access Memory</h2>
+                <p>The temporary storage</p>
+            </div>
+
+            <div class="storage">
+                <h2>Storage</h2>
+                <p>The permanent storage</p>
+            </div>
+
+            <div class="psu">
+                <h2>Power Supply Unit</h2>
+                <p>power source</p>
+            </div>
+
+            <div class="cpu_cooler">
+                <h2>CPU Cooler</h2>
+                <p>keeps the cpu cool</p>
+            </div>
+
+            <div class="case">
+                <h2>Case</h2>
+                <p>House of all components</p>
+            </div>
+
+            <div class="case_fans">
+                <h2>Case Fans</h2>
+                <p>Keep the system cool</p>
+            </div>
+        </section>
+
+
+
+        <section>
+
+        </section>
+        
+
+
+    </body>
+    <footer>
+
+    </footer>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>PCforce webpage</title>    
+    </head>
+
+    <body>
+
+        <nav class="top_nav_bar">
+            <h1 class="logo">PCforce</h1>
+
+            <ul>
+                <a href="home">Home</a>
+                <a href="learning.html">Learn</a>
+                <a href="components.html">components</a>
+            </ul>
+        </nav>
+
+        <section class="title_page">
+            
+            <h3>INTERACTIVE PC PLATFORM</h3>
+
+            <h1>Learn</h1>
+            <h1>Build</h1>
+            <h1>Dominate</h1>
+
+            <p>
+                The ultimate platform to learn every PC components, access to a large amount of pc components parts. 
+            </p>
+
+            <div>Start Learning</div>
+
+        </section>
+        <section>
+            
+        </section>
+        <section>
+
+        </section>
+        
+    </body>
+    <footer>
+
+    </footer>
+
+</html>
