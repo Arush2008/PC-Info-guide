@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-body {
+.index_page {
     background: linear-gradient(to right, rgba(5, 8, 20, 0.9), rgba(27, 32, 53, 0.3)), url('/static/background.png');
     background-size: cover;
     background-position: center;

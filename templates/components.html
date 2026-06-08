@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PC Guide</title>
+    <title>My Website</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
+    <body>
+        <nav class="top_nav_bar">
+            <h1 class="logo">PCforce</h1>
+                <a href="/">Home</a>
+                <a href="/learn">Learn</a>
+                <a href="/components">components</a>
+                <a href="/add-gpu">Add GPU</a>
+        </nav>
 <body>
     <h1>GPU List</h1>
 
