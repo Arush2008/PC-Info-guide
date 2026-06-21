@@ -5,13 +5,21 @@
 }
 
 .index_page {
-    background: linear-gradient(to right, rgba(5, 8, 20, 0.9), rgba(27, 32, 53, 0.3)), url('/static/background.png');
+    color: white;
+    font-family: Arial, sans-serif;
+    background-color: rgb(16,18,24);
+}
+
+.hero_page {
+    height: 100vh;
+    background-image:
+        linear-gradient(to top, rgba(10, 10, 15), rgba(0,0,0,0.2)),
+        linear-gradient(to left, rgba(255, 255, 255, 0.12), rgb(10, 10, 15)),
+        url('/static/background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    color: white;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
+    overflow: hidden;
 }
 
 .top_nav_bar {
@@ -83,4 +91,47 @@
 .btn_learn:hover {
     background-color: #4ee87f;
     transform: translateY(-2px);
+}
+
+.border_info {
+    display: flex;
+    margin:5vh 5vh 5vh 8vh;
+    gap:35vh;
+}
+
+.section_title {
+    margin-top: 5vh;
+}
+
+.what_you_got, .The_proccess {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.what_you_got {
+    background-color: rgb(10, 10, 15);
+}
+
+.what_you_got div, .The_proccess div {
+    display: flex;
+    gap: 10vh;
+}
+
+.two_square, .four_square {
+    width: 30vh;
+    height: 35vh;
+    border: 0.3vh solid rgb(255, 255, 255);
+    margin: 5vh 0 15vh 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer {
+    background-color: rgb(10, 10, 15);
+    text-align: center;
+    padding: 5vh 0 2vh 0;
+    color: #d6d6d6;
+    font-size: 2vh;
 }

@@ -4,38 +4,73 @@
 <head>
     <title>My Website</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/7e0f86b6fb.js" crossorigin="anonymous"></script>
 </head>
 
     <body class="index_page">
-        <nav class="top_nav_bar">
-            <h1 class="logo">PCforce</h1>
-                <a href="/">Home</a>
-                <a href="/learn">Learn</a>
-                <a href="/components">components</a>
-                <a href="/add-gpu">Add GPU</a>
-        </nav>
+        <div class="hero_page">
+            <nav class="top_nav_bar">
+                <h1 class="logo">PCforce</h1>
+                    <a href="/">Home</a>
+                    <a href="/learn">Learn</a>
+                    <a href="/components">components</a>
+            </nav>
 
-        <section class="title_page">
-            
-            <h3>INTERACTIVE PC PLATFORM</h3>
+            <section class="title_page">
+                
+                <h3>INTERACTIVE PC PLATFORM</h3>
 
-            <h1>Learn</h1>
-            <h1>Compare</h1>
-            <h1>Dominate</h1>
+                <h1>Learn</h1>
+                <h1>Compare</h1>
+                <h1>Dominate</h1>
 
-            <p>
-                The ultimate platform to learn every PC components, access to a large amount of pc components parts. 
-            </p>
+                <p>
+                    The ultimate platform to learn every PC components, access to a large amount of pc components parts. 
+                </p>
 
-            <a class="btn_learn" href="/learn">Start Learning</a>
+                <a class="btn_learn" href="/learn">Start Learning</a>
 
-        </section>
-        <section>
-            
-        </section>
-        <section>
+            </section>
+        </div>
 
+        <section class="border_info">
+            <a><i class="fa-regular fa-address-book"></i> <i>45+</i>  Components</a>
+            <a><i class="fa-regular fa-address-book"></i> <i>9</i> learning modules</a>
+            <a><i class="fa-regular fa-address-book"></i> <i>1</i> component type</a>
+            <a><i class="fa-regular fa-address-book"></i> <i>3</i> brands</a>
         </section>
         
+        <secction class="what_you_got">
+            <div>
+                <h3 class="section_title">what you got</h3>
+            </div>
+            <div>
+                <h1 class="big_text">Two Powerful <a class="design_text">Platforms</a> </h1>
+            </div>
+            <div>
+                <p class="two_square"> first square</p>
+                <p class="two_square"> second square</p>
+            </div>
+        </secction>
+
+        <secction class="The_proccess">
+            <div>
+                <h3 class="section_title">The Proccess</h3>
+            </div>
+            <div>
+                <h1 class="big_text">How it <a class="design_text">Works</a> </h1>
+            </div>
+            <div>
+                <p class="four_square">first square</p>
+                <p class="four_square">second square</p>
+                <p class="four_square">third square</p>
+                <p class="four_square">fourth square</p>
+            </div>
+        </secction>
+
     </body>
+
+    <footer class="footer">
+        <p>&copy; 2023 PCforce. All rights reserved.</p>
+    </footer>
 </html>
