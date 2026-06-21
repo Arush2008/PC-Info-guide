@@ -8,7 +8,6 @@
     </head>
 
     <body class="learn_page">
-
         <nav class="top_nav_bar">
             <h1 class="logo">PCforce</h1>
 
@@ -19,76 +18,105 @@
             </ul>
         </nav>
 
-
-
         <section class="title_of">
             <div>PC LEARNING PAGE</div>
             <h1>Learn Every PC Component</h1>
             <p>Learn all 9 major PC components.</p>
         </section>
 
+        <div class="learn_layout">
 
+            <section class="side_bar">
+                <div class="sidebar_title">Components</div>
 
-        <section class="side_bar">
-           <div>components</div> 
+                <a href="/learn/cpu" class="{% if active == 'cpu' %}active{% endif %}">
+                    CPU
+                </a>
 
-            <div class="cpu">
-                <h2>Central Processing unit</h2>
-                <p>The brain of PC</p>
-            </div>
+                <a href="/learn/gpu" class="{% if active == 'gpu' %}active{% endif %}">
+                    GPU
+                </a>
 
-            <div class="gpu">
-                <h2>graphics Processing unit</h2>
-                <p>The visual powerhouse</p>
-            </div>
+                <a href="/learn/motherboard" class="{% if active == 'motherboard' %}active{% endif %}">
+                    Motherboard
+                </a>
 
-            <div class="motherboard">
-                <h2>Motherboard</h2>
-                <p>The foundation to connect everything</p>
-            </div>
+                <a href="/learn/ram" class="{% if active == 'ram' %}active{% endif %}">
+                    RAM
+                </a>
 
-            <div class="ram">
-                <h2>Random Access Memory</h2>
-                <p>The temporary storage</p>
-            </div>
+                <a href="/learn/storage" class="{% if active == 'storage' %}active{% endif %}">
+                    Storage
+                </a>
 
-            <div class="storage">
-                <h2>Storage</h2>
-                <p>The permanent storage</p>
-            </div>
+                <a href="/learn/psu" class="{% if active == 'psu' %}active{% endif %}">
+                    PSU
+                </a>
 
-            <div class="psu">
-                <h2>Power Supply Unit</h2>
-                <p>power source</p>
-            </div>
+                <a href="/learn/cpu_cooler" class="{% if active == 'cpu_cooler' %}active{% endif %}">
+                    CPU Cooler
+                </a>
 
-            <div class="cpu_cooler">
-                <h2>CPU Cooler</h2>
-                <p>keeps the cpu cool</p>
-            </div>
+                <a href="/learn/case" class="{% if active == 'case' %}active{% endif %}">
+                    Case
+                </a>
 
-            <div class="case">
-                <h2>Case</h2>
-                <p>House of all components</p>
-            </div>
+                <a href="/learn/case_fans" class="{% if active == 'case_fans' %}active{% endif %}">
+                    Case Fans
+                </a>
+            </section>
 
-            <div class="case_fans">
-                <h2>Case Fans</h2>
-                <p>Keep the system cool</p>
-            </div>
-        </section>
+            <section class="learn_content">
 
+                {% if active == "cpu" %}
+                    <h1>CPU (Central Processing Unit)</h1>
+                    <p>The CPU is the brain of the computer. It processes instructions and controls all tasks.</p>
 
+                {% elif active == "gpu" %}
+                    <h1>GPU (Graphics Processing Unit)</h1>
+                    <p>The GPU handles graphics, rendering, and gaming performance.</p>
 
-        <section>
+                {% elif active == "motherboard" %}
+                    <h1>Motherboard</h1>
+                    <p>The motherboard connects all components together and allows communication.</p>
 
-        </section>
-        
+                {% elif active == "ram" %}
+                    <h1>RAM</h1>
+                    <p>RAM stores temporary data for active applications and multitasking.</p>
 
+                {% elif active == "storage" %}
+                    <h1>Storage</h1>
+                    <p>Storage keeps your files, games, and OS permanently (SSD/HDD/NVMe).</p>
+
+                {% elif active == "psu" %}
+                    <h1>Power Supply Unit (PSU)</h1>
+                    <p>Provides power to all components in your PC safely.</p>
+
+                {% elif active == "cpu_cooler" %}
+                    <h1>CPU Cooler</h1>
+                    <p>Keeps your CPU temperature low using air or liquid cooling.</p>
+
+                {% elif active == "case" %}
+                    <h1>PC Case</h1>
+                    <p>The case holds and protects all components inside the system.</p>
+
+                {% elif active == "case_fans" %}
+                    <h1>Case Fans</h1>
+                    <p>Improves airflow and keeps system temperatures stable.</p>
+
+                {% else %}
+                    <h1>Welcome to PC Learning</h1>
+                    <p>Select a component from the sidebar to start learning.</p>
+                {% endif %}
+
+            </section>
+
+        </div>
 
     </body>
-    <footer>
 
+    <footer>
+        <p>&copy; 2024 PCforce. All rights reserved.</p>
     </footer>
 
 </html>
