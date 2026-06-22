@@ -11,18 +11,17 @@
                 <a href="/">Home</a>
                 <a href="/learn">Learn</a>
                 <a href="/components">components</a>
-                <a href="/add-gpu">Add GPU</a>
         </nav>
-<body>
+<body class ="components_page">
     <h1>GPU List</h1>
 
     {% for gpu in gpus %}
-        <div>
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ gpu.brand.name }}</p>
             <h2>{{ gpu.model }}</h2>
-            <p>Brand: {{ gpu.brand.name }}</p>
             <p>VRAM: {{ gpu.vram }} GB</p>
-            <p>Price: ${{ gpu.price }}</p>
-            <p>Power Consumption: {{ gpu.power_usage }} W</p>
+            <p>${{ gpu.price }}</p>
         </div>
     {% endfor %}
 </body>

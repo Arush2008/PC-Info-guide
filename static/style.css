@@ -242,3 +242,45 @@
     padding: 5vh;
     line-height: 1.6;
 }
+
+
+
+
+
+
+
+/* This part is for components page */
+
+
+
+
+
+
+
+.components_page {
+    color: white;
+    font-family: Arial, sans-serif;
+    background-color: rgb(10, 10, 15);
+}
+
+.image {
+    width: 100%;
+    height: 50%;
+    background-color: #333;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+    font-size: 18px;
+}
+
+.component_card {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 10px;
+    width: 40vh;
+    height: 40vh;
+    justify-content: center;
+    display: inline-block;
+    margin: 20px;
+}
