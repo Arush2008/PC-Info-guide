@@ -69,8 +69,75 @@
             <section class="learn_content">
 
                 {% if active == "cpu" %}
-                    <h1>CPU (Central Processing Unit)</h1>
-                    <p>The CPU is the brain of the computer. It processes instructions and controls all tasks.</p>
+
+                    <section class="title">
+                        <div class="title_content">
+                            <h4 class="component_title">CPU</h4>
+                            <h2 class="component_subtitle">Central Processing Unit</h2>
+                            <p class="component_description">The CPU is the brain of the computer.</p>
+                        </div>
+                    </section>
+
+                    <section class="title">
+                        <div class="title_content">
+                            <p>The CPU is one of the most important components in any computer system because it processes instructions and coordinates how different parts of the system work together. Every calculation, instruction, and operation is handled by this tiny chip billions of times per second</p>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div>
+                            <h3>What it does</h3>
+                            <p>The CPU (Central Processing Unit) executes the instructions that make up every program on your computer. When you open a game, edit a video, or browse the web — it's the CPU decoding and executing thousands of instructions per millisecond. It handles game logic, AI behavior, physics simulations, operating system tasks, and everything your software needs to function</p>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div>
+                            <h3>How it works</h3>
+                            <p>Modern CPUs use a pipeline architecture: they fetch instructions from RAM, decode what each instruction means, execute the operation (arithmetic, logic, memory access), then write the result back. This cycle repeats billions of times per second. Modern CPUs have multiple physical cores, each capable of running this pipeline independently. They also use techniques like out-of-order execution (doing tasks ahead of time), branch prediction (guessing which code path comes next), and hyperthreading (allowing a single core to process multiple threads)</p>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div>
+                            <h3>Why it matters for gaming</h3>
+                            <p>The CPU acts as the “governor” of your entire system. A slow CPU creates a bottleneck, where the GPU sits idle waiting for the CPU to prepare and send it work. In CPU-heavy games like Civilization, Cities: Skylines, or any open-world title with complex AI, the CPU often becomes the direct limiter of frame rate. It also affects how quickly your operating system responds, how smoothly you can multitask, and how efficiently content creation workflows run.</p>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div>
+                            <h3>Type & Variants</h3>
+                            <div>
+                                <h3>Intel Core</h3>
+                                <p>Gaming, Content Creation, streaming</p>
+                                <p>Intel uses a hybrid design with Performance cores (fast, for games) and Efficiency cores (power-saving, for background tasks). The i9-14900K has 24 cores in total.</p>
+                                <div>
+                                    <h4>Pros:</h4>
+                                    <ul>
+                                        <li>Excellent single-core performance</li>
+                                        <li>Strong gaming FPS</li>
+                                        <li>Wide motherboard support</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4>Cons:</h4>
+                                    <ul>
+                                        <li>Higher power draw</li>
+                                        <li>Runs hotter</li>
+                                        <li>Pricier than AMD at the same tier</li>
+                                    </ul>
+                                </div>     
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    
+
+
 
                 {% elif active == "gpu" %}
                     <h1>GPU (Graphics Processing Unit)</h1>
