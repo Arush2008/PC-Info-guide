@@ -257,12 +257,82 @@
 
 
 
-.learning__section {
+.learning_intro {
     border: 1px solid #ffffff;
     background-color: #b8b8b8;
 }
 
+.text {
+    border: 1px solid #ffffff;
+    background-color: #b8b8b8;
+    margin-top: 2vh;
+    padding: 2vh;
+}
 
+.info_part {
+    border: 1px solid rgb(255, 255, 255);
+    background-color: #b8b8b8;
+    border-radius: 10px;
+    width: 50%;
+    padding: 20px;
+    justify-content: center;
+    display: inline-block;
+    margin: 20px;
+}
+
+.info_container {
+    display: flex;
+}
+
+.pros-cons {
+    border: 1px solid #08110d;
+    padding: 4%;
+    background-color: #3bfc8b;
+    margin-top: 2vh;
+    border-radius: 10px;
+}
+
+.specs {
+    border: 1px solid #08110d;
+    padding: 15px;
+    background-color: #3bfc8b;
+    margin-top: 2vh;
+    border-radius: 2px;
+}
+
+.spec_type {
+    text-align: right;
+    margin-top: -2.5vh;
+    margin-bottom: 1vh;
+}
+
+.category_container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.category {
+    border: 1px solid rgb(255, 255, 255);
+    background-color: #b8b8b8;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.mis_fact_container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.mis_fact {
+    flex: 1;
+    border: 1px solid white;
+    background-color: #b8b8b8;
+    border-radius: 10px;
+    padding: 20px;
+    height: 30vh;
+}
 
 
 
