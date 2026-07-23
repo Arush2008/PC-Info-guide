@@ -36,5 +36,17 @@
             <p>${{ cpu.price }}</p>
         </div>
     {% endfor %}
+
+    <h1>Motherboard List</h1>
+
+    {% for motherboard in motherboards %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ motherboard.brand.name }}</p>
+            <h2>{{ motherboard.model }}</h2>
+            <p>Ram slots: {{ motherboard.ram_slots }}</p>
+            <p>${{ motherboard.price }}</p>
+        </div>
+    {% endfor %}
 </body>
 </html>

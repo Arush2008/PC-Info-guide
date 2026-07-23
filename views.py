@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from database import GPU, CPU
+from database import GPU, CPU, motherboard
 
 views = Blueprint('views', __name__)
 
@@ -18,11 +18,13 @@ def learn():
 def components():
     gpus = GPU.query.all()
     cpus = CPU.query.all()
+    motherboards = motherboard.query.all()
 
     return render_template(
         "components.html",
         gpus=gpus,
-        cpus=cpus
+        cpus=cpus,
+        motherboards=motherboards,
     )
 
 

@@ -42,3 +42,19 @@ class CPU(db.Model):
     threads = db.Column(db.Integer, nullable=False)
 
     brand = db.relationship('Brand', backref='cpus', lazy=True)
+
+
+class motherboard(db.Model):
+    __tablename__ = 'motherboard'
+
+    motherboard_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey('brand.brand_id'),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    ram_slots = db.Column(db.Integer, nullable=False)
+
+    brand = db.relationship('Brand', backref='motherboards', lazy=True)
