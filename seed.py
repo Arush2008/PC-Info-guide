@@ -1,225 +1,265 @@
 from app import app
-from database import db, CPU, Brand
+from database import db, motherboard
 
 with app.app_context():
 
-    db.session.rollback()
+    motherboards = [
 
-    def get_or_create_brand(brand_id, name):
-        brand = db.session.get(Brand, brand_id)
+    # ================= INTEL (brand_id = 3) =================
 
-        if not brand:
-            brand = Brand(
-                brand_id=brand_id,
-                name=name
-            )
-            db.session.add(brand)
+    {
+        "model": "Gigabyte B860M DS3H WIFI6E",
+        "brand_id": "3",
+        "price": 279.00,
+        "ram_slots": 4,
+        "power_usage": 45
+        },
 
-        return brand
+        {
+        "model": "ASUS TUF GAMING B860M-PLUS WIFI",
+        "brand_id": "3",
+        "price": 389.85,
+        "ram_slots": 4,
+        "power_usage": 55
+        },
+
+        {
+        "model": "MSI PRO B860-P WIFI",
+        "brand_id": "3",
+        "price": 299.00,
+        "ram_slots": 4,
+        "power_usage": 50
+        },
+
+        {
+        "model": "Gigabyte B760M DS3H AX",
+        "brand_id": "3",
+        "price": 259.00,
+        "ram_slots": 4,
+        "power_usage": 45
+        },
+
+        {
+        "model": "MSI PRO B760M-A WIFI DDR5",
+        "brand_id": "3",
+        "price": 228.85,
+        "ram_slots": 4,
+        "power_usage": 45
+        },
+
+        {
+        "model": "ASUS PRIME B760M-A WIFI",
+        "brand_id": "3",
+        "price": 229.00,
+        "ram_slots": 4,
+        "power_usage": 45
+        },
+
+        {
+        "model": "Gigabyte B760 GAMING X AX",
+        "brand_id": "3",
+        "price": 299.00,
+        "ram_slots": 4,
+        "power_usage": 55
+        },
+
+        {
+        "model": "MSI MAG B760 TOMAHAWK WIFI",
+        "brand_id": "3",
+        "price": 359.00,
+        "ram_slots": 4,
+        "power_usage": 60
+        },
+
+        {
+        "model": "ASUS ROG STRIX B760-F GAMING WIFI",
+        "brand_id": "3",
+        "price": 399.00,
+        "ram_slots": 4,
+        "power_usage": 65
+        },
+
+        {
+        "model": "Gigabyte Z790 AORUS ELITE AX",
+        "brand_id": "3",
+        "price": 449.00,
+        "ram_slots": 4,
+        "power_usage": 70
+        },
+
+        {
+        "model": "MSI PRO Z790-A WIFI",
+        "brand_id": "3",
+        "price": 424.35,
+        "ram_slots": 4,
+        "power_usage": 65
+        },
+
+        {
+        "model": "ASUS PRIME Z790-P WIFI",
+        "brand_id": "3",
+        "price": 379.00,
+        "ram_slots": 4,
+        "power_usage": 60
+        },
+
+        {
+        "model": "MSI MAG Z790 TOMAHAWK WIFI",
+        "brand_id": "3",
+        "price": 479.00,
+        "ram_slots": 4,
+        "power_usage": 75
+        },
+
+        {
+        "model": "Gigabyte Z890 AORUS ELITE WIFI7",
+        "brand_id": "3",
+        "price": 599.00,
+        "ram_slots": 4,
+        "power_usage": 75
+        },
+
+        {
+        "model": "ASUS ROG STRIX Z890-F GAMING WIFI",
+        "brand_id": "3",
+        "price": 699.00,
+        "ram_slots": 4,
+        "power_usage": 80
+        },
 
 
-    # ----------------------------
-    # CREATE BRANDS
-    # ----------------------------
+        # ================= AMD (brand_id = 2) =================
 
-    get_or_create_brand(2, "AMD")
-    get_or_create_brand(3, "Intel")
+        {
+        "model": "ASUS PRIME A620M-A WIFI",
+        "brand_id": "2",
+        "price": 189.00,
+        "ram_slots": 2,
+        "power_usage": 35
+        },
 
-    db.session.commit()
+        {
+        "model": "Gigabyte A620M S2H",
+        "brand_id": "2",
+        "price": 159.00,
+        "ram_slots": 2,
+        "power_usage": 35
+        },
 
+        {
+        "model": "ASRock A620M-HDV/M.2+",
+        "brand_id": "2",
+        "price": 169.00,
+        "ram_slots": 2,
+        "power_usage": 35
+        },
 
-    # ----------------------------
-    # CPU LIST
-    # ----------------------------
+        {
+        "model": "MSI PRO B650M-A WIFI",
+        "brand_id": "2",
+        "price": 249.00,
+        "ram_slots": 4,
+        "power_usage": 45
+        },
 
-    cpus = [
+        {
+        "model": "ASRock B650M PRO RS WIFI",
+        "brand_id": "2",
+        "price": 279.00,
+        "ram_slots": 4,
+        "power_usage": 50
+        },
 
-        # ----------------------------
-        # AMD CPUs
-        # ----------------------------
+        {
+        "model": "Gigabyte B650M GAMING WIFI",
+        "brand_id": "2",
+        "price": 239.00,
+        "ram_slots": 4,
+        "power_usage": 45
+        },
 
-        CPU(
-            model="Ryzen 5 7600X",
-            brand_id=2,
-            price=435.85,
-            cores=6,
-            threads=12
-        ),
+        {
+        "model": "ASUS TUF GAMING B650-PLUS WIFI",
+        "brand_id": "2",
+        "price": 329.00,
+        "ram_slots": 4,
+        "power_usage": 55
+        },
 
-        CPU(
-            model="Ryzen 5 9600X",
-            brand_id=2,
-            price=458.85,
-            cores=6,
-            threads=12
-        ),
+        {
+        "model": "Gigabyte B650 AORUS ELITE AX",
+        "brand_id": "2",
+        "price": 349.00,
+        "ram_slots": 4,
+        "power_usage": 60
+        },
 
-        CPU(
-            model="Ryzen 5 7500X3D",
-            brand_id=2,
-            price=550.85,
-            cores=6,
-            threads=12
-        ),
+        {
+        "model": "MSI MAG B650 TOMAHAWK WIFI",
+        "brand_id": "2",
+        "price": 379.00,
+        "ram_slots": 4,
+        "power_usage": 60
+        },
 
-        CPU(
-            model="Ryzen 7 7700",
-            brand_id=2,
-            price=419.00,
-            cores=8,
-            threads=16
-        ),
+        {
+        "model": "ASUS ROG STRIX B650E-F GAMING WIFI",
+        "brand_id": "2",
+        "price": 499.00,
+        "ram_slots": 4,
+        "power_usage": 70
+        },
 
-        CPU(
-            model="Ryzen 7 7700X3D",
-            brand_id=2,
-            price=659.00,
-            cores=8,
-            threads=16
-        ),
+        {
+        "model": "ASRock B850 Steel Legend WIFI",
+        "brand_id": "2",
+        "price": 399.00,
+        "ram_slots": 4,
+        "power_usage": 60
+        },
 
-        CPU(
-            model="Ryzen 7 9800X3D",
-            brand_id=2,
-            price=861.35,
-            cores=8,
-            threads=16
-        ),
+        {
+        "model": "MSI MAG X670E TOMAHAWK WIFI",
+        "brand_id": "2",
+        "price": 499.00,
+        "ram_slots": 4,
+        "power_usage": 75
+        },
 
-        CPU(
-            model="Ryzen 7 9700XT",
-            brand_id=2,
-            price=579.00,
-            cores=8,
-            threads=16
-        ),
+        {
+        "model": "ASRock X670E Steel Legend",
+        "brand_id": "2",
+        "price": 499.00,
+        "ram_slots": 4,
+        "power_usage": 75
+        },
 
-        CPU(
-            model="Ryzen 9 9900X",
-            brand_id=2,
-            price=803.85,
-            cores=12,
-            threads=24
-        ),
+        {
+        "model": "MSI MPG X670E CARBON WIFI",
+        "brand_id": "2",
+        "price": 699.00,
+        "ram_slots": 4,
+        "power_usage": 80
+        },
 
-        CPU(
-            model="Ryzen 9 9950X",
-            brand_id=2,
-            price=1206.35,
-            cores=16,
-            threads=32
-        ),
-
-        CPU(
-            model="Ryzen 9 9950X3D",
-            brand_id=2,
-            price=1299.01,
-            cores=16,
-            threads=32
-        ),
-
-
-        # ----------------------------
-        # Intel CPUs
-        # ----------------------------
-
-        CPU(
-            model="Core i7-14700F",
-            brand_id=3,
-            price=688.85,
-            cores=20,
-            threads=28
-        ),
-
-        CPU(
-            model="Core Ultra 5 245KF",
-            brand_id=3,
-            price=401.35,
-            cores=14,
-            threads=14
-        ),
-
-        CPU(
-            model="Core Ultra 9 285K",
-            brand_id=3,
-            price=1378.85,
-            cores=24,
-            threads=24
-        ),
-
-        CPU(
-            model="Core Ultra 7 265",
-            brand_id=3,
-            price=550.85,
-            cores=20,
-            threads=20
-        ),
-
-        CPU(
-            model="Core i3-12100F",
-            brand_id=3,
-            price=109.00,
-            cores=4,
-            threads=8
-        ),
-
-        CPU(
-            model="Core i3-13100F",
-            brand_id=3,
-            price=149.00,
-            cores=4,
-            threads=8
-        ),
-
-        CPU(
-            model="Core i5-13500",
-            brand_id=3,
-            price=399.00,
-            cores=14,
-            threads=20
-        ),
-
-        CPU(
-            model="Core i7-13700K",
-            brand_id=3,
-            price=699.00,
-            cores=16,
-            threads=24
-        ),
-
-        CPU(
-            model="Core i9-13900K",
-            brand_id=3,
-            price=899.00,
-            cores=24,
-            threads=32
-        ),
-
-        CPU(
-            model="Core i9-13900KS",
-            brand_id=3,
-            price=1099.00,
-            cores=24,
-            threads=32
-        ),
+        {
+        "model": "ASUS ROG STRIX X870-F GAMING WIFI",
+        "brand_id": "2",
+        "price": 799.00,
+        "ram_slots": 4,
+        "power_usage": 85
+        }
 
     ]
 
-
-    # ----------------------------
-    # INSERT SAFELY (NO DUPES)
-    # ----------------------------
-
-    for cpu in cpus:
-
-        exists = CPU.query.filter_by(
-            model=cpu.model
+    for board in motherboards:
+        exists = motherboard.query.filter_by(
+            model=board["model"]
         ).first()
 
         if not exists:
-            db.session.add(cpu)
-
+            db.session.add(motherboard(**board))
 
     db.session.commit()
 
-    print("CPUs added successfully!")
+    print("Motherboards added successfully!")

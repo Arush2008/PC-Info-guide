@@ -56,5 +56,6 @@ class motherboard(db.Model):
     )
     price = db.Column(db.Numeric(10, 2), nullable=False)
     ram_slots = db.Column(db.Integer, nullable=False)
+    power_usage = db.Column(db.Integer, nullable=False)
 
     brand = db.relationship('Brand', backref='motherboards', lazy=True)
