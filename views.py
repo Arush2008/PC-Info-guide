@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from database import GPU
+from database import GPU, CPU
 
 views = Blueprint('views', __name__)
 
@@ -15,9 +15,15 @@ def learn():
 
 
 @views.route("/components")
-def gpus():
+def components():
     gpus = GPU.query.all()
-    return render_template("components.html", gpus=gpus)
+    cpus = CPU.query.all()
+
+    return render_template(
+        "components.html",
+        gpus=gpus,
+        cpus=cpus
+    )
 
 
 @views.route("/learn/<component>")

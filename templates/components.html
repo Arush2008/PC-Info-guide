@@ -24,5 +24,18 @@
             <p>${{ gpu.price }}</p>
         </div>
     {% endfor %}
+    <h1>CPU List</h1>
+    {% for cpu in cpus %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ cpu.brand.name }}</p>
+            <h2>{{ cpu.model }}</h2>
+            <p>Cores: {{ cpu.cores }}</p>
+            <p>${{ cpu.price }}</p>
+        </div>
+    {% endfor %}
+            <p>${{ gpu.price }}</p>
+        </div>
+    {% endfor %}
 </body>
 </html>

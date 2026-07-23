@@ -25,3 +25,20 @@ class GPU(db.Model):
     power_usage = db.Column(db.Integer, nullable=False)
 
     brand = db.relationship('Brand', backref='gpus', lazy=True)
+
+
+class CPU(db.Model):
+    __tablename__ = 'cpu'
+
+    cpu_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False, unique=True)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey('brand.brand_id'),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    cores = db.Column(db.Integer, nullable=False)
+    threads = db.Column(db.Integer, nullable=False)
+
+    brand = db.relationship('Brand', backref='cpus', lazy=True)
