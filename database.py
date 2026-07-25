@@ -59,3 +59,110 @@ class motherboard(db.Model):
     power_usage = db.Column(db.Integer, nullable=False)
 
     brand = db.relationship('Brand', backref='motherboards', lazy=True)
+
+
+class RAM(db.Model):
+    __tablename__ = 'ram'
+
+    ram_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False)
+    ram_type = db.Column("type", db.String(20), nullable=False)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey('brand.brand_id'),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    speed = db.Column(db.Integer, nullable=False)
+    power_usage = db.Column(db.Integer, nullable=False)
+
+    brand = db.relationship('Brand', backref='rams', lazy=True)
+
+
+class Storage(db.Model):
+    __tablename__ = 'storage'
+
+    storage_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False)
+    storage_type = db.Column("type", db.String(20), nullable=False)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey('brand.brand_id'),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    power_usage = db.Column(db.Integer, nullable=False)
+
+    brand = db.relationship('Brand', backref='storages', lazy=True)
+
+
+class PSU(db.Model):
+    __tablename__ = 'psu'
+
+    psu_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey('brand.brand_id'),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    wattage = db.Column(db.Integer, nullable=False)
+
+    brand = db.relationship('Brand', backref='psus', lazy=True)
+
+
+class Cooler(db.Model):
+    __tablename__ = "cooler"
+
+    cooler_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey("brand.brand_id"),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    type = db.Column(db.String(50), nullable=False)
+    cooling_capacity = db.Column(db.String(50), nullable=False)
+    radiator_size = db.Column(db.String(50), nullable=False)
+    socket_support = db.Column(db.String(100), nullable=False)
+
+    brand = db.relationship("Brand", backref="coolers", lazy=True)
+
+
+class Case(db.Model):
+    __tablename__ = 'case'
+
+    case_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey('brand.brand_id'),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    power_usage = db.Column(db.Integer, nullable=False)
+
+    brand = db.relationship('Brand', backref='cases', lazy=True)
+
+
+class Fan(db.Model):
+    __tablename__ = 'fan'
+
+    fan_id = db.Column(db.Integer, primary_key=True)
+    model = db.Column(db.String(100), nullable=False)
+    brand_id = db.Column(
+        db.String(50),
+        db.ForeignKey('brand.brand_id'),
+        nullable=False
+    )
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    size = db.Column(db.String(50), nullable=False)
+    airflow = db.Column(db.String(50), nullable=False)
+    noise_level = db.Column(db.String(50), nullable=False)
+    control_type = db.Column(db.String(50), nullable=False)
+
+    brand = db.relationship('Brand', backref='case_fans', lazy=True)

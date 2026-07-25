@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from database import GPU, CPU, motherboard
+from database import GPU, CPU, Cooler, Storage, motherboard, RAM, PSU, Case, Fan
 
 views = Blueprint('views', __name__)
 
@@ -25,6 +25,12 @@ def components():
         gpus=gpus,
         cpus=cpus,
         motherboards=motherboards,
+        rams=RAM.query.all(),
+        storage=Storage.query.all(),
+        psus=PSU.query.all(),
+        coolers=Cooler.query.all(),
+        cases=Case.query.all(),
+        case_fans=Fan.query.all()
     )
 
 

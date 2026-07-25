@@ -48,5 +48,77 @@
             <p>${{ motherboard.price }}</p>
         </div>
     {% endfor %}
+
+    <h1>RAM List</h1>
+
+    {% for ram in rams %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ ram.brand.name }}</p>
+            <h2>{{ ram.model }}</h2>
+            <p>Capacity: {{ ram.capacity }} GB</p>
+            <p>${{ ram.price }}</p>
+        </div>
+    {% endfor %}
+
+    <h1>Storage List</h1>
+
+    {% for storage in storage %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ storage.brand.name }}</p>
+            <h2>{{ storage.model }}</h2>
+            <p>Capacity: {{ storage.capacity }} GB</p>
+            <p>${{ storage.price }}</p>
+        </div>
+    {% endfor %}
+
+    <h1>PSU List</h1>
+
+    {% for psu in psus %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ psu.brand.name }}</p>
+            <h2>{{ psu.model }}</h2>
+            <p>Wattage: {{ psu.wattage }} W</p>
+            <p>${{ psu.price }}</p>
+        </div>
+    {% endfor %}
+
+    <h1>Cooler List</h1>
+
+    {% for cooler in coolers %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ cooler.brand.name }}</p>
+            <h2>{{ cooler.model }}</h2>
+            <p>Type: {{ cooler.type }}</p>
+            <p>${{ cooler.price }}</p>
+        </div>
+    {% endfor %}
+
+    <h1>Case List</h1>
+
+    {% for case in cases %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ case.brand.name }}</p>
+            <h2>{{ case.model }}</h2>
+            <p>Form Factor: {{ case.form_factor }}</p>
+            <p>${{ case.price }}</p>
+        </div>
+    {% endfor %}
+
+    <h1>Case Fan List</h1>
+
+    {% for fan in case_fans %}
+        <div class="component_card">
+            <div class="image">Image</div>
+            <p>{{ fan.brand.name }}</p>
+            <h2>{{ fan.model }}</h2>
+            <p>Size: {{ fan.size }} mm</p>
+            <p>${{ fan.price }}</p>
+        </div>
+    {% endfor %}
 </body>
 </html>
