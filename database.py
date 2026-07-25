@@ -91,6 +91,7 @@ class Storage(db.Model):
         db.ForeignKey('brand.brand_id'),
         nullable=False
     )
+    speed = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
@@ -108,6 +109,8 @@ class PSU(db.Model):
         db.ForeignKey('brand.brand_id'),
         nullable=False
     )
+    efficiency_rating = db.Column(db.String(20), nullable=False)
+    modular = db.Column(db.TEXT, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     wattage = db.Column(db.Integer, nullable=False)
 
