@@ -147,7 +147,6 @@ class Case(db.Model):
         nullable=False
     )
     price = db.Column(db.Numeric(10, 2), nullable=False)
-    power_usage = db.Column(db.Integer, nullable=False)
 
     brand = db.relationship('Brand', backref='cases', lazy=True)
 
