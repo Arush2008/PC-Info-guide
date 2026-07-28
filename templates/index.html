@@ -40,20 +40,61 @@
             <a><i class="fa-regular fa-address-book"></i> <i>3</i> brands</a>
         </section>
         
-        <secction class="what_you_got">
+        <section class="what_you_got">
             <div>
                 <h3 class="section_title">what you got</h3>
             </div>
             <div>
                 <h1 class="big_text">Two Powerful <a class="design_text">Platforms</a> </h1>
             </div>
-            <div>
-                <p class="two_square"> first square</p>
-                <p class="two_square"> second square</p>
-            </div>
-        </secction>
+            <div class="two_square">
 
-        <secction class="The_proccess">
+                <article class="platform_card">
+                    <div class="image_wrapper">
+                        <img class="image_wrap" src="{{ url_for('static', filename='background.png') }}"
+                            alt="PC components for learning">
+                    </div>
+
+                    <div class="card_content">
+                        <p class="card_label">PC Learning Hub</p>
+
+                        <h2>PC Learning Hub</h2>
+
+                        <p>
+                            9 in-depth component guides covering CPU, GPU, RAM,
+                            Motherboard, Storage, PSU, Cooling, Cases, and Fans.
+                            Learn how each part works and which specs matter.
+                        </p>
+
+                        <a class="card_button" href="/learn">Start Learning</a>
+                    </div>
+                </article>
+
+                <article class="platform_card">
+                    <div class="image_wrapper">
+                        <img class="image_wrap" src="{{ url_for('static', filename='background.png') }}"
+                            alt="PC component catalog">
+                    </div>
+
+                    <div class="card_content">
+                        <p class="card_label">Component Catalog</p>
+
+                        <h2>Component Catalog</h2>
+
+                        <p>
+                            Browse 50+ real PC components across 9 categories.
+                            Compare specifications, prices, performance scores,
+                            and tier ratings.
+                        </p>
+
+                        <a class="card_button" href="/components">Browse Components</a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="The_proccess">
             <div>
                 <h3 class="section_title">The Proccess</h3>
             </div>
@@ -61,12 +102,13 @@
                 <h1 class="big_text">How it <a class="design_text">Works</a> </h1>
             </div>
             <div>
+                <div class="image_2">Image</div>
                 <p class="four_square">first square</p>
                 <p class="four_square">second square</p>
                 <p class="four_square">third square</p>
                 <p class="four_square">fourth square</p>
             </div>
-        </secction>
+        </section>
 
     </body>
 

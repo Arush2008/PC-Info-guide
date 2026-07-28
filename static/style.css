@@ -116,21 +116,6 @@
     background-color: rgb(10, 10, 15);
 }
 
-.what_you_got div, .The_proccess div {
-    display: flex;
-    gap: 10vh;
-}
-
-.two_square, .four_square {
-    width: 30vh;
-    height: 35vh;
-    border: 0.3vh solid rgb(255, 255, 255);
-    margin: 5vh 0 15vh 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .footer {
     background-color: rgb(10, 10, 15);
     text-align: center;
@@ -138,6 +123,172 @@
     color: #d6d6d6;
     font-size: 2vh;
 }
+
+.two_square {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    width: 75%;
+    align-items: stretch;
+    margin-top: 5vh;
+}
+
+.platform_card {
+    display: flex;
+    flex-direction: column;
+    height: 87%;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 18px;
+    background: #151922;
+    transition: transform 0.25s, border-color 0.25s;
+    margin-bottom: 5vh;
+}
+
+.card_content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 28px;
+    background: linear-gradient(
+        to bottom,
+        rgb(16, 18, 24) 0%,
+        rgb(16, 18, 24) 28%,
+        #151922 62%
+    );
+}
+
+.card_button {
+    margin-top: auto;
+    align-self: flex-start;
+    padding: 13px 18px;
+    border-radius: 10px;
+    background: #3bfc8b;
+    color: #08110d;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Next lesson links at the bottom of each learning material */
+.next_lesson_button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 10px 14px;
+    border: 1px solid #3bfc8b;
+    border-radius: 8px;
+    background: rgba(59, 252, 139, 0.12);
+    color: #3bfc8b;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.next_lesson_button:hover {
+    background: #3bfc8b;
+    color: #08110d;
+    transform: translateX(5px);
+}
+
+.lesson_finish {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.lesson_finish > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 650px) {
+    .lesson_finish,
+    .lesson_finish > div:last-child {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+.platform_card:hover {
+    border-color: #3bfc8b;
+}
+
+.platform_card img {
+    display: block;
+    height: 60%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.image_wrapper {
+    position: relative;
+    height: 60%;
+    overflow: hidden;
+    border-radius: 18px 18px 0 0;
+}
+
+.image_wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image_wrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(16, 18, 24, 0) 0%,
+        rgba(16, 18, 24, 0.03) 40%,
+        rgba(16, 18, 24, 0.22) 64%,
+        rgba(16, 18, 24, 0.86) 88%,
+        rgb(16, 18, 24) 100%
+    );
+    pointer-events: none;
+}
+
+.card_label {
+    color: #3bfc8b;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.card_content h2 {
+    margin: 10px 0 14px;
+    font-size: 28px;
+}
+
+.card_content p:not(.card_label) {
+    margin: 0;
+    color: #cbd0da;
+    line-height: 1.35;
+}
+
+.card_button {
+    display: inline-block;
+    align-self: flex-start;
+    margin-top: 15px;
+    padding: 7px 15px;
+    border-radius: 10px;
+    background: #3bfc8b;
+    color: #08110d;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+@media (max-width: 750px) {
+    .two_square {
+        grid-template-columns: 1fr;
+    }
+}    
 
 
 
