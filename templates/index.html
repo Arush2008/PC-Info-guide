@@ -61,9 +61,7 @@
                         <h2>PC Learning Hub</h2>
 
                         <p>
-                            9 in-depth component guides covering CPU, GPU, RAM,
-                            Motherboard, Storage, PSU, Cooling, Cases, and Fans.
-                            Learn how each part works and which specs matter.
+                            9 in-depth component guides covering CPU, GPU, RAM, Motherboard, Storage, PSU, Cooling, Cases, and Fans. Learn how each part works, what specs matter, and how they affect gaming performance.
                         </p>
 
                         <a class="card_button" href="/learn">Start Learning</a>
@@ -82,9 +80,7 @@
                         <h2>Component Catalog</h2>
 
                         <p>
-                            Browse 50+ real PC components across 9 categories.
-                            Compare specifications, prices, performance scores,
-                            and tier ratings.
+                            Browse 50+ real PC components across 9 categories. Compare specs, prices, performance scores, and tier ratings from budget to extreme. Filter by brand, tier, and component type.
                         </p>
 
                         <a class="card_button" href="/components">Browse Components</a>
@@ -101,12 +97,50 @@
             <div>
                 <h1 class="big_text">How it <a class="design_text">Works</a> </h1>
             </div>
-            <div>
-                <div class="image_2">Image</div>
-                <p class="four_square">first square</p>
-                <p class="four_square">second square</p>
-                <p class="four_square">third square</p>
-                <p class="four_square">fourth square</p>
+            <div class="process_cards">
+                <article class="process_card">
+                    <div class="image_wrapper">
+                        <img src="{{ url_for('static', filename='background.png') }}" alt="Learn about PC parts">
+                    </div>
+                    <div class="card_content">
+                        <p class="card_label">Step 1</p>
+                        <h3>Explore</h3>
+                        <p>Dive into any of the 9 PC component guides in the Learning Hub. Deep-dive content explaining exactly how each part works and why it matters for gaming performance.</p>
+                    </div>
+                </article>
+
+                <article class="process_card">
+                    <div class="image_wrapper">
+                        <img src="{{ url_for('static', filename='background.png') }}" alt="Compare PC components">
+                    </div>
+                    <div class="card_content">
+                        <p class="card_label">Step 2</p>
+                        <h3>Compare</h3>
+                        <p>Head to the Component Catalog and browse 50+ real components. Filter by tier, brand, or category to find the exact part that fits your budget and performance needs.</p>
+                    </div>
+                </article>
+
+                <article class="process_card">
+                    <div class="image_wrapper">
+                        <img src="{{ url_for('static', filename='background.png') }}" alt="Choose PC components">
+                    </div>
+                    <div class="card_content">
+                        <p class="card_label">Step 3</p>
+                        <h3>Choose</h3>
+                        <p>Every component card shows key specifications, performance scores, and price points so you know exactly what you are getting before making any purchase decisions.</p>
+                    </div>
+                </article>
+
+                <article class="process_card">
+                    <div class="image_wrapper">
+                        <img src="{{ url_for('static', filename='background.png') }}" alt="Build your PC knowledge">
+                    </div>
+                    <div class="card_content">
+                        <p class="card_label">Step 4</p>
+                        <h3>Build</h3>
+                        <p>With knowledge from the Learning Hub and data from the Catalog, you will be ready to pick compatible parts and build or upgrade your own custom gaming PC with complete confidence.</p>
+                    </div>
+                </article>
             </div>
         </section>
 

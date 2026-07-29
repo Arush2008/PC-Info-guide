@@ -288,7 +288,63 @@
     .two_square {
         grid-template-columns: 1fr;
     }
-}    
+}
+
+.process_cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    width: 90%;
+    margin: 4vh 0 5vh;
+}
+
+.process_card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    background: #151922;
+    min-height: 320px;
+}
+
+.process_card .image_wrapper {
+    height: 44%;
+    border-radius: 16px 16px 0 0;
+}
+
+.process_card .card_content {
+    padding: 16px 18px 20px;
+    background: linear-gradient(
+        to bottom,
+        rgb(16, 18, 24) 0%,
+        rgb(16, 18, 24) 28%,
+        #151922 100%
+    );
+}
+
+.process_card .card_content h3 {
+    margin: 8px 0 8px;
+    font-size: 20px;
+    color: white;
+}
+
+.process_card .card_content p:not(.card_label) {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+@media (max-width: 1000px) {
+    .process_cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .process_cards {
+        grid-template-columns: 1fr;
+    }
+}
 
 
 
