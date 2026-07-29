@@ -1,124 +1,356 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>My Website</title>
+    <title>PCforce Components</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-    <body>
-        <nav class="top_nav_bar">
-            <h1 class="logo">PCforce</h1>
-                <a href="/">Home</a>
-                <a href="/learn">Learn</a>
-                <a href="/components">components</a>
-        </nav>
+
 <body class="components_page">
-    <h1>GPU List</h1>
 
-    {% for gpu in gpus %}
+<nav class="top_nav_bar">
+    <h1 class="logo">PCforce</h1>
+    <a href="/">Home</a>
+    <a href="/learn">Learn</a>
+    <a href="/components">Components</a>
+</nav>
+
+
+<h1 class="page_title">Components</h1>
+
+
+<!-- GPU SECTION -->
+<section class="component_section">
+
+    <h1>Graphics Cards</h1>
+
+    <div class="component_row">
+
+        {% for gpu in gpus %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ gpu.brand.name }}</p>
-            <h2>{{ gpu.model }}</h2>
-            <p>VRAM: {{ gpu.vram }} GB</p>
-            <p>${{ gpu.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ gpu.brand.name }}</p>
+
+                <h2>{{ gpu.model }}</h2>
+
+                <p>VRAM: {{ gpu.vram }} GB</p>
+
+                <p>${{ gpu.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>CPU List</h1>
+        {% endfor %}
 
-    {% for cpu in cpus %}
+    </div>
+
+</section>
+
+
+
+<!-- CPU SECTION -->
+<section class="component_section">
+
+    <h1>Processors</h1>
+
+    <div class="component_row">
+
+        {% for cpu in cpus %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ cpu.brand.name }}</p>
-            <h2>{{ cpu.model }}</h2>
-            <p>Cores: {{ cpu.cores }}</p>
-            <p>${{ cpu.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ cpu.brand.name }}</p>
+
+                <h2>{{ cpu.model }}</h2>
+
+                <p>Cores: {{ cpu.cores }}</p>
+
+                <p>${{ cpu.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>Motherboard List</h1>
+        {% endfor %}
 
-    {% for motherboard in motherboards %}
+    </div>
+
+</section>
+
+
+
+<!-- MOTHERBOARD SECTION -->
+<section class="component_section">
+
+    <h1>Motherboards</h1>
+
+    <div class="component_row">
+
+        {% for motherboard in motherboards %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ motherboard.brand.name }}</p>
-            <h2>{{ motherboard.model }}</h2>
-            <p>Ram slots: {{ motherboard.ram_slots }}</p>
-            <p>${{ motherboard.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ motherboard.brand.name }}</p>
+
+                <h2>{{ motherboard.model }}</h2>
+
+                <p>RAM Slots: {{ motherboard.ram_slots }}</p>
+
+                <p>${{ motherboard.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>RAM List</h1>
+        {% endfor %}
 
-    {% for ram in rams %}
+    </div>
+
+</section>
+
+
+
+<!-- RAM SECTION -->
+<section class="component_section">
+
+    <h1>Memory (RAM)</h1>
+
+    <div class="component_row">
+
+        {% for ram in rams %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ ram.brand.name }}</p>
-            <h2>{{ ram.model }}</h2>
-            <p>Capacity: {{ ram.capacity }} GB</p>
-            <p>${{ ram.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ ram.brand.name }}</p>
+
+                <h2>{{ ram.model }}</h2>
+
+                <p>Capacity: {{ ram.capacity }} GB</p>
+
+                <p>${{ ram.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>Storage List</h1>
+        {% endfor %}
 
-    {% for storage in storage %}
+    </div>
+
+</section>
+
+
+
+<!-- STORAGE SECTION -->
+<section class="component_section">
+
+    <h1>Storage</h1>
+
+    <div class="component_row">
+
+        {% for storage_item in storage %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ storage.brand.name }}</p>
-            <h2>{{ storage.model }}</h2>
-            <p>Capacity: {{ storage.capacity }} GB</p>
-            <p>${{ storage.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ storage_item.brand.name }}</p>
+
+                <h2>{{ storage_item.model }}</h2>
+
+                <p>Capacity: {{ storage_item.capacity }} GB</p>
+
+                <p>${{ storage_item.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>PSU List</h1>
+        {% endfor %}
 
-    {% for psu in psus %}
+    </div>
+
+</section>
+
+
+
+<!-- PSU SECTION -->
+<section class="component_section">
+
+    <h1>Power Supplies</h1>
+
+    <div class="component_row">
+
+        {% for psu in psus %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ psu.brand.name }}</p>
-            <h2>{{ psu.model }}</h2>
-            <p>Wattage: {{ psu.wattage }} W</p>
-            <p>${{ psu.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ psu.brand.name }}</p>
+
+                <h2>{{ psu.model }}</h2>
+
+                <p>Wattage: {{ psu.wattage }}W</p>
+
+                <p>${{ psu.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>Cooler List</h1>
+        {% endfor %}
 
-    {% for cooler in coolers %}
+    </div>
+
+</section>
+
+
+
+<!-- COOLER SECTION -->
+<section class="component_section">
+
+    <h1>CPU Coolers</h1>
+
+    <div class="component_row">
+
+        {% for cooler in coolers %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ cooler.brand.name }}</p>
-            <h2>{{ cooler.model }}</h2>
-            <p>Type: {{ cooler.type }}</p>
-            <p>${{ cooler.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ cooler.brand.name }}</p>
+
+                <h2>{{ cooler.model }}</h2>
+
+                <p>Type: {{ cooler.type }}</p>
+
+                <p>${{ cooler.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>Case List</h1>
+        {% endfor %}
 
-    {% for case in cases %}
+    </div>
+
+</section>
+
+
+
+<!-- CASE SECTION -->
+<section class="component_section">
+
+    <h1>Cases</h1>
+
+    <div class="component_row">
+
+        {% for case in cases %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ case.brand.name }}</p>
-            <h2>{{ case.model }}</h2>
-            <p>Form Factor: {{ case.form_factor }}</p>
-            <p>${{ case.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ case.brand.name }}</p>
+
+                <h2>{{ case.model }}</h2>
+
+                <p>Form Factor: {{ case.form_factor }}</p>
+
+                <p>${{ case.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
 
-    <h1>Case Fan List</h1>
+        {% endfor %}
 
-    {% for fan in case_fans %}
+    </div>
+
+</section>
+
+
+
+<!-- CASE FAN SECTION -->
+<section class="component_section">
+
+    <h1>Case Fans</h1>
+
+    <div class="component_row">
+
+        {% for fan in case_fans %}
+
         <div class="component_card">
-            <div class="image">Image</div>
-            <p>{{ fan.brand.name }}</p>
-            <h2>{{ fan.model }}</h2>
-            <p>Size: {{ fan.size }} mm</p>
-            <p>${{ fan.price }}</p>
+
+            <div class="image">
+                Image
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ fan.brand.name }}</p>
+
+                <h2>{{ fan.model }}</h2>
+
+                <p>Size: {{ fan.size }}mm</p>
+
+                <p>${{ fan.price }}</p>
+
+            </div>
+
         </div>
-    {% endfor %}
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
 </body>
 </html>
