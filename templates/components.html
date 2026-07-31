@@ -32,7 +32,8 @@
         <div class="component_card">
 
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=gpu.image) }}"
+                    alt="{{ gpu.model }}">
             </div>
 
             <div class="card_info">
