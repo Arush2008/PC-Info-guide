@@ -148,6 +148,8 @@ class Case(db.Model):
         nullable=False
     )
     price = db.Column(db.Numeric(10, 2), nullable=False)
+    size = db.Column(db.String(50), nullable=False)
+    form_factor = db.Column(db.String(100), nullable=False)
 
     brand = db.relationship('Brand', backref='cases', lazy=True)
 
