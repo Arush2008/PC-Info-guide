@@ -169,7 +169,6 @@
     text-decoration: none;
 }
 
-/* Next lesson links at the bottom of each learning material */
 .next_lesson_button {
     display: inline-flex;
     align-items: center;
@@ -255,7 +254,7 @@
 
 .card_label {
     color: #3bfc8b;
-    font-size: 13px;
+    font-size: 25px;
     font-weight: bold;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -263,7 +262,7 @@
 
 .card_content h2 {
     margin: 10px 0 14px;
-    font-size: 28px;
+    font-size: 30px;
 }
 
 .card_content p:not(.card_label) {
@@ -325,12 +324,12 @@
 
 .process_card .card_content h3 {
     margin: 8px 0 8px;
-    font-size: 20px;
+    font-size: 25px;
     color: white;
 }
 
 .process_card .card_content p:not(.card_label) {
-    font-size: 14px;
+    font-size: 20px;
     line-height: 1.5;
 }
 
@@ -344,6 +343,95 @@
     .process_cards {
         grid-template-columns: 1fr;
     }
+}
+
+.understand_components_section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    padding: 8vh 8%;
+    background: rgb(10, 10, 15);
+}
+
+.left_text_side {
+    flex: 1;
+    max-width: 600px;
+}
+
+.left_text_side .section_title {
+    color: #3bfc8b;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 45px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.left_text_side p {
+    color: #cbd0da;
+    font-size: 28px;
+    line-height: 1.6;
+    margin: 25px 0;
+}
+
+.btn {
+    padding: 14px 24px;
+    border-radius: 10px;
+    border: 1px solid #3bfc8b;
+    background: rgba(59,252,139,0.12);
+    color: #3bfc8b;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #3bfc8b;
+    color: #08110d;
+    transform: translateY(-3px);
+}
+
+.right_component_side {
+    flex: 1.3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    justify-content: end;
+}
+
+.right_component_side > div {
+    background: #151922;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 150px;
+    transition: 0.3s;
+}
+
+.right_component_side > div:hover {
+    border-color: #3bfc8b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59,252,139,0.08);
+}
+
+.right_component_side h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.right_component_side p {
+    color: #cbd0da;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 18px;
+}
+
+.right_component_side h4 {
+    color: #3bfc8b;
+    font-size: 13px;
+    letter-spacing: 1px;
 }
 
 
