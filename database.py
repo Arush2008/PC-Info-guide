@@ -24,7 +24,6 @@ class GPU(db.Model):
     vram = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     image = db.Column(db.String(100), nullable=False)
-
     brand = db.relationship('Brand', backref='gpus', lazy=True)
 
 
@@ -41,8 +40,8 @@ class CPU(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     cores = db.Column(db.Integer, nullable=False)
     threads = db.Column(db.Integer, nullable=False)
-
     brand = db.relationship('Brand', backref='cpus', lazy=True)
+    image = db.Column(db.String(100), nullable=False)
 
 
 class motherboard(db.Model):
@@ -58,7 +57,6 @@ class motherboard(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     ram_slots = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
-
     brand = db.relationship('Brand', backref='motherboards', lazy=True)
 
 
@@ -77,7 +75,6 @@ class RAM(db.Model):
     capacity = db.Column(db.Integer, nullable=False)
     speed = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
-
     brand = db.relationship('Brand', backref='rams', lazy=True)
 
 
@@ -96,7 +93,6 @@ class Storage(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
-
     brand = db.relationship('Brand', backref='storages', lazy=True)
 
 
@@ -114,7 +110,6 @@ class PSU(db.Model):
     modular = db.Column(db.TEXT, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     wattage = db.Column(db.Integer, nullable=False)
-
     brand = db.relationship('Brand', backref='psus', lazy=True)
 
 
@@ -133,7 +128,6 @@ class Cooler(db.Model):
     cooling_capacity = db.Column(db.String(50), nullable=False)
     radiator_size = db.Column(db.String(50), nullable=False)
     socket_support = db.Column(db.String(100), nullable=False)
-
     brand = db.relationship("Brand", backref="coolers", lazy=True)
 
 
@@ -150,7 +144,6 @@ class Case(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     size = db.Column(db.String(50), nullable=False)
     form_factor = db.Column(db.String(100), nullable=False)
-
     brand = db.relationship('Brand', backref='cases', lazy=True)
 
 
@@ -168,6 +161,4 @@ class Fan(db.Model):
     size = db.Column(db.String(50), nullable=False)
     airflow = db.Column(db.String(50), nullable=False)
     noise_level = db.Column(db.String(50), nullable=False)
-    control_type = db.Column(db.String(50), nullable=False)
-
     brand = db.relationship('Brand', backref='case_fans', lazy=True)
