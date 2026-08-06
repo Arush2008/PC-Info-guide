@@ -902,3 +902,16 @@
     }
 
 }
+
+.component_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    justify-content: center;
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.component_grid .component_card {
+    width: 100%;
+    flex-shrink: 0;
+}

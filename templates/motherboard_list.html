@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>All GPUs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="components_page">
+
+<nav class="top_nav_bar">
+    <h1 class="logo">PCforce</h1>
+    <a href="/">Home</a>
+    <a href="/learn">Learn</a>
+    <a href="/components">Components</a>
+</nav>
+
+<h1 class="page_title">All Motherboards</h1>
+
+<section class="component_section">
+
+    <div class="component_grid">
+
+        {% for motherboard in motherboards %}
+
+        <div class="component_card">
+
+            <div class="image">
+                <img src="{{ url_for('static', filename=motherboard.image) }}" alt="{{ motherboard.model }}">
+            </div>
+
+            <div class="card_info">
+
+                <p>{{ motherboard.brand.name }}</p>
+
+                <h2>{{ motherboard.model }}</h2>
+
+                <p>${{ motherboard.price }}</p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+</body>
+</html>
