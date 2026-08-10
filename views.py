@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from sqlalchemy import or_
+import re
 from database import (
     GPU,
     CPU,
@@ -14,6 +15,11 @@ from database import (
 )
 
 views = Blueprint('views', __name__)
+
+
+def _extract_number(query):
+    match = re.search(r"(\d+)", query.lower())
+    return int(match.group(1)) if match else None
 
 
 @views.route("/")
@@ -46,6 +52,91 @@ def components():
     )
 
 
+@views.route("/component_list")
+def component_list():
+    q = request.args.get("q", "").strip()
+    q_number = _extract_number(q)
+
+    gpu_query = GPU.query.join(Brand)
+    cpu_query = CPU.query.join(Brand)
+    motherboard_query = motherboard.query.join(Brand)
+    ram_query = RAM.query.join(Brand)
+    storage_query = Storage.query.join(Brand)
+    psu_query = PSU.query.join(Brand)
+    cooler_query = Cooler.query.join(Brand)
+    case_query = Case.query.join(Brand)
+    fan_query = Fan.query.join(Brand)
+
+    if q:
+        ram_filters = [
+            RAM.model.ilike(f"%{q}%"),
+            Brand.name.ilike(f"%{q}%"),
+            RAM.ram_type.ilike(f"%{q}%"),
+        ]
+
+        if q_number is not None:
+            ram_filters.append(RAM.capacity.ilike(f"{q_number}GB%"))
+
+        ram_query = ram_query.filter(or_(*ram_filters))
+
+        gpu_filters = [GPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        if q_number is not None:
+            gpu_filters.append(GPU.vram == q_number)
+        gpu_query = gpu_query.filter(or_(*gpu_filters))
+
+        cpu_filters = [CPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        if q_number is not None:
+            cpu_filters.append(CPU.cores == q_number)
+        cpu_query = cpu_query.filter(or_(*cpu_filters))
+
+        motherboard_filters = [
+            motherboard.model.ilike(f"%{q}%"),
+            Brand.name.ilike(f"%{q}%"),
+        ]
+        if q_number is not None:
+            motherboard_filters.append(motherboard.ram_slots == q_number)
+        motherboard_query = motherboard_query.filter(or_(*motherboard_filters))
+
+        storage_filters = [
+            Storage.model.ilike(f"%{q}%"),
+            Brand.name.ilike(f"%{q}%"),
+        ]
+        if q_number is not None:
+            storage_filters.append(Storage.capacity == q_number)
+        storage_query = storage_query.filter(or_(*storage_filters))
+
+        psu_filters = [PSU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        if q_number is not None:
+            psu_filters.append(PSU.wattage == q_number)
+        psu_query = psu_query.filter(or_(*psu_filters))
+
+        cooler_query = cooler_query.filter(
+            or_(Cooler.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%"))
+        )
+
+        case_query = case_query.filter(
+            or_(Case.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%"))
+        )
+
+        fan_query = fan_query.filter(
+            or_(Fan.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%"))
+        )
+
+    return render_template(
+        "components_list.html",
+        q=q,
+        gpus=gpu_query.all(),
+        cpus=cpu_query.all(),
+        motherboards=motherboard_query.all(),
+        rams=ram_query.all(),
+        storage=storage_query.all(),
+        psus=psu_query.all(),
+        coolers=cooler_query.all(),
+        cases=case_query.all(),
+        case_fans=fan_query.all()
+    )
+
+
 @views.route("/learn/<component>")
 def learn_component(component):
 
@@ -64,17 +155,17 @@ def learn_component(component):
 @views.route("/gpu")
 def gpu_list():
     q = request.args.get("q", "").strip()
+    q_number = _extract_number(q)
 
     if q:
+        gpu_filters = [GPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        if q_number is not None:
+            gpu_filters.append(GPU.vram == q_number)
+
         gpus = (
             GPU.query
             .join(Brand)
-            .filter(
-                or_(
-                    GPU.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
-                )
-            )
+            .filter(or_(*gpu_filters))
             .all()
         )
     else:
@@ -86,17 +177,17 @@ def gpu_list():
 @views.route("/cpu")
 def cpu_list():
     q = request.args.get("q", "").strip()
+    q_number = _extract_number(q)
 
     if q:
+        cpu_filters = [CPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        if q_number is not None:
+            cpu_filters.append(CPU.cores == q_number)
+
         cpus = (
             CPU.query
             .join(Brand)
-            .filter(
-                or_(
-                    CPU.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
-                )
-            )
+            .filter(or_(*cpu_filters))
             .all()
         )
     else:
@@ -108,17 +199,20 @@ def cpu_list():
 @views.route("/motherboard")
 def motherboard_list():
     q = request.args.get("q", "").strip()
+    q_number = _extract_number(q)
 
     if q:
+        motherboard_filters = [
+            motherboard.model.ilike(f"%{q}%"),
+            Brand.name.ilike(f"%{q}%"),
+        ]
+        if q_number is not None:
+            motherboard_filters.append(motherboard.ram_slots == q_number)
+
         motherboarda = (
             motherboard.query
             .join(Brand)
-            .filter(
-                or_(
-                    motherboard.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
-                )
-            )
+            .filter(or_(*motherboard_filters))
             .all()
         )
     else:
@@ -131,17 +225,22 @@ def motherboard_list():
 @views.route("/ram")
 def ram_list():
     q = request.args.get("q", "").strip()
+    q_number = _extract_number(q)
 
     if q:
+        ram_filters = [
+            RAM.model.ilike(f"%{q}%"),
+            Brand.name.ilike(f"%{q}%"),
+            RAM.ram_type.ilike(f"%{q}%"),
+        ]
+
+        if q_number is not None:
+            ram_filters.append(RAM.capacity.ilike(f"{q_number}GB%"))
+
         rams = (
             RAM.query
             .join(Brand)
-            .filter(
-                or_(
-                    RAM.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
-                )
-            )
+            .filter(or_(*ram_filters))
             .all()
         )
     else:
@@ -153,17 +252,20 @@ def ram_list():
 @views.route("/storage")
 def storage_list():
     q = request.args.get("q", "").strip()
+    q_number = _extract_number(q)
 
     if q:
+        storage_filters = [
+            Storage.model.ilike(f"%{q}%"),
+            Brand.name.ilike(f"%{q}%"),
+        ]
+        if q_number is not None:
+            storage_filters.append(Storage.capacity == q_number)
+
         storage = (
             Storage.query
             .join(Brand)
-            .filter(
-                or_(
-                    Storage.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
-                )
-            )
+            .filter(or_(*storage_filters))
             .all()
         )
     else:
@@ -175,17 +277,17 @@ def storage_list():
 @views.route("/psu")
 def psu_list():
     q = request.args.get("q", "").strip()
+    q_number = _extract_number(q)
 
     if q:
+        psu_filters = [PSU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        if q_number is not None:
+            psu_filters.append(PSU.wattage == q_number)
+
         psus = (
             PSU.query
             .join(Brand)
-            .filter(
-                or_(
-                    PSU.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
-                )
-            )
+            .filter(or_(*psu_filters))
             .all()
         )
     else:

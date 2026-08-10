@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>PCforce Components</title>
+    <title>All Components</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
-
 <body class="components_page">
 
 <nav class="top_nav_bar">
@@ -16,353 +13,205 @@
     <a href="/components">Components</a>
 </nav>
 
+<h1 class="page_title">All Components</h1>
 
-<h1 class="page_title">Components</h1>
-<a href="/component_list">All Components -></a>
+<form method="get" action="/component_list">
+    <input type="text" name="q" placeholder="Search all components" value="{{ q or '' }}">
+    <button type="submit">Search</button>
+</form>
 
+{% if q %}
+<p>Showing results for "{{ q }}"</p>
+{% endif %}
 
-<!-- GPU SECTION -->
+{% if gpus %}
 <section class="component_section">
-
     <h1>Graphics Cards</h1>
-    <a href="/gpu">All Gpus -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for gpu in gpus %}
-
         <div class="component_card">
-
             <div class="image">
-                <img src="{{ url_for('static', filename=gpu.image) }}"
-                    alt="{{ gpu.model }}">
+                <img src="{{ url_for('static', filename=gpu.image) }}" alt="{{ gpu.model }}">
             </div>
-
             <div class="card_info">
-
                 <p>{{ gpu.brand.name }}</p>
-
                 <h2>{{ gpu.model }}</h2>
-
                 <p>VRAM: {{ gpu.vram }} GB</p>
-
                 <p>${{ gpu.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
-
-
-<!-- CPU SECTION -->
+{% if cpus %}
 <section class="component_section">
-
     <h1>Processors</h1>
-    <a href="/cpu">All Processors -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for cpu in cpus %}
-
         <div class="component_card">
-
             <div class="image">
-                <img src="{{ url_for('static', filename=cpu.image) }}"
-                    alt="{{ cpu.model }}">
+                <img src="{{ url_for('static', filename=cpu.image) }}" alt="{{ cpu.model }}">
             </div>
-
             <div class="card_info">
-
                 <p>{{ cpu.brand.name }}</p>
-
                 <h2>{{ cpu.model }}</h2>
-
                 <p>Cores: {{ cpu.cores }}</p>
-
                 <p>${{ cpu.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
-
-
-<!-- MOTHERBOARD SECTION -->
+{% if rams %}
 <section class="component_section">
-
-    <h1>Motherboards</h1>
-    <a href="/motherboard">All Motherboards -></a>
-
-    <div class="component_row">
-
-        {% for motherboard in motherboards %}
-
-        <div class="component_card">
-
-            <div class="image">
-                Image
-            </div>
-
-            <div class="card_info">
-
-                <p>{{ motherboard.brand.name }}</p>
-
-                <h2>{{ motherboard.model }}</h2>
-
-                <p>RAM Slots: {{ motherboard.ram_slots }}</p>
-
-                <p>${{ motherboard.price }}</p>
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-</section>
-
-
-
-<!-- RAM SECTION -->
-<section class="component_section">
-
     <h1>Memory (RAM)</h1>
-    <a href="/ram">All Rrams -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for ram in rams %}
-
         <div class="component_card">
-
             <div class="image">
                 Image
             </div>
-
             <div class="card_info">
-
                 <p>{{ ram.brand.name }}</p>
-
                 <h2>{{ ram.model }}</h2>
-
                 <p>Capacity: {{ ram.capacity }} GB</p>
-
                 <p>${{ ram.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
-
-
-<!-- STORAGE SECTION -->
+{% if storage %}
 <section class="component_section">
-
     <h1>Storage</h1>
-    <a href="/storage">All Storage -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for storage_item in storage %}
-
         <div class="component_card">
-
             <div class="image">
                 Image
             </div>
-
             <div class="card_info">
-
                 <p>{{ storage_item.brand.name }}</p>
-
                 <h2>{{ storage_item.model }}</h2>
-
                 <p>Capacity: {{ storage_item.capacity }} GB</p>
-
                 <p>${{ storage_item.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
-
-
-<!-- PSU SECTION -->
+{% if psus %}
 <section class="component_section">
-
     <h1>Power Supplies</h1>
-    <a href="/psu">All PSUs -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for psu in psus %}
-
         <div class="component_card">
-
             <div class="image">
                 Image
             </div>
-
             <div class="card_info">
-
                 <p>{{ psu.brand.name }}</p>
-
                 <h2>{{ psu.model }}</h2>
-
                 <p>Wattage: {{ psu.wattage }}W</p>
-
                 <p>${{ psu.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
-
-
-<!-- COOLER SECTION -->
+{% if coolers %}
 <section class="component_section">
-
     <h1>CPU Coolers</h1>
-    <a href="/cooler">All Coolers -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for cooler in coolers %}
-
         <div class="component_card">
-
             <div class="image">
                 Image
             </div>
-
             <div class="card_info">
-
                 <p>{{ cooler.brand.name }}</p>
-
                 <h2>{{ cooler.model }}</h2>
-
                 <p>Type: {{ cooler.type }}</p>
-
                 <p>${{ cooler.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
-
-
-<!-- CASE SECTION -->
+{% if cases %}
 <section class="component_section">
-
     <h1>Cases</h1>
-    <a href="/case">All Cases -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for case in cases %}
-
         <div class="component_card">
-
             <div class="image">
                 Image
             </div>
-
             <div class="card_info">
-
                 <p>{{ case.brand.name }}</p>
-
                 <h2>{{ case.model }}</h2>
-
                 <p>Form Factor: {{ case.form_factor }}</p>
-
                 <p>${{ case.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
-
-
-<!-- CASE FAN SECTION -->
+{% if case_fans %}
 <section class="component_section">
-
     <h1>Case Fans</h1>
-    <a href="/case_fans">All Case Fans -></a>
-
-    <div class="component_row">
-
+    <div class="component_grid">
         {% for fan in case_fans %}
-
         <div class="component_card">
-
             <div class="image">
                 Image
             </div>
-
             <div class="card_info">
-
                 <p>{{ fan.brand.name }}</p>
-
                 <h2>{{ fan.model }}</h2>
-
                 <p>Size: {{ fan.size }}mm</p>
-
                 <p>${{ fan.price }}</p>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </section>
+{% endif %}
 
+{% if motherboards %}
+<section class="component_section">
+    <h1>Motherboards</h1>
+    <div class="component_grid">
+        {% for motherboard in motherboards %}
+        <div class="component_card">
+            <div class="image">
+                Image
+            </div>
+            <div class="card_info">
+                <p>{{ motherboard.brand.name }}</p>
+                <h2>{{ motherboard.model }}</h2>
+                <p>RAM Slots: {{ motherboard.ram_slots }}</p>
+                <p>${{ motherboard.price }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
 </body>
 </html>
