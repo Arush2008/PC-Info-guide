@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
+from sqlalchemy import or_
 from database import (
     GPU,
     CPU,
+    Brand,
     Cooler,
     Storage,
     motherboard,
@@ -61,53 +63,198 @@ def learn_component(component):
 
 @views.route("/gpu")
 def gpu_list():
-    gpus = GPU.query.all()
-    return render_template("gpu_list.html", gpus=gpus)
+    q = request.args.get("q", "").strip()
+
+    if q:
+        gpus = (
+            GPU.query
+            .join(Brand)
+            .filter(
+                or_(
+                    GPU.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        gpus = GPU.query.all()
+
+    return render_template("gpu_list.html", gpus=gpus, q=q)
 
 
 @views.route("/cpu")
 def cpu_list():
-    cpus = CPU.query.all()
-    return render_template("cpu_list.html", cpus=cpus)
+    q = request.args.get("q", "").strip()
+
+    if q:
+        cpus = (
+            CPU.query
+            .join(Brand)
+            .filter(
+                or_(
+                    CPU.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        cpus = CPU.query.all()
+
+    return render_template("cpu_list.html", cpus=cpus, q=q)
 
 
 @views.route("/motherboard")
 def motherboard_list():
-    motherboards = motherboard.query.all()
-    return render_template("motherboard_list.html", motherboards=motherboards)
+    q = request.args.get("q", "").strip()
+
+    if q:
+        motherboarda = (
+            motherboard.query
+            .join(Brand)
+            .filter(
+                or_(
+                    motherboard.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        motherboarda = motherboard.query.all()
+
+    return render_template(
+        "motherboard_list.html", motherboard=motherboarda, q=q)
 
 
 @views.route("/ram")
 def ram_list():
-    rams = RAM.query.all()
-    return render_template("ram_list.html", rams=rams)
+    q = request.args.get("q", "").strip()
+
+    if q:
+        rams = (
+            RAM.query
+            .join(Brand)
+            .filter(
+                or_(
+                    RAM.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        rams = RAM.query.all()
+
+    return render_template("ram_list.html", rams=rams, q=q)
 
 
 @views.route("/storage")
-def storage():
-    storage_items = Storage.query.all()
-    return render_template("storage_list.html", storage=storage_items)
+def storage_list():
+    q = request.args.get("q", "").strip()
+
+    if q:
+        storage = (
+            Storage.query
+            .join(Brand)
+            .filter(
+                or_(
+                    Storage.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        storage = Storage.query.all()
+
+    return render_template("storage_list.html", storage=storage, q=q)
 
 
 @views.route("/psu")
 def psu_list():
-    psus = PSU.query.all()
-    return render_template("psu_list.html", psus=psus)
+    q = request.args.get("q", "").strip()
+
+    if q:
+        psus = (
+            PSU.query
+            .join(Brand)
+            .filter(
+                or_(
+                    PSU.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        psus = PSU.query.all()
+
+    return render_template("psu_list.html", psus=psus, q=q)
 
 
 @views.route("/cooler")
 def cooler_list():
-    coolers = Cooler.query.all()
-    return render_template("cooler_list.html", coolers=coolers)
+    q = request.args.get("q", "").strip()
+
+    if q:
+        coolers = (
+            Cooler.query
+            .join(Brand)
+            .filter(
+                or_(
+                    Cooler.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        coolers = Cooler.query.all()
+
+    return render_template("cooler_list.html", coolers=coolers, q=q)
 
 
 @views.route("/case")
 def case_list():
-    cases = Case.query.all()
-    return render_template("case_list.html", cases=cases)
+    q = request.args.get("q", "").strip()
+
+    if q:
+        cases = (
+            Case.query
+            .join(Brand)
+            .filter(
+                or_(
+                    Case.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        cases = Case.query.all()
+
+    return render_template("case_list.html", cases=cases, q=q)
 
 
 @views.route("/case_fans")
-def case_fans_list():
-    case_fans = Fan.query.all()
-    return render_template("case_fans_list.html", case_fans=case_fans)
+def fan_list():
+    q = request.args.get("q", "").strip()
+
+    if q:
+        fans = (
+            Fan.query
+            .join(Brand)
+            .filter(
+                or_(
+                    Fan.model.ilike(f"%{q}%"),
+                    Brand.name.ilike(f"%{q}%")
+                )
+            )
+            .all()
+        )
+    else:
+        fans = Fan.query.all()
+
+    return render_template("fan_list.html", fans=fans, q=q)
