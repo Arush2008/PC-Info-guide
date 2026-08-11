@@ -30,28 +30,29 @@
 
         {% for gpu in gpus %}
 
-        <div class="component_card">
-
+        <button
+            type="button"
+            class="component_card"
+            data-model="{{ gpu.model }}"
+            data-image="{{ url_for('static', filename=gpu.image) }}"
+            data-details='{{ {
+                "Brand": gpu.brand.name,
+                "Price": "$" ~ gpu.price,
+                "VRAM": gpu.vram ~ " GB"
+            } | tojson }}'
+         >
             <div class="image">
                 <img src="{{ url_for('static', filename=gpu.image) }}"
                     alt="{{ gpu.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ gpu.brand.name }}</p>
-
                 <h2>{{ gpu.model }}</h2>
-
                 <p>VRAM: {{ gpu.vram }} GB</p>
-
-                <p>{{ gpu.power_usage }}</p>
-
                 <p>${{ gpu.price }}</p>
-
             </div>
-
-        </div>
+        </button>
 
         {% endfor %}
 
@@ -82,7 +83,7 @@
                 "Cores": cpu.cores,
                 "Threads": cpu.threads
             } | tojson }}'
-        >
+         >
             <div class="image">
                 <img src="{{ url_for('static', filename=cpu.image) }}"
                     alt="{{ cpu.model }}">
@@ -114,27 +115,29 @@
 
         {% for motherboard in motherboards %}
 
-        <div class="component_card">
-
+                <button
+            type="button"
+            class="component_card"
+            data-model="{{ motherboard.model }}"
+            data-image="{{ url_for('static', filename=motherboard.image) }}"
+            data-details='{{ {
+                "Brand": motherboard.brand.name,
+                "Price": "$" ~ motherboard.price,
+                "RAM Slots": motherboard.ram_slots,
+            } | tojson }}'
+         >
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=motherboard.image) }}"
+                    alt="{{ motherboard.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ motherboard.brand.name }}</p>
-
                 <h2>{{ motherboard.model }}</h2>
-
                 <p>RAM Slots: {{ motherboard.ram_slots }}</p>
-
-                <p>Power Usage: {{ motherboard.power_usage }}</p>
-
                 <p>${{ motherboard.price }}</p>
-
             </div>
-
-        </div>
+        </button>
 
         {% endfor %}
 
@@ -154,25 +157,28 @@
 
         {% for ram in rams %}
 
-        <div class="component_card">
-
+        <button
+            type="button"
+            class="component_card"
+            data-model="{{ ram.model }}"
+            data-image="{{ url_for('static', filename=ram.image) }}"
+            data-details='{{ {
+                "Brand": ram.brand.name,
+                "Price": "$" ~ ram.price,
+                "Capacity": ram.capacity ~ " GB",
+            } | tojson }}'
+         >
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=ram.image) }}"
+                    alt="{{ ram.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ ram.brand.name }}</p>
-
                 <h2>{{ ram.model }}</h2>
-
                 <p>Capacity: {{ ram.capacity }} GB</p>
-
                 <p>${{ ram.price }}</p>
-
             </div>
-
-        </div>
 
         {% endfor %}
 
@@ -192,25 +198,28 @@
 
         {% for storage_item in storage %}
 
-        <div class="component_card">
-
+        <button
+            type="button"
+            class="component_card"
+            data-model="{{ storage_item.model }}"
+            data-image="{{ url_for('static', filename=storage_item.image) }}"
+            data-details='{{ {
+                "Brand": storage_item.brand.name,
+                "Price": "$" ~ storage_item.price,
+                "Capacity": storage_item.capacity ~ " GB",
+            } | tojson }}'
+         >
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=storage_item.image) }}"
+                    alt="{{ storage_item.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ storage_item.brand.name }}</p>
-
                 <h2>{{ storage_item.model }}</h2>
-
                 <p>Capacity: {{ storage_item.capacity }} GB</p>
-
                 <p>${{ storage_item.price }}</p>
-
             </div>
-
-        </div>
 
         {% endfor %}
 
@@ -230,25 +239,28 @@
 
         {% for psu in psus %}
 
-        <div class="component_card">
-
+        <button
+            type="button"
+            class="component_card"
+            data-model="{{ psu.model }}"
+            data-image="{{ url_for('static', filename=psu.image) }}"
+            data-details='{{ {
+                "Brand": psu.brand.name,
+                "Price": "$" ~ psu.price,
+                "Wattage": psu.wattage ~ " W",
+            } | tojson }}'
+         >
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=psu.image) }}"
+                    alt="{{ psu.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ psu.brand.name }}</p>
-
                 <h2>{{ psu.model }}</h2>
-
-                <p>Wattage: {{ psu.wattage }}W</p>
-
+                <p>Wattage: {{ psu.wattage }} W</p>
                 <p>${{ psu.price }}</p>
-
             </div>
-
-        </div>
 
         {% endfor %}
 
@@ -268,25 +280,28 @@
 
         {% for cooler in coolers %}
 
-        <div class="component_card">
-
+        <button
+            type="button"
+            class="component_card"
+            data-model="{{ cooler.model }}"
+            data-image="{{ url_for('static', filename=cooler.image) }}"
+            data-details='{{ {
+                "Brand": cooler.brand.name,
+                "Price": "$" ~ cooler.price,
+                "Type": cooler.type,
+            } | tojson }}'
+         >
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=cooler.image) }}"
+                    alt="{{ cooler.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ cooler.brand.name }}</p>
-
                 <h2>{{ cooler.model }}</h2>
-
                 <p>Type: {{ cooler.type }}</p>
-
                 <p>${{ cooler.price }}</p>
-
             </div>
-
-        </div>
 
         {% endfor %}
 
@@ -306,25 +321,29 @@
 
         {% for case in cases %}
 
-        <div class="component_card">
-
+                <button
+            type="button"
+            class="component_card"
+            data-model="{{ case.model }}"
+            data-image="{{ url_for('static', filename=case.image) }}"
+            data-details='{{ {
+                "Brand": case.brand.name,
+                "Price": "$" ~ case.price,
+                "Form Factor": case.form_factor,
+            } | tojson }}'
+         >
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=case.image) }}"
+                    alt="{{ case.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ case.brand.name }}</p>
-
                 <h2>{{ case.model }}</h2>
-
                 <p>Form Factor: {{ case.form_factor }}</p>
-
                 <p>${{ case.price }}</p>
-
             </div>
-
-        </div>
+        </button>
 
         {% endfor %}
 
@@ -344,25 +363,26 @@
 
         {% for fan in case_fans %}
 
-        <div class="component_card">
-
+        <button
+            type="button"
+            class="component_card"
+            data-model="{{ fan.model }}"
+            data-image="{{ url_for('static', filename=fan.image) }}"
+            data-details='{{ {
+                "Brand": fan.brand.name,
+                "Price": "$" ~ fan.price,
+            } | tojson }}'
+         >
             <div class="image">
-                Image
+                <img src="{{ url_for('static', filename=fan.image) }}"
+                    alt="{{ fan.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ fan.brand.name }}</p>
-
                 <h2>{{ fan.model }}</h2>
-
-                <p>Size: {{ fan.size }}mm</p>
-
                 <p>${{ fan.price }}</p>
-
             </div>
-
-        </div>
 
         {% endfor %}
 
