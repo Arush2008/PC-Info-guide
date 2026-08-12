@@ -69,57 +69,57 @@ def component_list():
 
     if q:
         ram_filters = [
-            RAM.model.ilike(f"%{q}%"),
-            Brand.name.ilike(f"%{q}%"),
-            RAM.ram_type.ilike(f"%{q}%"),
+            RAM.model.ilike(q),
+            Brand.name.ilike(q),
+            RAM.ram_type.ilike(q),
         ]
 
         if q_number is not None:
-            ram_filters.append(RAM.capacity.ilike(f"{q_number}GB%"))
+            ram_filters.append(RAM.capacity == q_number)
 
         ram_query = ram_query.filter(or_(*ram_filters))
 
-        gpu_filters = [GPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        gpu_filters = [GPU.model.ilike(q), Brand.name.ilike(q)]
         if q_number is not None:
             gpu_filters.append(GPU.vram == q_number)
         gpu_query = gpu_query.filter(or_(*gpu_filters))
 
-        cpu_filters = [CPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        cpu_filters = [CPU.model.ilike(q), Brand.name.ilike(q)]
         if q_number is not None:
             cpu_filters.append(CPU.cores == q_number)
         cpu_query = cpu_query.filter(or_(*cpu_filters))
 
         motherboard_filters = [
-            motherboard.model.ilike(f"%{q}%"),
-            Brand.name.ilike(f"%{q}%"),
+            motherboard.model.ilike(q),
+            Brand.name.ilike(q),
         ]
         if q_number is not None:
             motherboard_filters.append(motherboard.ram_slots == q_number)
         motherboard_query = motherboard_query.filter(or_(*motherboard_filters))
 
         storage_filters = [
-            Storage.model.ilike(f"%{q}%"),
-            Brand.name.ilike(f"%{q}%"),
+            Storage.model.ilike(q),
+            Brand.name.ilike(q),
         ]
         if q_number is not None:
             storage_filters.append(Storage.capacity == q_number)
         storage_query = storage_query.filter(or_(*storage_filters))
 
-        psu_filters = [PSU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        psu_filters = [PSU.model.ilike(q), Brand.name.ilike(q)]
         if q_number is not None:
             psu_filters.append(PSU.wattage == q_number)
         psu_query = psu_query.filter(or_(*psu_filters))
 
         cooler_query = cooler_query.filter(
-            or_(Cooler.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%"))
+            or_(Cooler.model.ilike(q), Brand.name.ilike(q))
         )
 
         case_query = case_query.filter(
-            or_(Case.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%"))
+            or_(Case.model.ilike(q), Brand.name.ilike(q))
         )
 
         fan_query = fan_query.filter(
-            or_(Fan.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%"))
+            or_(Fan.model.ilike(q), Brand.name.ilike(q))
         )
 
     return render_template(
@@ -158,7 +158,7 @@ def gpu_list():
     q_number = _extract_number(q)
 
     if q:
-        gpu_filters = [GPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        gpu_filters = [GPU.model.ilike(q), Brand.name.ilike(q)]
         if q_number is not None:
             gpu_filters.append(GPU.vram == q_number)
 
@@ -180,7 +180,7 @@ def cpu_list():
     q_number = _extract_number(q)
 
     if q:
-        cpu_filters = [CPU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        cpu_filters = [CPU.model.ilike(q), Brand.name.ilike(q)]
         if q_number is not None:
             cpu_filters.append(CPU.cores == q_number)
 
@@ -203,8 +203,8 @@ def motherboard_list():
 
     if q:
         motherboard_filters = [
-            motherboard.model.ilike(f"%{q}%"),
-            Brand.name.ilike(f"%{q}%"),
+            motherboard.model.ilike(q),
+            Brand.name.ilike(q),
         ]
         if q_number is not None:
             motherboard_filters.append(motherboard.ram_slots == q_number)
@@ -229,13 +229,13 @@ def ram_list():
 
     if q:
         ram_filters = [
-            RAM.model.ilike(f"%{q}%"),
-            Brand.name.ilike(f"%{q}%"),
-            RAM.ram_type.ilike(f"%{q}%"),
+            RAM.model.ilike(q),
+            Brand.name.ilike(q),
+            RAM.ram_type.ilike(q),
         ]
 
         if q_number is not None:
-            ram_filters.append(RAM.capacity.ilike(f"{q_number}GB%"))
+            ram_filters.append(RAM.capacity == q_number)
 
         rams = (
             RAM.query
@@ -256,8 +256,8 @@ def storage_list():
 
     if q:
         storage_filters = [
-            Storage.model.ilike(f"%{q}%"),
-            Brand.name.ilike(f"%{q}%"),
+            Storage.model.ilike(q),
+            Brand.name.ilike(q),
         ]
         if q_number is not None:
             storage_filters.append(Storage.capacity == q_number)
@@ -280,7 +280,7 @@ def psu_list():
     q_number = _extract_number(q)
 
     if q:
-        psu_filters = [PSU.model.ilike(f"%{q}%"), Brand.name.ilike(f"%{q}%")]
+        psu_filters = [PSU.model.ilike(q), Brand.name.ilike(q)]
         if q_number is not None:
             psu_filters.append(PSU.wattage == q_number)
 
@@ -306,8 +306,8 @@ def cooler_list():
             .join(Brand)
             .filter(
                 or_(
-                    Cooler.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
+                    Cooler.model.ilike(q),
+                    Brand.name.ilike(q)
                 )
             )
             .all()
@@ -328,8 +328,8 @@ def case_list():
             .join(Brand)
             .filter(
                 or_(
-                    Case.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
+                    Case.model.ilike(q),
+                    Brand.name.ilike(q)
                 )
             )
             .all()
@@ -341,22 +341,22 @@ def case_list():
 
 
 @views.route("/case_fans")
-def fan_list():
+def case_fans_list():
     q = request.args.get("q", "").strip()
 
     if q:
-        fans = (
+        case_fans = (
             Fan.query
             .join(Brand)
             .filter(
                 or_(
-                    Fan.model.ilike(f"%{q}%"),
-                    Brand.name.ilike(f"%{q}%")
+                    Fan.model.ilike(q),
+                    Brand.name.ilike(q)
                 )
             )
             .all()
         )
     else:
-        fans = Fan.query.all()
+        case_fans = Fan.query.all()
 
-    return render_template("fan_list.html", fans=fans, q=q)
+    return render_template("case_fans_list.html", case_fans=case_fans, q=q)
