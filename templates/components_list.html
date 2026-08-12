@@ -21,7 +21,11 @@
 </form>
 
 {% if q %}
-<p>Showing results for "{{ q }}"</p>
+    <p>{{ total_results }} result{{ "" if total_results == 1 else "s" }} for "{{ q }}"</p>
+
+    {% if total_results == 0 %}
+        <p>No matching components found. Try fewer words, a brand, model, or specification such as “16gb”, “750w”, or “2tb”.</p>
+    {% endif %}
 {% endif %}
 
 {% if gpus %}

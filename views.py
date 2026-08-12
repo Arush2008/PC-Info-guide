@@ -54,86 +54,164 @@ def components():
 
 @views.route("/component_list")
 def component_list():
+
     q = request.args.get("q", "").strip()
-    q_number = _extract_number(q)
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    gpu_query = GPU.query.join(Brand)
-    cpu_query = CPU.query.join(Brand)
-    motherboard_query = motherboard.query.join(Brand)
-    ram_query = RAM.query.join(Brand)
-    storage_query = Storage.query.join(Brand)
-    psu_query = PSU.query.join(Brand)
-    cooler_query = Cooler.query.join(Brand)
-    case_query = Case.query.join(Brand)
-    fan_query = Fan.query.join(Brand)
+    catalogue = [
+        {
+            "name": "gpu",
+            "label": "Graphics Cards",
+            "items": GPU.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} {item.model} gpu graphics card "
+                f"{item.vram} gb vram {item.power_usage} w watt"
+            ),
+        },
+        {
+            "name": "cpu",
+            "label": "Processors",
+            "items": CPU.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} {item.model} cpu processor "
+                f"{item.cores} cores {item.threads} threads"
+            ),
+        },
+        {
+            "name": "motherboard",
+            "label": "Motherboards",
+            "items": motherboard.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} {item.model} motherboard "
+                f"{item.ram_slots} ram slots {item.power_usage} w watt"
+            ),
+        },
+        {
+            "name": "ram",
+            "label": "Memory (RAM)",
+            "items": RAM.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} {item.model} ram memory {item.ram_type} "
+                f"{item.capacity} gb {item.speed} mhz"
+            ),
+        },
+        {
+            "name": "storage",
+            "label": "Storage",
+            "items": Storage.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} "
+                f"{item.model} "
+                f"storage drive "
+                f"{item.storage_type} "
+                f"{item.capacity} gb "
+                f"{item.speed} mbps"
+            ),
+        },
+        {
+            "name": "psu",
+            "label": "Power Supplies",
+            "items": PSU.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} "
+                f"{item.model} "
+                f"psu power supply "
+                f"{item.wattage} w "
+                f"watt "
+                f"{item.efficiency_rating} "
+                f"{item.modular}"
+            ),
+        },
+        {
+            "name": "cooler",
+            "label": "CPU Coolers",
+            "items": Cooler.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} "
+                f"{item.model} "
+                f"cooler cpu cooling "
+                f"{item.type} "
+                f"{item.cooling_capacity} "
+                f"{item.radiator_size} "
+                f"{item.socket_support}"
+            ),
+        },
+        {
+            "name": "case",
+            "label": "Cases",
+            "items": Case.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} {item.model} case pc case "
+                f"{item.size} {item.form_factor}"
+            ),
+        },
+        {
+            "name": "fan",
+            "label": "Case Fans",
+            "items": Fan.query.join(Brand).all(),
+            "search_text": lambda item: (
+                f"{item.brand.name} {item.model} fan case fan "
+                f"{item.size} mm {item.airflow} {item.noise_level}"
+            ),
+        },
+    ]
 
-    if q:
-        ram_filters = [
-            RAM.model.ilike(q),
-            Brand.name.ilike(q),
-            RAM.ram_type.ilike(q),
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item, searchable_text):
+
+        item_tokens = (normalise(searchable_text))
+        return all(token in item_tokens for token in search_tokens)
+
+    results = {
+        "gpus": [],
+        "cpus": [],
+        "motherboards": [],
+        "rams": [],
+        "storage": [],
+        "psus": [],
+        "coolers": [],
+        "cases": [],
+        "case_fans": [],
+    }
+
+    result_keys = {
+        "gpu": "gpus",
+        "cpu": "cpus",
+        "motherboard": "motherboards",
+        "ram": "rams",
+        "storage": "storage",
+        "psu": "psus",
+        "cooler": "coolers",
+        "case": "cases",
+        "fan": "case_fans",
+    }
+
+    for group in catalogue:
+
+        matched_items = [
+            item for item in group["items"]
+            if matches(item, group["search_text"](item))
         ]
 
-        if q_number is not None:
-            ram_filters.append(RAM.capacity == q_number)
+        results[result_keys[group["name"]]] = matched_items
 
-        ram_query = ram_query.filter(or_(*ram_filters))
-
-        gpu_filters = [GPU.model.ilike(q), Brand.name.ilike(q)]
-        if q_number is not None:
-            gpu_filters.append(GPU.vram == q_number)
-        gpu_query = gpu_query.filter(or_(*gpu_filters))
-
-        cpu_filters = [CPU.model.ilike(q), Brand.name.ilike(q)]
-        if q_number is not None:
-            cpu_filters.append(CPU.cores == q_number)
-        cpu_query = cpu_query.filter(or_(*cpu_filters))
-
-        motherboard_filters = [
-            motherboard.model.ilike(q),
-            Brand.name.ilike(q),
-        ]
-        if q_number is not None:
-            motherboard_filters.append(motherboard.ram_slots == q_number)
-        motherboard_query = motherboard_query.filter(or_(*motherboard_filters))
-
-        storage_filters = [
-            Storage.model.ilike(q),
-            Brand.name.ilike(q),
-        ]
-        if q_number is not None:
-            storage_filters.append(Storage.capacity == q_number)
-        storage_query = storage_query.filter(or_(*storage_filters))
-
-        psu_filters = [PSU.model.ilike(q), Brand.name.ilike(q)]
-        if q_number is not None:
-            psu_filters.append(PSU.wattage == q_number)
-        psu_query = psu_query.filter(or_(*psu_filters))
-
-        cooler_query = cooler_query.filter(
-            or_(Cooler.model.ilike(q), Brand.name.ilike(q))
-        )
-
-        case_query = case_query.filter(
-            or_(Case.model.ilike(q), Brand.name.ilike(q))
-        )
-
-        fan_query = fan_query.filter(
-            or_(Fan.model.ilike(q), Brand.name.ilike(q))
-        )
+    total_results = sum(len(items) for items in results.values())
 
     return render_template(
         "components_list.html",
         q=q,
-        gpus=gpu_query.all(),
-        cpus=cpu_query.all(),
-        motherboards=motherboard_query.all(),
-        rams=ram_query.all(),
-        storage=storage_query.all(),
-        psus=psu_query.all(),
-        coolers=cooler_query.all(),
-        cases=case_query.all(),
-        case_fans=fan_query.all()
+        total_results=total_results,
+        **results
     )
 
 
