@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request
-from sqlalchemy import or_
 import re
 from database import (
     GPU,
@@ -233,21 +232,34 @@ def learn_component(component):
 @views.route("/gpu")
 def gpu_list():
     q = request.args.get("q", "").strip()
-    q_number = _extract_number(q)
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        gpu_filters = [GPU.model.ilike(q), Brand.name.ilike(q)]
-        if q_number is not None:
-            gpu_filters.append(GPU.vram == q_number)
+    gpus = GPU.query.join(Brand).all()
 
-        gpus = (
-            GPU.query
-            .join(Brand)
-            .filter(or_(*gpu_filters))
-            .all()
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"gpu graphics card "
+            f"{item.vram} gb vram "
+            f"{item.power_usage} w watt"
+            f"{item.price}"
         )
-    else:
-        gpus = GPU.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
+
+    gpus = [gpu for gpu in gpus if matches(gpu)]
 
     return render_template("gpu_list.html", gpus=gpus, q=q)
 
@@ -255,21 +267,33 @@ def gpu_list():
 @views.route("/cpu")
 def cpu_list():
     q = request.args.get("q", "").strip()
-    q_number = _extract_number(q)
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        cpu_filters = [CPU.model.ilike(q), Brand.name.ilike(q)]
-        if q_number is not None:
-            cpu_filters.append(CPU.cores == q_number)
+    cpus = CPU.query.join(Brand).all()
 
-        cpus = (
-            CPU.query
-            .join(Brand)
-            .filter(or_(*cpu_filters))
-            .all()
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"cpu processor "
+            f"{item.cores} cores "
+            f"{item.price}"
         )
-    else:
-        cpus = CPU.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
+
+    cpus = [cpu for cpu in cpus if matches(cpu)]
 
     return render_template("cpu_list.html", cpus=cpus, q=q)
 
@@ -277,52 +301,70 @@ def cpu_list():
 @views.route("/motherboard")
 def motherboard_list():
     q = request.args.get("q", "").strip()
-    q_number = _extract_number(q)
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        motherboard_filters = [
-            motherboard.model.ilike(q),
-            Brand.name.ilike(q),
-        ]
-        if q_number is not None:
-            motherboard_filters.append(motherboard.ram_slots == q_number)
+    motherboards = motherboard.query.join(Brand).all()
 
-        motherboarda = (
-            motherboard.query
-            .join(Brand)
-            .filter(or_(*motherboard_filters))
-            .all()
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"motherboard "
+            f"{item.ram_slots} ram slots "
+            f"{item.price}"
         )
-    else:
-        motherboarda = motherboard.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
+
+    motherboards = [
+        motherboard for motherboard in motherboards if matches(motherboard)
+        ]
 
     return render_template(
-        "motherboard_list.html", motherboard=motherboarda, q=q)
+        "motherboard_list.html", motherboards=motherboards, q=q)
 
 
 @views.route("/ram")
 def ram_list():
     q = request.args.get("q", "").strip()
-    q_number = _extract_number(q)
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        ram_filters = [
-            RAM.model.ilike(q),
-            Brand.name.ilike(q),
-            RAM.ram_type.ilike(q),
-        ]
+    rams = RAM.query.join(Brand).all()
 
-        if q_number is not None:
-            ram_filters.append(RAM.capacity == q_number)
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
 
-        rams = (
-            RAM.query
-            .join(Brand)
-            .filter(or_(*ram_filters))
-            .all()
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"ram "
+            f"{item.capacity} gb "
+            f"{item.price}"
         )
-    else:
-        rams = RAM.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
+
+    rams = [ram for ram in rams if matches(ram)]
 
     return render_template("ram_list.html", rams=rams, q=q)
 
@@ -330,46 +372,66 @@ def ram_list():
 @views.route("/storage")
 def storage_list():
     q = request.args.get("q", "").strip()
-    q_number = _extract_number(q)
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        storage_filters = [
-            Storage.model.ilike(q),
-            Brand.name.ilike(q),
-        ]
-        if q_number is not None:
-            storage_filters.append(Storage.capacity == q_number)
+    storages = Storage.query.join(Brand).all()
 
-        storage = (
-            Storage.query
-            .join(Brand)
-            .filter(or_(*storage_filters))
-            .all()
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"storage drive "
+            f"{item.capacity} gb "
+            f"{item.price}"
         )
-    else:
-        storage = Storage.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
 
-    return render_template("storage_list.html", storage=storage, q=q)
+    storages = [storage for storage in storages if matches(storage)]
+
+    return render_template("storage_list.html", storages=storages, q=q)
 
 
 @views.route("/psu")
 def psu_list():
     q = request.args.get("q", "").strip()
-    q_number = _extract_number(q)
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        psu_filters = [PSU.model.ilike(q), Brand.name.ilike(q)]
-        if q_number is not None:
-            psu_filters.append(PSU.wattage == q_number)
+    psus = PSU.query.join(Brand).all()
 
-        psus = (
-            PSU.query
-            .join(Brand)
-            .filter(or_(*psu_filters))
-            .all()
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"psu power supply "
+            f"{item.price}"
         )
-    else:
-        psus = PSU.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
+
+    psus = [psu for psu in psus if matches(psu)]
 
     return render_template("psu_list.html", psus=psus, q=q)
 
@@ -377,21 +439,32 @@ def psu_list():
 @views.route("/cooler")
 def cooler_list():
     q = request.args.get("q", "").strip()
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        coolers = (
-            Cooler.query
-            .join(Brand)
-            .filter(
-                or_(
-                    Cooler.model.ilike(q),
-                    Brand.name.ilike(q)
-                )
-            )
-            .all()
+    coolers = Cooler.query.join(Brand).all()
+
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"cooler cpu cooling "
+            f"{item.price}"
         )
-    else:
-        coolers = Cooler.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
+
+    coolers = [cooler for cooler in coolers if matches(cooler)]
 
     return render_template("cooler_list.html", coolers=coolers, q=q)
 
@@ -399,21 +472,32 @@ def cooler_list():
 @views.route("/case")
 def case_list():
     q = request.args.get("q", "").strip()
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        cases = (
-            Case.query
-            .join(Brand)
-            .filter(
-                or_(
-                    Case.model.ilike(q),
-                    Brand.name.ilike(q)
-                )
-            )
-            .all()
+    cases = Case.query.join(Brand).all()
+
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"case pc case "
+            f"{item.price}"
         )
-    else:
-        cases = Case.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
+
+    cases = [case for case in cases if matches(case)]
 
     return render_template("case_list.html", cases=cases, q=q)
 
@@ -421,20 +505,31 @@ def case_list():
 @views.route("/case_fans")
 def case_fans_list():
     q = request.args.get("q", "").strip()
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
 
-    if q:
-        case_fans = (
-            Fan.query
-            .join(Brand)
-            .filter(
-                or_(
-                    Fan.model.ilike(q),
-                    Brand.name.ilike(q)
-                )
-            )
-            .all()
+    fans = Fan.query.join(Brand).all()
+
+    def normalise(text):
+        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+        tokens = set(raw_tokens)
+
+        for token in raw_tokens:
+            match = re.fullmatch(r"(\d+)([a-z]+)", token)
+            if match:
+                tokens.add(match.group(1))
+                tokens.add(match.group(2))
+        return tokens
+
+    def matches(item):
+        search_text = (
+            f"{item.brand.name} "
+            f"{item.model} "
+            f"case fan "
+            f"{item.price}"
         )
-    else:
-        case_fans = Fan.query.all()
+        item_tokens = normalise(search_text)
+        return all(token in item_tokens for token in search_tokens)
 
-    return render_template("case_fans_list.html", case_fans=case_fans, q=q)
+    fans = [fan for fan in fans if matches(fan)]
+
+    return render_template("case_fans_list.html", case_fans=fans, q=q)
