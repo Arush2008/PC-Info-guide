@@ -33,31 +33,92 @@
 
         {% for ram in rams %}
 
-        <div class="component_card">
-
+        <button
+            type="button"
+            class="component_card"
+            data-model="{{ ram.model }}"
+            data-image="{{ url_for('static', filename=ram.image) }}"
+            data-details='{{ {
+                "Brand": ram.brand.name,
+                "Price": "$" ~ ram.price,
+            } | tojson }}'
+         >
             <div class="image">
-                <img src="{{ url_for('static', filename=ram.image) }}" alt="{{ ram.model }}">
+                <img src="{{ url_for('static', filename=ram.image) }}"
+                    alt="{{ ram.model }}">
             </div>
 
             <div class="card_info">
-
                 <p>{{ ram.brand.name }}</p>
-
                 <h2>{{ ram.model }}</h2>
-
-                <p>Capacity: {{ ram.capacity }} GB</p>
-
                 <p>${{ ram.price }}</p>
-
             </div>
 
-        </div>
+        </button>
 
         {% endfor %}
 
     </div>
 
 </section>
+
+<div class="details_modal" id="detailsModal">
+    <div class="modal_box">
+        <button type="button" class="modal_close" id="modalClose">&times;</button>
+
+        <img id="modalImage" class="modal_image" alt="">
+        <p id="modalBrand" class="modal_brand"></p>
+        <h1 id="modalTitle"></h1>
+        <div id="modalDetails"></div>
+    </div>
+</div>
+
+<script>
+            const modal = document.getElementById("detailsModal");
+            const closeButton = document.getElementById("modalClose");
+            const modalImage = document.getElementById("modalImage");
+            const modalBrand = document.getElementById("modalBrand");
+            const modalTitle = document.getElementById("modalTitle");
+            const modalDetails = document.getElementById("modalDetails");
+
+            document.querySelectorAll(".component_card[data-details]").forEach((card) => {
+                card.addEventListener("click", () => {
+                    const details = JSON.parse(card.dataset.details);
+
+                    modalImage.src = card.dataset.image;
+                    modalImage.alt = card.dataset.model;
+                    modalTitle.textContent = card.dataset.model;
+                    modalBrand.textContent = details.Brand;
+                    modalDetails.innerHTML = "";
+
+                    Object.entries(details).forEach(([label, value]) => {
+                        if (label === "Brand") return;
+
+                        const detail = document.createElement("p");
+                        detail.innerHTML = `<strong>${label}:</strong> ${value}`;
+                        modalDetails.appendChild(detail);
+                    });
+
+                    modal.classList.add("open");
+                    document.body.classList.add("modal_open");
+                });
+            });
+
+            function closeModal() {
+                modal.classList.remove("open");
+                document.body.classList.remove("modal_open");
+            }
+
+            closeButton.addEventListener("click", closeModal);
+
+            modal.addEventListener("click", (event) => {
+                if (event.target === modal) closeModal();
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") closeModal();
+            });
+        </script>
 
 </body>
 </html>

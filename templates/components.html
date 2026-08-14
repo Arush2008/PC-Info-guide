@@ -115,7 +115,7 @@
 
         {% for motherboard in motherboards %}
 
-                <button
+        <button
             type="button"
             class="component_card"
             data-model="{{ motherboard.model }}"
@@ -179,6 +179,8 @@
                 <p>Capacity: {{ ram.capacity }} GB</p>
                 <p>${{ ram.price }}</p>
             </div>
+        
+        </button>
 
         {% endfor %}
 
@@ -221,6 +223,8 @@
                 <p>${{ storage_item.price }}</p>
             </div>
 
+        </button>
+
         {% endfor %}
 
     </div>
@@ -261,6 +265,8 @@
                 <p>Wattage: {{ psu.wattage }} W</p>
                 <p>${{ psu.price }}</p>
             </div>
+
+        </button>
 
         {% endfor %}
 
@@ -303,6 +309,8 @@
                 <p>${{ cooler.price }}</p>
             </div>
 
+        </button>
+
         {% endfor %}
 
     </div>
@@ -321,7 +329,7 @@
 
         {% for case in cases %}
 
-                <button
+        <button
             type="button"
             class="component_card"
             data-model="{{ case.model }}"
@@ -383,6 +391,8 @@
                 <h2>{{ fan.model }}</h2>
                 <p>${{ fan.price }}</p>
             </div>
+
+        </button>
 
         {% endfor %}
 
