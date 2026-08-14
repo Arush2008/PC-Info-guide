@@ -31,6 +31,11 @@ def learn():
     return render_template("learn.html")
 
 
+@views.route("/PC_builder")
+def PC_builder():
+    return render_template("PC_builder.html")
+
+
 @views.route("/components")
 def components():
     gpus = GPU.query.all()
