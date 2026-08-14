@@ -918,10 +918,6 @@
 
 
 
-
-
-
-
 .component_card {
     text-align: left;
     color: white;
@@ -984,3 +980,162 @@ body.modal_open {
     margin: 12px 0;
     color: rgb(190, 190, 200);
 }
+
+
+
+
+
+
+
+/* This part is for PC builder page */
+
+
+
+
+
+
+
+.builder_page {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(10, 10, 15);
+}
+
+.builder_container {
+    width: min(1400px, 92%);
+    margin: 0 auto;
+    padding: 60px 0 100px;
+}
+
+.builder-into {
+    margin-bottom: 45px;
+}
+
+.page_label {
+    color: #3bfc8b;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.builder-into h1 {
+    font-size: clamp(36px, 5vw, 58px);
+    line-height: 1.1;
+    margin-bottom: 15px;
+}
+
+.intro_text {
+    color: #cbd0da;
+    font-size: 18px;
+}
+
+.builder-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 30px;
+    align-items: start;
+}
+
+.components_section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.section-heading {
+    margin-bottom: 10px;
+}
+
+.section-heading h2 {
+    font-size: 25px;
+    margin-bottom: 7px;
+}
+
+.section-heading p {
+    color: #cbd0da;
+    font-size: 14px;
+}
+
+.component_row {
+    min-height: 105px;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background:fixed rgb(18, 18, 26);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: border-color 0.2s ease
+                background-color 0.2s ease;
+}
+
+.component_row:hover {
+    border-color: rgba(80, 170, 255, 0.8);
+    background-color: rgba(80, 170, 255, 0.08);
+}
+
+.component_icon {
+    width: 65px;
+    height: 65px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgb(25, 25, 35);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgb(150, 150, 160);
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.component_info {
+    margin-left: 20px;
+    min-width: 0;
+    flex: 1;
+}
+
+.component_info h3 {
+    font-size: 18px;
+    margin-bottom: 7px;
+}
+
+.not_selected {
+    color: rgb(150, 150, 160);
+    font-size: 14px;
+}
+
+.selected_component {
+    color: #3bfc8b;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.add_button {
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #3bfc8b;
+    color: #08110d;
+    font-weight: 700;
+    border: 1px solid rgba(59, 252, 139, 0.8);
+    gap: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.add_button span {
+    font-size: 19px;
+    font-weight: 400;
+}
+
+.add_button:hover {
+    background: fixed rgba(59, 252, 139, 0.8);
+    border-color: rgba(59, 252, 139, 1);
+}
+

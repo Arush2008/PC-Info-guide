@@ -2,11 +2,11 @@
 <html>
 
 <head>
-    <title>All GPUs</title>
+    <title>PC builder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body class="components_page">
+<body class="components_page" id="builder_page">
 
 <nav class="top_nav_bar">
     <h1 class="logo">PCforce</h1>
@@ -15,6 +15,203 @@
     <a href="/components">Components</a>
     <a href="/PC_builder">PC Builder</a>
 </nav>
+
+<main class="builder_container">
+
+    <section class="builder_intro">
+
+        <p class="builder_title">Build Your Custom PC</p>
+        <h1 class="page_label">PC Builder</h1>
+        <p class="builder_description">Choose your components to build your own custom PC</p>
+
+    </section>
+
+    <section class="builder_layout">
+
+        <div class="components_section">
+            <div class="section_heading">
+                <div>
+                    <h2>Components</h2>
+                    <p>Select the parts for your PC.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CPU -->
+
+        <div class="component_row">
+            <div class="component_icon">CPU</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">CPU</h3>
+                <p class="not_selected">No CPU selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+
+        </div>
+
+        <!-- GPU -->
+
+         <div class="component_row">
+            <div class="component_icon">GPU</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">GPU</h3>
+                <p class="not_selected">No GPU selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+        <!-- Motherboard -->
+
+         <div class="component_row">
+            <div class="component_icon">Motherboard</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">Motherboard</h3>
+                <p class="not_selected">No Motherboard selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+        <!-- ram -->
+
+         <div class="component_row">
+            <div class="component_icon">RAM</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">RAM</h3>
+                <p class="not_selected">No RAM selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+        <!-- storage -->
+
+         <div class="component_row">
+            <div class="component_icon">Storage</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">Storage</h3>
+                <p class="not_selected">No Storage selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+        <!-- psu -->
+
+         <div class="component_row">
+            <div class="component_icon">PSU</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">PSU</h3>
+                <p class="not_selected">No PSU selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+        <!-- CPU cooler -->
+
+         <div class="component_row">
+            <div class="component_icon">CPU Cooler</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">CPU Cooler</h3>
+                <p class="not_selected">No CPU Cooler selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+                <!-- case -->
+
+         <div class="component_row">
+            <div class="component_icon">Case</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">Case</h3>
+                <p class="not_selected">No Case selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+                <!-- Fan -->
+
+         <div class="component_row">
+            <div class="component_icon">Fan</div>
+
+            <div class="component_info">
+
+                <h3 class="component_info">Fan</h3>
+                <p class="not_selected">No Fan   selected</p>
+
+            </div>
+
+            <button class="add_button">
+                <span>+</span>
+                Add
+            </button>
+            
+        </div>
+
+
+
+</main>
 
 </body>
 </html>
