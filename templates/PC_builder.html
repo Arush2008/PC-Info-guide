@@ -42,7 +42,7 @@
                     <h3>CPU</h3>
                     <p class="not_selected">No CPU selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="cpu">
                     <span>+</span>
                     Add
                 </button>
@@ -54,7 +54,7 @@
                     <h3>GPU</h3>
                     <p class="not_selected">No GPU selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="gpu">
                     <span>+</span>
                     Add
                 </button>
@@ -66,7 +66,7 @@
                     <h3>Motherboard</h3>
                     <p class="not_selected">No motherboard selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="motherboard">
                     <span>+</span>
                     Add
                 </button>
@@ -78,7 +78,7 @@
                     <h3>RAM</h3>
                     <p class="not_selected">No RAM selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="ram">
                     <span>+</span>
                     Add
                 </button>
@@ -90,7 +90,7 @@
                     <h3>Storage</h3>
                     <p class="not_selected">No storage selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="storage">
                     <span>+</span>
                     Add
                 </button>
@@ -102,7 +102,7 @@
                     <h3>PSU</h3>
                     <p class="not_selected">No PSU selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="psu">
                     <span>+</span>
                     Add
                 </button>
@@ -114,7 +114,7 @@
                     <h3>CPU Cooler</h3>
                     <p class="not_selected">No CPU cooler selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="cooler">
                     <span>+</span>
                     Add
                 </button>
@@ -126,7 +126,7 @@
                     <h3>Case</h3>
                     <p class="not_selected">No case selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="case">
                     <span>+</span>
                     Add
                 </button>
@@ -138,7 +138,7 @@
                     <h3>Fan</h3>
                     <p class="not_selected">No fan selected</p>
                 </div>
-                <button class="add_button" type="button">
+                <button class="add_button" type="button" data-component-type="fan">
                     <span>+</span>
                     Add
                 </button>
@@ -204,5 +204,139 @@
 
 </main>
 
+<div class="picker_modal" id="pickerModal" aria-hidden="true">
+    <div class="picker_box">
+        <button class="picker_close" id="pickerClose" type="button">&times;</button>
+        <h2 id="pickerTitle">Select a Component</h2>
+        <div id="pickerList"></div>
+    </div>
+
+</div>
+
+<script>
+
+    const componentOptions = {
+        cpu: [
+            {% for item in cpus %}
+            {
+                id: {{ item.cpu_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+    ],
+        gpu: [
+            {% for item in gpus %}
+            {
+                id: {{ item.gpu_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ],
+        motherboard: [
+            {% for item in motherboards %}
+            {
+                id: {{ item.motherboard_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ],
+        ram: [
+            {% for item in rams %}
+            {
+                id: {{ item.ram_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ],
+        storage: [
+            {% for item in storage %}
+            {
+                id: {{ item.storage_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ],
+        psu: [
+            {% for item in psus %}
+            {
+                id: {{ item.psu_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ],
+        cooler: [
+            {% for item in coolers %}
+            {
+                id: {{ item.cooler_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ],
+        case: [
+            {% for item in cases %}
+            {
+                id: {{ item.case_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ],
+        fan: [
+            {% for item in fans %}
+            {
+                id: {{ item.fan_id }},
+                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
+                price: {{ item.price }}
+            },
+            {% endfor %}
+        ]
+    };
+
+const modal = document.getElementById("pickerModal");
+const pickerList = document.getElementById("pickerList");
+const pickerTitle = document.getElementById("pickerTitle");
+const closeButton = document.getElementById("pickerClose");
+
+document.querySelectorAll(".add_button").forEach((button) => {
+    button.addEventListener("click", () => {
+        const type = button.dataset.componentType;
+        const options = componentOptions[type];
+        pickerTitle.textContent = `Choose a ${type}`;
+        pickerList.innerHTML = "";
+        options.forEach((item) => {
+            const optionButton = document.createElement("button");
+            optionButton.type = "button";
+            optionButton.className = "picker_option";
+            optionButton.textContent = `${item.name} — $${item.price}`;
+            optionButton.addEventListener("click", () => {
+                const row = button.closest(".component_row_in_pcbuilder");
+                const selectedText = row.querySelector(".not_selected, .selected_component");
+                selectedText.textContent = item.name;
+                selectedText.classList.remove("not_selected");
+                selectedText.classList.add("selected_component");
+                button.innerHTML = "Change";
+                modal.classList.remove("open");
+            });
+            pickerList.appendChild(optionButton);
+        });
+        modal.classList.add("open");
+    });
+});
+closeButton.addEventListener("click", () => {
+    modal.classList.remove("open");
+});
+modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+        modal.classList.remove("open");
+    }
+});
+</script>
 </body>
 </html>

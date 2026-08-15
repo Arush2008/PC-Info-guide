@@ -33,7 +33,18 @@ def learn():
 
 @views.route("/PC_builder")
 def PC_builder():
-    return render_template("PC_builder.html")
+    return render_template(
+        "PC_builder.html",
+        cpus=CPU.query.join(Brand).all(),
+        gpus=GPU.query.join(Brand).all(),
+        motherboards=motherboard.query.join(Brand).all(),
+        rams=RAM.query.join(Brand).all(),
+        storage=Storage.query.join(Brand).all(),
+        psus=PSU.query.join(Brand).all(),
+        coolers=Cooler.query.join(Brand).all(),
+        cases=Case.query.join(Brand).all(),
+        fans=Fan.query.join(Brand).all()
+        )
 
 
 @views.route("/components")
