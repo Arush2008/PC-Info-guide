@@ -22,6 +22,7 @@ class GPU(db.Model):
     )
     price = db.Column(db.Numeric(10, 2), nullable=False)
     vram = db.Column(db.Integer, nullable=False)
+    performance_score = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     image = db.Column(db.String(100), nullable=False)
     brand = db.relationship('Brand', backref='gpus', lazy=True)
@@ -42,6 +43,7 @@ class CPU(db.Model):
     threads = db.Column(db.Integer, nullable=False)
     brand = db.relationship('Brand', backref='cpus', lazy=True)
     socket = db.Column(db.String(50), nullable=False)
+    performance_score = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     image = db.Column(db.String(100), nullable=False)
 
@@ -79,6 +81,7 @@ class RAM(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     speed = db.Column(db.Integer, nullable=False)
+    performance_score = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     brand = db.relationship('Brand', backref='rams', lazy=True)
 
