@@ -214,129 +214,87 @@
 </div>
 
 <script>
-
-    const componentOptions = {
-        cpu: [
-            {% for item in cpus %}
-            {
-                id: {{ item.cpu_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-    ],
-        gpu: [
-            {% for item in gpus %}
-            {
-                id: {{ item.gpu_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ],
-        motherboard: [
-            {% for item in motherboards %}
-            {
-                id: {{ item.motherboard_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ],
-        ram: [
-            {% for item in rams %}
-            {
-                id: {{ item.ram_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ],
-        storage: [
-            {% for item in storage %}
-            {
-                id: {{ item.storage_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ],
-        psu: [
-            {% for item in psus %}
-            {
-                id: {{ item.psu_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ],
-        cooler: [
-            {% for item in coolers %}
-            {
-                id: {{ item.cooler_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ],
-        case: [
-            {% for item in cases %}
-            {
-                id: {{ item.case_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ],
-        fan: [
-            {% for item in fans %}
-            {
-                id: {{ item.fan_id }},
-                name: {{ (item.brand.name ~ " " ~ item.model) | tojson }},
-                price: {{ item.price }}
-            },
-            {% endfor %}
-        ]
-    };
-
 const modal = document.getElementById("pickerModal");
 const pickerList = document.getElementById("pickerList");
 const pickerTitle = document.getElementById("pickerTitle");
 const closeButton = document.getElementById("pickerClose");
 
+async function loadComponentOptions(type) {
+    const response = await fetch(`/api/builder/options/${encodeURIComponent(type)}`);
+    if (!response.ok) {
+        return [];
+    }
+    return response.json();
+}
+
+function closeModal() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal_open");
+}
+
+function toTitle(value) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 document.querySelectorAll(".add_button").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
         const type = button.dataset.componentType;
-        const options = componentOptions[type];
-        pickerTitle.textContent = `Choose a ${type}`;
+        const options = await loadComponentOptions(type);
+
+        pickerTitle.textContent = `Choose a ${toTitle(type)}`;
         pickerList.innerHTML = "";
+
+        if (!options.length) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "not_selected";
+            emptyMessage.textContent = "No options available right now.";
+            pickerList.appendChild(emptyMessage);
+        }
+
         options.forEach((item) => {
             const optionButton = document.createElement("button");
             optionButton.type = "button";
             optionButton.className = "picker_option";
-            optionButton.textContent = `${item.name} — $${item.price}`;
+            optionButton.textContent = `${item.name} - $${item.price}`;
+
             optionButton.addEventListener("click", () => {
                 const row = button.closest(".component_row_in_pcbuilder");
-                const selectedText = row.querySelector(".not_selected, .selected_component");
+                const selectedText = row.querySelector(
+                    ".not_selected, .selected_component"
+                );
+
                 selectedText.textContent = item.name;
                 selectedText.classList.remove("not_selected");
                 selectedText.classList.add("selected_component");
-                button.innerHTML = "Change";
-                modal.classList.remove("open");
+                button.innerHTML = "<span>+</span> Change";
+                closeModal();
             });
+
             pickerList.appendChild(optionButton);
         });
+
         modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal_open");
     });
 });
-closeButton.addEventListener("click", () => {
-    modal.classList.remove("open");
-});
+
+closeButton.addEventListener("click", closeModal);
+
 modal.addEventListener("click", (event) => {
     if (event.target === modal) {
-        modal.classList.remove("open");
+        closeModal();
     }
 });
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeModal();
+    }
+});
+
 </script>
+
 </body>
 </html>

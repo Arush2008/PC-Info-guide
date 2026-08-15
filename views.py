@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 import re
 from database import (
     GPU,
@@ -21,6 +21,34 @@ def _extract_number(query):
     return int(match.group(1)) if match else None
 
 
+def _component_option_rows(items, id_attr):
+    rows = []
+    for item in items:
+        rows.append(
+            {
+                "id": getattr(item, id_attr),
+                "name": f"{item.brand.name} {item.model}",
+                "price": float(item.price),
+            }
+        )
+    return rows
+
+
+def _builder_component_query(component_type):
+    source_map = {
+        "cpu": (CPU.query.join(Brand).all(), "cpu_id"),
+        "gpu": (GPU.query.join(Brand).all(), "gpu_id"),
+        "motherboard": (motherboard.query.join(Brand).all(), "motherboard_id"),
+        "ram": (RAM.query.join(Brand).all(), "ram_id"),
+        "storage": (Storage.query.join(Brand).all(), "storage_id"),
+        "psu": (PSU.query.join(Brand).all(), "psu_id"),
+        "cooler": (Cooler.query.join(Brand).all(), "cooler_id"),
+        "case": (Case.query.join(Brand).all(), "case_id"),
+        "fan": (Fan.query.join(Brand).all(), "fan_id"),
+    }
+    return source_map.get(component_type)
+
+
 @views.route("/")
 def home():
     return render_template("index.html")
@@ -33,18 +61,18 @@ def learn():
 
 @views.route("/PC_builder")
 def PC_builder():
-    return render_template(
-        "PC_builder.html",
-        cpus=CPU.query.join(Brand).all(),
-        gpus=GPU.query.join(Brand).all(),
-        motherboards=motherboard.query.join(Brand).all(),
-        rams=RAM.query.join(Brand).all(),
-        storage=Storage.query.join(Brand).all(),
-        psus=PSU.query.join(Brand).all(),
-        coolers=Cooler.query.join(Brand).all(),
-        cases=Case.query.join(Brand).all(),
-        fans=Fan.query.join(Brand).all()
-        )
+    return render_template("PC_builder.html")
+
+
+@views.route("/api/builder/options/<component_type>")
+def builder_component_options(component_type):
+    query_data = _builder_component_query(component_type)
+
+    if query_data is None:
+        return jsonify({"error": "Unknown component type"}), 404
+
+    items, id_attr = query_data
+    return jsonify(_component_option_rows(items, id_attr))
 
 
 @views.route("/components")
