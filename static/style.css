@@ -786,6 +786,28 @@
 }
 
 
+.component_row::-webkit-scrollbar {
+    height: 8px;
+}
+
+
+.component_row::-webkit-scrollbar-track {
+    background: rgb(20,20,30);
+    border-radius: 10px;
+}
+
+
+.component_row::-webkit-scrollbar-thumb {
+    background: rgb(80,80,100);
+    border-radius: 10px;
+}
+
+
+.component_row {
+    scrollbar-width: thin;
+}
+
+
 .component_card {
     flex: 0 0 280px;
     height: 360px;
@@ -967,16 +989,16 @@ body.modal_open {
 
 /* This part is for PC builder page */
 
-
-
-
-
-
-
 .builder_page {
     color: white;
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(10, 10, 15);
+}
+
+.builder_page .top_nav_bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
 }
 
 .builder_container {
@@ -989,12 +1011,13 @@ body.modal_open {
     margin-bottom: 45px;
 }
 
-.page_label {
+.builder_into .page_label {
     color: #3bfc8b;
     font-size: 13px;
     letter-spacing: 2px;
     margin-bottom: 12px;
     font-weight: 700;
+    text-transform: uppercase;
 }
 
 .builder_into h1 {
@@ -1015,33 +1038,41 @@ body.modal_open {
     align-items: start;
 }
 
-.components_section {
+.builder_page .components_section {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.section_heading {
+.builder_page .section_heading {
     margin-bottom: 10px;
 }
 
-.section_heading h2 {
+.builder_page .section_heading h2 {
     font-size: 25px;
     margin-bottom: 7px;
 }
 
-.section_heading p {
+.builder_page .section_heading p {
     color: #cbd0da;
     font-size: 14px;
 }
 
-.component_row {
+.component_row_in_pcbuilder {
     min-height: 105px;
     display: flex;
     align-items: center;
+    gap: 14px;
     padding: 20px;
+    background: rgb(18, 18, 26);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.component_row_in_pcbuilder:hover {
+    border-color: rgba(80, 170, 255, 0.8);
+    background-color: rgba(80, 170, 255, 0.08);
 }
 
 .component_icon {
@@ -1061,7 +1092,6 @@ body.modal_open {
 }
 
 .component_info {
-    margin-left: 20px;
     min-width: 0;
     flex: 1;
 }
@@ -1112,7 +1142,7 @@ body.modal_open {
 
 .build_summary {
     position: sticky;
-    top: 25px;
+    top: 92px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -1291,175 +1321,6 @@ body.modal_open {
     color: #ffffff;
 }
 
-.performance_header {
-    padding: 25px;
-    border-bottom: 1px solid #252a34;
-}
-
-.performance_score {
-    display: flex;
-    align-items: baseline;
-    gap: 5px;
-}
-
-.performance_score strong {
-    font-size: 46px;
-    line-height: 1;
-}
-
-.performance_score span {
-    color: #6f7784;
-    font-size: 15px;
-}
-
-.performance_rating {
-    margin-top: 8px;
-    color: #bfc5ce;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.performance_stat {
-    padding: 19px 25px;
-    border-bottom: 1px solid #252a34;
-}
-
-.stat_label {
-    color: #707784;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.4px;
-    margin-bottom: 8px;
-}
-
-.performance_stat strong {
-    display: block;
-    color: #ffffff;
-    font-size: 19px;
-}
-
-.performance_stat span {
-    display: block;
-    margin-top: 4px;
-    color: #7f8793;
-    font-size: 12px;
-}
-
-.balance_bar {
-    width: 100%;
-    height: 6px;
-    margin-top: 12px;
-    background: #252a33;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.balance_fill {
-    width: 67%;
-    height: 100%;
-    background: #89919e;
-    border-radius: 10px;
-}
-
-.estimated_total {
-    padding: 21px 25px;
-    border-bottom: 1px solid #252a34;
-}
-
-.estimated_total > span {
-    display: block;
-    color: #7d8591;
-    font-size: 12px;
-    margin-bottom: 7px;
-}
-
-.estimated_total > strong {
-    display: block;
-    font-size: 27px;
-}
-
-.power_usage {
-    padding: 21px 25px;
-    border-bottom: 1px solid #252a34;
-}
-
-.power_usage > strong {
-    display: block;
-    font-size: 19px;
-}
-
-.power_usage > span {
-    display: block;
-    margin-top: 5px;
-    color: #7d8591;
-    font-size: 12px;
-}
-
-.compatibility_box {
-    margin: 20px 25px;
-    padding: 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #171b22;
-    border: 1px solid #292f39;
-    border-radius: 9px;
-}
-
-.status_icon {
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #242a33;
-    color: #c8ced7;
-    font-weight: 700;
-}
-
-.compatibility_box h3 {
-    font-size: 13px;
-    margin-bottom: 4px;
-}
-
-.compatibility_box p {
-    color: #747c89;
-    font-size: 11px;
-}
-
-.clear_button {
-    width: calc(100% - 50px);
-    margin: 0 25px 25px;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid #303641;
-    border-radius: 8px;
-    color: #969daa;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.clear_button:hover {
-    background: #1a1e26;
-    color: #ffffff;
-}
-
-.performance_header,
-.performance_score,
-.performance_stat,
-.balance_bar,
-.balance_fill,
-.estimated_total,
-.power_usage,
-.compatibility_box,
-.status_icon {
-    display: none;
-}
-
 @media (max-width: 1100px) {
     .builder_layout {
         grid-template-columns: 1fr;
@@ -1476,7 +1337,7 @@ body.modal_open {
         padding: 40px 0 70px;
     }
 
-    .component_row {
+    .component_row_in_pcbuilder {
         gap: 12px;
         padding: 14px;
     }
@@ -1485,10 +1346,6 @@ body.modal_open {
         width: 52px;
         height: 52px;
         font-size: 10px;
-    }
-
-    .component_info {
-        margin-left: 0;
     }
 
     .component_info h3 {
