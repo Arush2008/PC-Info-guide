@@ -1471,3 +1471,49 @@ body.modal_open {
     outline: none;
     border-color: #3bfc8b;
 }
+
+
+
+
+
+.compatibility_section {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid rgba(80, 170, 255, 0.8);
+    border-radius: 12px;
+    background: #10141c;
+}
+
+.compatibility_check {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(80, 170, 255, 0.3);
+}
+
+.compatibility_check:last-child {
+    border-bottom: 0;
+}
+
+.compatibility_check h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.compatibility_check p {
+    color: #cbd0da;
+    font-size: 14px;
+}
+
+.compatible {
+    color: #3bfc8b;
+    font-weight: 700;
+}
+
+.incompatible {
+    color: #ff6b6b;
+    font-weight: 700;
+}
+
+.pending {
+    color: #f0c674;
+    font-weight: 700;
+}

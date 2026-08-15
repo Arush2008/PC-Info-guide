@@ -345,6 +345,17 @@
             <button class="clear_button" type="button">
                 Clear Build
             </button>
+
+            <div class="compatibility_section">
+                <h2>PC Compatibility</h2>
+
+                <div id="compatibilityResults">
+                    <p class="not_selected">
+                        Select components to check compatibility.
+                    </p>
+                </div>
+            </div>
+
         </aside>
 
     </section>
@@ -373,10 +384,10 @@ const pickerList = document.getElementById("pickerList");
 const pickerTitle = document.getElementById("pickerTitle");
 const pickerSearch = document.getElementById("pickerSearch");
 const closeButton = document.getElementById("pickerClose");
-
 const estimatedPrice = document.getElementById("estimatedPrice");
 const partsCount = document.getElementById("partsCount");
 const priceProgressFill = document.getElementById("priceProgressFill");
+const compatibilityResults = document.getElementById("compatibilityResults");
 
 let activeButton = null;
 
@@ -457,10 +468,50 @@ function updateComponentRows(summary) {
     });
 }
 
+async function getCompatibilityResults() {
+    const response = await fetch("/api/builder/compatibility");
+    if (!response.ok) {
+        return[];
+    }
+    const data = await response.json();
+    return data.results;
+}
+
+function updateCompatibilityResults(results) {
+    compatibilityResults.innerHTML = "";
+
+    results.forEach((result) => {
+        const check = document.createElement("div");
+        check.className = "compatibility_check";
+        const title = document.createElement("h3");
+        const reason = document.createElement("p");
+        if (result.compatible == true) {
+            title.textContent = `✓ ${result.name}`;
+            title.className = "compatible";
+        } else if (result.compatible == false) {
+            title.textContent = `✗ ${result.name}`;
+            title.className = "incompatible";
+        } else {
+            title.textContent = `• ${result.name}`;
+            title.className = "pending";
+        }
+
+        reason.textContent = result.reason;
+        check.appendChild(title);
+        check.appendChild(reason);
+        compatibilityResults.appendChild(check);
+    });
+}
+
+async function updateCompatibility() {
+    const results = await getCompatibilityResults();
+    updateCompatibilityResults(results);
+}
 
 function applySummary(summary) {
     updateSummary(summary);
     updateComponentRows(summary);
+    updateCompatibility();
 }
 
 

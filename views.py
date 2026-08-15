@@ -35,6 +35,155 @@ COMPONENT_MODELS = {
 }
 
 
+def get_power_usage(item):
+    try:
+        return int(float(item.power_usage or 0))
+    except (TypeError, ValueError):
+        return 0
+
+
+def check_compatibility(build):
+    results = {}
+
+    for component_type, (model, _) in COMPONENT_MODELS.items():
+        component_id = build.get(component_type)
+        if component_id:
+            results[component_type] = db.session.get(model, component_id)
+        else:
+            results[component_type] = None
+
+    cpu = results.get("cpu")
+    gpu = results.get("gpu")
+    motherboard_item = results.get("motherboard")
+    ram = results.get("ram")
+    storage = results.get("storage")
+    psu = results.get("psu")
+    cooler = results.get("cooler")
+    fan = results.get("fan")
+
+    checks = []
+
+    if cpu and motherboard_item:
+        is_compatible = cpu.socket.lower() == motherboard_item.socket.lower()
+        checks.append({
+            "name": "CPU and Motherboard Socket Compatibility",
+            "compatible": is_compatible,
+            "reason": (
+                f"Both use {cpu.socket}."
+                if is_compatible
+                else f"CPU uses {cpu.socket}, but motherboared uses "
+                    f"{motherboard_item.socket}."
+            )
+        })
+    else:
+        checks.append({
+            "name": "CPU and Motherboard Socket Compatibility",
+            "compatible": None,
+            "reason": (
+                "Both CPU and Motherboard must be selected to check "
+                "compatibility."
+            )
+        })
+
+    if ram and motherboard_item:
+        is_compatible = (
+            ram.ram_type.lower() == motherboard_item.ram_type.lower()
+        )
+
+        checks.append({
+            "name": "RAM and Motherboard Type",
+            "compatible": is_compatible,
+            "reason": (
+                f"Both use {ram.ram_type}."
+                if is_compatible
+                else f"RAM uses {ram.ram_type}, but motherboard uses "
+                    f"{motherboard_item.ram_type}."
+            )
+        })
+    else:
+        checks.append({
+            "name": "RAM and Motherboard Type",
+            "compatible": None,
+            "reason": (
+                "Both RAM and Motherboard must be selected to check "
+                "compatibility."
+            )
+        })
+
+    if cpu and cooler:
+        is_compatible = cpu.socket.lower() in cooler.socket_support.lower()
+        checks.append({
+            "name": "CPU and Cooler Socket Compatibility",
+            "compatible": is_compatible,
+            "reason": (
+                f"Cooler supports {cooler.socket_support}."
+                if is_compatible
+                else f"Cooler supports {cooler.socket_support}, but CPU uses "
+                    f"{cpu.socket}."
+            )
+        })
+    else:
+        checks.append({
+            "name": "CPU and Cooler Socket Compatibility",
+            "compatible": None,
+            "reason": (
+                "Both CPU and Cooler must be selected to check "
+                "compatibility."
+            )
+        })
+
+    power_parts = [
+        part for part in [
+            cpu, gpu, motherboard_item, ram, storage, cooler, fan
+        ]
+        if part is not None
+    ]
+
+    if psu and power_parts:
+        total_power = sum(
+            get_power_usage(part)
+            for part in power_parts
+        )
+
+        recommended_wattage = round(total_power * 1.2)
+
+        is_compatible = psu.wattage >= recommended_wattage
+
+        checks.append({
+            "name": "PSU Wattage",
+            "compatible": is_compatible,
+            "reason": (
+                f"Build uses about {total_power}W. "
+                f"{psu.wattage}W PSU meets the "
+                f"{recommended_wattage}W recommendation."
+                if is_compatible
+                else
+                f"Build uses about {total_power}W and needs about "
+                f"{recommended_wattage}W. "
+                f"Your PSU is only {psu.wattage}W."
+            )
+        })
+
+    else:
+        checks.append({
+            "name": "PSU Wattage",
+            "compatible": None,
+            "reason": (
+                "Select a PSU and at least one power component."
+            )
+        })
+
+    return checks
+
+
+@views.route("/api/builder/compatibility")
+def builder_compatibility():
+    build = session.get("build", {})
+    return jsonify({
+        "results": check_compatibility(build)
+    })
+
+
 def get_component_options(component_type, search_text=""):
     component_data = COMPONENT_MODELS.get(component_type)
 
