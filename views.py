@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 import re
 from database import (
+    db,
     GPU,
     CPU,
     Brand,
@@ -21,32 +22,82 @@ def _extract_number(query):
     return int(match.group(1)) if match else None
 
 
-def _component_option_rows(items, id_attr):
-    rows = []
-    for item in items:
-        rows.append(
-            {
-                "id": getattr(item, id_attr),
-                "name": f"{item.brand.name} {item.model}",
-                "price": float(item.price),
-            }
-        )
-    return rows
+COMPONENT_MODELS = {
+    "cpu": (CPU, "cpu_id"),
+    "gpu": (GPU, "gpu_id"),
+    "motherboard": (motherboard, "motherboard_id"),
+    "ram": (RAM, "ram_id"),
+    "storage": (Storage, "storage_id"),
+    "psu": (PSU, "psu_id"),
+    "cooler": (Cooler, "cooler_id"),
+    "case": (Case, "case_id"),
+    "fan": (Fan, "fan_id"),
+}
 
 
-def _builder_component_query(component_type):
-    source_map = {
-        "cpu": (CPU.query.join(Brand).all(), "cpu_id"),
-        "gpu": (GPU.query.join(Brand).all(), "gpu_id"),
-        "motherboard": (motherboard.query.join(Brand).all(), "motherboard_id"),
-        "ram": (RAM.query.join(Brand).all(), "ram_id"),
-        "storage": (Storage.query.join(Brand).all(), "storage_id"),
-        "psu": (PSU.query.join(Brand).all(), "psu_id"),
-        "cooler": (Cooler.query.join(Brand).all(), "cooler_id"),
-        "case": (Case.query.join(Brand).all(), "case_id"),
-        "fan": (Fan.query.join(Brand).all(), "fan_id"),
+def get_component_options(component_type, search_text=""):
+    component_data = COMPONENT_MODELS.get(component_type)
+
+    if component_data is None:
+        return None, None
+
+    model, id_attr = component_data
+    query = model.query.join(Brand)
+
+    components = query.order_by(model.model).all()
+
+    if search_text:
+        search_text = search_text.lower().strip()
+
+        components = [
+            item for item in components
+            if (
+                search_text in item.model.lower()
+                or search_text in item.brand.name.lower()
+            )
+        ]
+
+    return components, id_attr
+
+
+def get_build_summary():
+    build = session.get("build", {})
+    selected_parts = {}
+    total_price = 0
+
+    for component_type, component_id in build.items():
+        component_data = COMPONENT_MODELS.get(component_type)
+
+        if component_data is None:
+            continue
+
+        model, _ = component_data
+        item = db.session.get(model, component_id)
+
+        if item is None:
+            continue
+
+        item_price = float(item.price)
+        total_price += item_price
+
+        selected_parts[component_type] = {
+            "id": component_id,
+            "name": f"{item.brand.name} {item.model}",
+            "price": item_price,
+        }
+
+    selected_count = len(selected_parts)
+    part_total = len(COMPONENT_MODELS)
+
+    return {
+        "parts": selected_parts,
+        "total_price": total_price,
+        "selected_count": selected_count,
+        "part_total": part_total,
+        "progress_percent": round(
+            selected_count / part_total * 100
+        ),
     }
-    return source_map.get(component_type)
 
 
 @views.route("/")
@@ -66,13 +117,68 @@ def PC_builder():
 
 @views.route("/api/builder/options/<component_type>")
 def builder_component_options(component_type):
-    query_data = _builder_component_query(component_type)
+    search_text = request.args.get("q", "").strip()
+    items, id_attr = get_component_options(component_type, search_text)
 
-    if query_data is None:
-        return jsonify({"error": "Unknown component type"}), 404
+    if items is None:
+        return jsonify({"error": "Invalid component type"}), 404
 
-    items, id_attr = query_data
-    return jsonify(_component_option_rows(items, id_attr))
+    rows = []
+
+    for item in items:
+        rows.append({
+            "id": getattr(item, id_attr),
+            "name": f"{item.brand.name} {item.model}",
+            "price": float(item.price),
+        })
+    return jsonify(rows)
+
+
+@views.route("/api/builder/summary")
+def builder_summary():
+    return jsonify(get_build_summary())
+
+
+@views.route("/api/builder/selection/<component_type>", methods=["PUT"])
+def select_builder_component(component_type):
+    component_data = COMPONENT_MODELS.get(component_type)
+
+    if component_data is None:
+        return jsonify({"error": "Invalid component type"}), 404
+
+    data = request.get_json(silent=True) or {}
+
+    try:
+        component_id = int(data.get("id"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "Invalid component ID"}), 400
+
+    model, _ = component_data
+    item = db.session.get(model, component_id)
+
+    if item is None:
+        return jsonify({"error": "Component not found"}), 404
+    build = session.get("build", {})
+    build[component_type] = component_id
+    session["build"] = build
+    session.modified = True
+    return jsonify(get_build_summary())
+
+
+@views.route("/api/builder/selection/<component_type>", methods=["DELETE"])
+def remove_builder_component(component_type):
+    build = session.get("build", {})
+    build.pop(component_type, None)
+    session["build"] = build
+    session.modified = True
+    return jsonify(get_build_summary())
+
+
+@views.route("/api/builder/selection", methods=["DELETE"])
+def clear_builder_selection():
+    session["build"] = {}
+    session.modified = True
+    return jsonify(get_build_summary())
 
 
 @views.route("/components")

@@ -1435,3 +1435,39 @@ body.modal_open {
 .picker_option:hover {
     background-color: #3bfc8b;
 }
+
+.component_actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.remove_button {
+    padding: 10px 15px;
+    border: 1px solid #ff6b6b;
+    border-radius: 8px;
+    background: transparent;
+    color: #ff8a8a;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.remove_button:hover {
+    background: rgba(255, 80, 80, 0.12);
+}
+
+#pickerSearch {
+    width: 100%;
+    margin: 16px 0 4px;
+    padding: 12px;
+    border: 1px solid #334056;
+    border-radius: 8px;
+    background: #10141c;
+    color: white;
+    font-size: 15px;
+}
+
+#pickerSearch:focus {
+    outline: none;
+    border-color: #3bfc8b;
+}

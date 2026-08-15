@@ -3,6 +3,7 @@ from views import views
 from database import db
 
 app = Flask(__name__)
+app.secret_key = 'This_key_will_save_session_of_user'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
