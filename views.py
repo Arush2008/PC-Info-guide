@@ -80,38 +80,34 @@ def get_build_performance():
     performance_score = calculate_performance_score(cpu, gpu, ram)
     if performance_score is not None:
         performance_score = min(performance_score, 100)
-    power_parts = []
 
-    for component_type, (model, _) in COMPONENT_MODELS.items():
+    power_component_types = (
+        "cpu", "gpu", "motherboard", "ram", "storage", "cooler", "fan"
+    )
+
+    total_power = 0
+
+    for component_type in power_component_types:
         component_id = build.get(component_type)
+
         if component_id:
+            model, _ = COMPONENT_MODELS[component_type]
             item = db.session.get(model, component_id)
-            if item is not None:
-                power_parts.append(item)
 
-    total_power = sum(get_power_usage(part) for part in power_parts)
+            if item:
+                total_power += get_power_usage(item)
     recommended_wattage = round(total_power * 1.2)
-
-    if psu:
-        power_status = (
-            "PSU wattage is sufficcient."
-            if psu.wattage >= recommended_wattage
-            else "PSU wattage is insufficient."
-        )
-    else:
-        power_status = "Select a PSU to check wattage."
-
+    psu_sufficient = (
+        psu.wattage >= recommended_wattage
+        if psu else None
+    )
     return {
         "performance_score": performance_score,
         "performance_rating": get_score_rating(performance_score),
         "total_power": total_power,
         "recommended_wattage": recommended_wattage,
         "psu_wattage": psu.wattage if psu else None,
-        "psu_sufficient": (
-            psu.wattage >= recommended_wattage
-            if psu else None
-        ),
-        "power_status": power_status,
+        "psu_sufficient": psu_sufficient,
     }
 
 

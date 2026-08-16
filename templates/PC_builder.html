@@ -390,6 +390,7 @@ const compatibilityResults = document.getElementById("compatibilityResults");
 const performanceScore = document.getElementById("performanceScore");
 const performanceRating = document.getElementById("performanceRating");
 const performanceHint = document.getElementById("performanceHint");
+const performanceCircle = document.getElementById("performanceCircle");
 const powerUsage = document.getElementById("powerUsage");
 const recommendedPower = document.getElementById("recommendedPower");
 const psuStatus = document.getElementById("psuStatus");
@@ -532,8 +533,10 @@ async function updatePerformance() {
 
         performanceCircle.style.setProperty("--score", score);
     }
-    PowerUsage.textContent = `${data.total_power_usage}W`;
-    recommendedPower.textContent = `Recommended ${data.recommended_power}W`;
+
+    powerUsage.textContent = `${data.total_power}W`;
+    recommendedPower.textContent = 
+        `recommended ${data.recommended_power}W`;
 
     if (data.psu_wattage == null) {
         psuStatus.textContent = "Not selected";
