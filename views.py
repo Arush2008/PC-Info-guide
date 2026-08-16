@@ -115,12 +115,15 @@ def calculate_balance_score(cpu, gpu, ram):
 
     if not ram:
         ram_balance = 40
-    elif ram.capacity >= 32:
-        ram_balance = 100
-    elif ram.capacity >= 16:
-        ram_balance = 85
     else:
-        ram_balance = 55
+        ram_capacity = get_numeric_value(ram.capacity)
+
+        if ram_capacity >= 32:
+            ram_balance = 100
+        elif ram_capacity >= 16:
+            ram_balance = 85
+        else:
+            ram_balance = 55
 
     balance_score = round(
         cpu_gpu_balance * 0.85
