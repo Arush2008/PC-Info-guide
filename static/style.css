@@ -1542,3 +1542,37 @@ body.modal_open {
     color: #64748b;
     font-size: 0.875rem;
 }
+
+.build_score_details {
+    display: grid;
+    gap: 12px;
+    margin: 14px 0;
+    padding: 12px;
+    border: 1px solid rgba(80, 170, 255, 0.8);
+    border-radius: 10px;
+    background: #10141c;
+}
+
+.build_score_details p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    color: #cbd0da;
+    font-size: 14px;
+}
+
+.build_score_details strong {
+    margin-left:auto;
+    padding-right:3px;
+    color: #3bfc8b;
+    font-size: 14px;
+}
+
+.build_score_details span {
+    padding-top: 7px;
+    border-top: 1px solid rgba(80, 170, 255, 0.3);
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.4;
+}

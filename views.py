@@ -42,18 +42,18 @@ def get_power_usage(item):
         return 0
 
 
-def calculate_performance_score(cpu, gpu, ram):
-    if not cpu or not gpu:
-        return None
-    gpu_score = gpu.performance_score or 0
-    cpu_score = cpu.performance_score or 0
-    ram_score = ram.performance_score if ram else 70
-    overall_score = (
-        gpu_score * 0.55
-        + cpu_score * 0.35
-        + ram_score * 0.10
-    )
-    return min(round(overall_score), 100)
+def get_numeric_value(value):
+    if value is None:
+        return 0
+    match = re.search(r"(\d+)", str(value))
+    return float(match.group(1)) if match else 0
+
+
+def normalize_score(score, maximum):
+    if score is None:
+        return 0
+
+    return min(round(score / maximum * 100), 100)
 
 
 def get_score_rating(score):
@@ -67,22 +67,189 @@ def get_score_rating(score):
         return "Good"
     if score >= 60:
         return "Average"
+
+    return "Low"
+
+
+def calculate_raw_performance(cpu, gpu, ram, storage):
+    if not cpu or not gpu:
+        return None
+
+    cpu_score = normalize_score(cpu.performance_score, 100)
+    gpu_score = normalize_score(gpu.performance_score, 150)
+
+    if ram:
+        ram_capacity = get_numeric_value(ram.capacity)
+        ram_speed = get_numeric_value(ram.speed)
+        ram_capacity_score = min(ram_capacity / 32 * 100, 100)
+        ram_speed_score = min(ram_speed / 6000 * 100, 100)
+        ram_score = ram_capacity_score * 0.6 + ram_speed_score * 0.4
     else:
-        return "Low"
+        ram_score = 40
+
+    if storage:
+        storage_speed = get_numeric_value(storage.speed)
+        storage_score = min(storage_speed / 7000 * 100, 100)
+    else:
+        storage_score = 20
+
+    raw_score = (
+        gpu_score * 0.50
+        + cpu_score * 0.30
+        + ram_score * 0.10
+        + storage_score * 0.10
+    )
+
+    return round(raw_score)
+
+
+def calculate_balance_score(cpu, gpu, ram):
+    if not cpu or not gpu:
+        return None, "Select a CPU and GPU"
+
+    cpu_score = normalize_score(cpu.performance_score, 100)
+    gpu_score = normalize_score(gpu.performance_score, 150)
+
+    cpu_gpu_difference = abs(cpu_score - gpu_score)
+    cpu_gpu_balance = max(0, 100 - cpu_gpu_difference * 1.4)
+
+    if not ram:
+        ram_balance = 40
+    elif ram.capacity >= 32:
+        ram_balance = 100
+    elif ram.capacity >= 16:
+        ram_balance = 85
+    else:
+        ram_balance = 55
+
+    balance_score = round(
+        cpu_gpu_balance * 0.85
+        + ram_balance * 0.15
+    )
+
+    if balance_score >= 85:
+        message = "Very well balanced"
+    elif balance_score >= 70:
+        message = "Good CPU and GPU match"
+    elif balance_score >= 50:
+        message = "Possible CPU or GPU bottleneck"
+    else:
+        message = "Major CPU and GPU imbalance"
+
+    return balance_score, message
+
+
+def get_recommended_psu(total_power, gpu_power):
+    if total_power == 0:
+        return 0
+
+    headroom = 1.35 if gpu_power >= 350 else 1.25
+    required_power = total_power * headroom
+
+    standard_sizes = [450, 550, 650, 750, 850, 1000, 1200, 1600]
+
+    for size in standard_sizes:
+        if size >= required_power:
+            return size
+
+    return 1600
+
+
+def calculate_system_health(
+    build,
+    cpu,
+    cooler,
+    psu,
+    recommended_wattage,
+    checks,
+):
+    score = 100
+
+    if not psu:
+        score -= 25
+    elif psu.wattage < recommended_wattage:
+        score -= 35
+
+    if cpu and not cooler:
+        score -= 15
+    elif cpu and cooler:
+        cooling_capacity = _extract_number(cooler.cooling_capacity)
+
+        if cooling_capacity and cooling_capacity < cpu.power_usage:
+            score -= 20
+
+    incompatible_checks = [
+        check for check in checks
+        if check["compatible"] is False
+        and check["name"] != "PSU Wattage"
+    ]
+
+    score -= len(incompatible_checks) * 20
+
+    required_parts = (
+        "cpu",
+        "gpu",
+        "motherboard",
+        "ram",
+        "storage",
+        "psu",
+        "cooler",
+        "case",
+    )
+
+    missing_parts = sum(
+        1 for part in required_parts
+        if not build.get(part)
+    )
+
+    score -= min(missing_parts * 4, 20)
+
+    return max(score, 0)
+
+
+def get_gaming_estimate(score):
+    if score is None:
+        return "Not Available", "Select a CPU and GPU"
+
+    if score >= 90:
+        return "4K High / Ultra", "80–140 FPS"
+    if score >= 75:
+        return "1440p High / Ultra", "70–120 FPS"
+    if score >= 60:
+        return "1440p Medium / High", "60–90 FPS"
+    if score >= 45:
+        return "1080p High", "60–100 FPS"
+
+    return "1080p Medium", "40–70 FPS"
 
 
 def get_build_performance():
     build = session.get("build", {})
-    cpu = db.session.get(CPU, build.get("cpu")) if build.get("cpu") else None
-    gpu = db.session.get(GPU, build.get("gpu")) if build.get("gpu") else None
-    ram = db.session.get(RAM, build.get("ram")) if build.get("ram") else None
-    psu = db.session.get(PSU, build.get("psu")) if build.get("psu") else None
-    performance_score = calculate_performance_score(cpu, gpu, ram)
-    if performance_score is not None:
-        performance_score = min(performance_score, 100)
+
+    cpu = db.session.get(CPU, build["cpu"]) if build.get("cpu") else None
+    gpu = db.session.get(GPU, build["gpu"]) if build.get("gpu") else None
+    ram = db.session.get(RAM, build["ram"]) if build.get("ram") else None
+
+    storage = (
+        db.session.get(Storage, build["storage"])
+        if build.get("storage") else None
+    )
+
+    cooler = (
+        db.session.get(Cooler, build["cooler"])
+        if build.get("cooler") else None
+    )
+
+    psu = db.session.get(PSU, build["psu"]) if build.get("psu") else None
 
     power_component_types = (
-        "cpu", "gpu", "motherboard", "ram", "storage", "cooler", "fan"
+        "cpu",
+        "gpu",
+        "motherboard",
+        "ram",
+        "storage",
+        "cooler",
+        "fan",
     )
 
     total_power = 0
@@ -96,18 +263,65 @@ def get_build_performance():
 
             if item:
                 total_power += get_power_usage(item)
-    recommended_wattage = round(total_power * 1.2)
-    psu_sufficient = (
-        psu.wattage >= recommended_wattage
-        if psu else None
+
+    gpu_power = get_power_usage(gpu) if gpu else 0
+
+    recommended_wattage = get_recommended_psu(
+        total_power,
+        gpu_power,
     )
+
+    checks = check_compatibility(build)
+
+    raw_score = calculate_raw_performance(
+        cpu,
+        gpu,
+        ram,
+        storage,
+    )
+
+    balance_score, balance_message = calculate_balance_score(
+        cpu,
+        gpu,
+        ram,
+    )
+
+    system_health_score = calculate_system_health(
+        build,
+        cpu,
+        cooler,
+        psu,
+        recommended_wattage,
+        checks,
+    )
+
+    if raw_score is None or balance_score is None:
+        final_score = None
+    else:
+        final_score = round(
+            raw_score * 0.50
+            + balance_score * 0.30
+            + system_health_score * 0.20
+        )
+
+    gaming_resolution, gaming_fps = get_gaming_estimate(final_score)
+
     return {
-        "performance_score": performance_score,
-        "performance_rating": get_score_rating(performance_score),
+        "performance_score": final_score,
+        "performance_rating": get_score_rating(final_score),
+        "raw_score": raw_score,
+        "balance_score": balance_score,
+        "balance_message": balance_message,
+        "system_health_score": system_health_score,
+        "gaming_resolution": gaming_resolution,
+        "gaming_fps": gaming_fps,
         "total_power": total_power,
         "recommended_wattage": recommended_wattage,
         "psu_wattage": psu.wattage if psu else None,
-        "psu_sufficient": psu_sufficient,
+        "psu_sufficient": (
+            psu.wattage >= recommended_wattage
+            if psu else None
+        ),
     }
 
 

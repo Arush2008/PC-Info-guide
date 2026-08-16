@@ -296,10 +296,10 @@
             <div class="performance_card">
                 <p class="summary_label">Build Performance</p>
                 <div class="performance_circle_wrap">
-                    <div class="performance_circle" id="performanceCircle" style="--score:0%">
+                    <div class="performance_circle" id="performanceCircle" style="--score:0">
                         <div class="performance_circle_inner">
                             <strong id="performanceScore">0</strong>
-                            <span>100</span>
+                            <span>/100</span>
                         </div>
                     </div>
                 </div>
@@ -307,9 +307,36 @@
                 <p class="performance_rating" id="performanceRating">
                     Select a CPU and GPU
                 </p>
+
+                <div class="gaming_estimate_box">
+                    <p class="stat_label">Gaming Estimate</p>
+                    <strong id="gamingResolution">Not Available</strong>
+                    <span id="gamingFps">Select a CPU and GPU</span>
+                </div>
+
+                <div class="build_score_details">
+                    <p>
+                        Raw Performance:
+                        <strong id="rawPerformanceScore">—</strong>/100
+                    </p>
+
+                    <p>
+                        Balance:
+                        <strong id="balanceScore">—</strong>/100
+                    </p>
+
+                    <span id="balanceMessage">
+                        Select a CPU and GPU
+                    </span>
+
+                    <p>
+                        System Health:
+                        <strong id="systemHealthScore">—</strong>/100
+                    </p>
+                </div>
                 
                 <p class="performance_hint" id="performanceHint">
-                    ACPU and GPU are required for a score.
+                    A CPU and GPU are required for a score.
                 </p>
                 
                 <div class="stats_row">
@@ -395,6 +422,12 @@ const powerUsage = document.getElementById("powerUsage");
 const recommendedPower = document.getElementById("recommendedPower");
 const psuStatus = document.getElementById("psuStatus");
 const psuWattage = document.getElementById("psuWattage");
+const rawPerformanceScore = document.getElementById("rawPerformanceScore");
+const balanceScore = document.getElementById("balanceScore");
+const balanceMessage = document.getElementById("balanceMessage");
+const systemHealthScore = document.getElementById("systemHealthScore");
+const gamingResolution = document.getElementById("gamingResolution");
+const gamingFps = document.getElementById("gamingFps");
 
 let activeButton = null;
 
@@ -521,6 +554,12 @@ async function updatePerformance() {
         return;
     }
     const data = await response.json();
+    rawPerformanceScore.textContent = data.raw_score ?? "—";
+    balanceScore.textContent = data.balance_score ?? "—";
+    balanceMessage.textContent = data.balance_message ?? "Select a CPU and GPU";
+    systemHealthScore.textContent = data.system_health_score ?? "—";
+    gamingResolution.textContent = data.gaming_resolution ?? "Not Available";
+    gamingFps.textContent = data.gaming_fps ?? "Select a CPU and GPU";
     if (data.performance_score === null) {
         performanceScore.textContent = "—";
         performanceRating.textContent = "Not Available";
@@ -536,7 +575,7 @@ async function updatePerformance() {
 
     powerUsage.textContent = `${data.total_power}W`;
     recommendedPower.textContent = 
-        `recommended ${data.recommended_power}W`;
+        `Recommended ${data.recommended_wattage}W`;
 
     if (data.psu_wattage == null) {
         psuStatus.textContent = "Not selected";
