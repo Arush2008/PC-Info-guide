@@ -168,7 +168,7 @@
                     <button
                         class="remove_button"
                         type="button"
-                        data-component-type="ssd"
+                        data-component-type="storage"
                         hidden
                     >
                         Remove
@@ -224,7 +224,7 @@
                     <button
                         class="remove_button"
                         type="button"
-                        data-component-type="cpu cooler"
+                        data-component-type="cooler"
                         hidden
                     >
                         Remove
@@ -295,37 +295,36 @@
         <aside class="build_summary">
             <div class="performance_card">
                 <p class="summary_label">Build Performance</p>
-
                 <div class="performance_circle_wrap">
-                    <div class="performance_circle">
+                    <div class="performance_circle" id="performanceCircle" style="--score:0%">
                         <div class="performance_circle_inner">
-                            <strong>88</strong>
-                            <span>/100</span>
+                            <strong id="performanceScore">0</strong>
+                            <span>100</span>
                         </div>
                     </div>
                 </div>
 
-                <p class="performance_rating">Excellent</p>
-
-                <div class="gaming_estimate_box">
-                    <p class="stat_label">Gaming Estimate</p>
-                    <strong>4K High</strong>
-                    <span>80-120 FPS</span>
-                </div>
-
+                <p class="performance_rating" id="performanceRating">
+                    Select a CPU and GPU
+                </p>
+                
+                <p class="performance_hint" id="performanceHint">
+                    ACPU and GPU are required for a score.
+                </p>
+                
                 <div class="stats_row">
                     <div class="stat_block">
-                        <p class="stat_label">TDP</p>
-                        <strong>450W</strong>
-                        <span>Recommended 550W</span>
+                        <p class="stat_label">Estimated Power</p>
+                        <strong id="powerUsage">0W</strong>
+                        <span id="recommendedPower">Recommended 0W</span>
                     </div>
-
                     <div class="stat_block">
-                        <p class="stat_label">Balance</p>
-                        <strong>67%</strong>
-                        <span>Well Matched</span>
+                        <p class="stat_label">PSU Status</p>
+                        <strong id="psuStatus">Not selected</strong>
+                        <span id="psuWattage">Select a PSU</span>
                     </div>
                 </div>
+
             </div>
 
             <div class="estimated_price_card">
@@ -388,6 +387,13 @@ const estimatedPrice = document.getElementById("estimatedPrice");
 const partsCount = document.getElementById("partsCount");
 const priceProgressFill = document.getElementById("priceProgressFill");
 const compatibilityResults = document.getElementById("compatibilityResults");
+const performanceScore = document.getElementById("performanceScore");
+const performanceRating = document.getElementById("performanceRating");
+const performanceHint = document.getElementById("performanceHint");
+const powerUsage = document.getElementById("powerUsage");
+const recommendedPower = document.getElementById("recommendedPower");
+const psuStatus = document.getElementById("psuStatus");
+const psuWattage = document.getElementById("psuWattage");
 
 let activeButton = null;
 
@@ -508,10 +514,45 @@ async function updateCompatibility() {
     updateCompatibilityResults(results);
 }
 
+async function updatePerformance() {
+    const response = await fetch("/api/builder/performance");
+    if (!response.ok) {
+        return;
+    }
+    const data = await response.json();
+    if (data.performance_score === null) {
+        performanceScore.textContent = "—";
+        performanceRating.textContent = "Not Available";
+        performanceCircle.style.setProperty("--score", 0);
+    } else {
+        performanceScore.textContent = data.performance_score;
+        performanceRating.textContent = data.performance_rating;
+
+        const score = Math.min(Math.max(data.performance_score, 0), 100);
+
+        performanceCircle.style.setProperty("--score", score);
+    }
+    PowerUsage.textContent = `${data.total_power_usage}W`;
+    recommendedPower.textContent = `Recommended ${data.recommended_power}W`;
+
+    if (data.psu_wattage == null) {
+        psuStatus.textContent = "Not selected";
+        psuWattage.textContent = "Select a PSU";
+    } else if (data.psu_sufficient) {
+        psuStatus.textContent = "Sufficient";
+        psuWattage.textContent = `${data.psu_wattage}W`;
+    } else {
+        psuStatus.textContent = "Insufficient Power";
+        psuWattage.textContent = `${data.psu_wattage}W is below recommended`;
+    }
+
+}
+
 function applySummary(summary) {
     updateSummary(summary);
     updateComponentRows(summary);
     updateCompatibility();
+    updatePerformance();
 }
 
 

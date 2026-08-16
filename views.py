@@ -42,6 +42,84 @@ def get_power_usage(item):
         return 0
 
 
+def calculate_performance_score(cpu, gpu, ram):
+    if not cpu or not gpu:
+        return None
+    gpu_score = gpu.performance_score or 0
+    cpu_score = cpu.performance_score or 0
+    ram_score = ram.performance_score if ram else 70
+    overall_score = (
+        gpu_score * 0.55
+        + cpu_score * 0.35
+        + ram_score * 0.10
+    )
+    return min(round(overall_score), 100)
+
+
+def get_score_rating(score):
+    if score is None:
+        return "Not Available"
+    if score >= 90:
+        return "Excellent"
+    if score >= 80:
+        return "Very Good"
+    if score >= 70:
+        return "Good"
+    if score >= 60:
+        return "Average"
+    else:
+        return "Low"
+
+
+def get_build_performance():
+    build = session.get("build", {})
+    cpu = db.session.get(CPU, build.get("cpu")) if build.get("cpu") else None
+    gpu = db.session.get(GPU, build.get("gpu")) if build.get("gpu") else None
+    ram = db.session.get(RAM, build.get("ram")) if build.get("ram") else None
+    psu = db.session.get(PSU, build.get("psu")) if build.get("psu") else None
+    performance_score = calculate_performance_score(cpu, gpu, ram)
+    if performance_score is not None:
+        performance_score = min(performance_score, 100)
+    power_parts = []
+
+    for component_type, (model, _) in COMPONENT_MODELS.items():
+        component_id = build.get(component_type)
+        if component_id:
+            item = db.session.get(model, component_id)
+            if item is not None:
+                power_parts.append(item)
+
+    total_power = sum(get_power_usage(part) for part in power_parts)
+    recommended_wattage = round(total_power * 1.2)
+
+    if psu:
+        power_status = (
+            "PSU wattage is sufficcient."
+            if psu.wattage >= recommended_wattage
+            else "PSU wattage is insufficient."
+        )
+    else:
+        power_status = "Select a PSU to check wattage."
+
+    return {
+        "performance_score": performance_score,
+        "performance_rating": get_score_rating(performance_score),
+        "total_power": total_power,
+        "recommended_wattage": recommended_wattage,
+        "psu_wattage": psu.wattage if psu else None,
+        "psu_sufficient": (
+            psu.wattage >= recommended_wattage
+            if psu else None
+        ),
+        "power_status": power_status,
+    }
+
+
+@views.route("/api/builder/performance")
+def builder_performance():
+    return jsonify(get_build_performance())
+
+
 def check_compatibility(build):
     results = {}
 
