@@ -19,6 +19,16 @@
 <form method="get" action="/component_list">
     <input type="text" name="q" placeholder="Search all components" value="{{ q or '' }}">
     <button type="submit">Search</button>
+        <option value=""></option>
+        <option value="gpu">Graphics Cards</option>
+        <option value="cpu">Processors</option>
+        <option value="motherboard">Motherboards</option>
+        <option value="ram">RAM</option>
+        <option value="storage">Storage</option>
+        <option value="psu">Power Sjpplies</option>
+        <option value="cooler">Coolers</option>
+        <option value="case">Cases</option>
+        <option value="fan">Case Fans</option>
 </form>
 
 {% if q %}

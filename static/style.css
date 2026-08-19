@@ -1576,3 +1576,125 @@ body.modal_open {
     font-size: 12px;
     line-height: 1.4;
 }
+
+.catalog_sidebar {
+    position: sticky;
+    top: 92px;
+}
+
+.catalog_filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    border: 1px solid #2e3746;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #171e2b, #10141c);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+.catalog_filters input,
+.catalog_filters select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #334056;
+    border-radius: 8px;
+    background: #0d121b;
+    color: #f6f8fc;
+    font-size: 14px;
+}
+
+.catalog_filters input::placeholder {
+    color: #7e899a;
+}
+
+.catalog_filters input:focus,
+.catalog_filters select:focus {
+    outline: none;
+    border-color: #3bfc8b;
+    box-shadow: 0 0 0 3px rgba(59, 252, 139, 0.12);
+}
+
+.catalog_filters button {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 4px;
+    border: 0;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #3bfc8b, #58cfff);
+    color: #07110c;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.catalog_filters button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.clear_filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    border: 1px solid #3c485c;
+    border-radius: 8px;
+    color: #aeb8c8;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.clear_filters:hover {
+    border-color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff8a8a;
+}
+
+.catalog_layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 26px;
+    width: min(1280px, 92%);
+    margin: 0 auto 60px;
+    align-items: start;
+}
+
+.catalog_results {
+    min-width: 0;
+}
+
+.catalog_result_count {
+    margin: 0 0 14px;
+    color: #9eabbc;
+    font-size: 14px;
+}
+
+@media (max-width: 850px) {
+    .catalog_layout {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog_sidebar {
+        position: static;
+    }
+
+    .catalog_filters {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(150px, 1fr)
+        );
+    }
+
+    .catalog_filters button,
+    .clear_filters {
+        width: 100%;
+    }
+}

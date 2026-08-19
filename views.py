@@ -1,4 +1,12 @@
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    jsonify,
+    session,
+    redirect,
+    url_for
+)
 import re
 from database import (
     db,
@@ -33,6 +41,33 @@ COMPONENT_MODELS = {
     "case": (Case, "case_id"),
     "fan": (Fan, "fan_id"),
 }
+
+
+def get_int_filter(name):
+    value = request.args.get(name, "").strip()
+
+    try:
+        return int(value) if value else None
+    except ValueError:
+        return None
+
+
+def get_float_filter(name):
+    value = request.args.get(name, "").strip()
+
+    try:
+        return float(value) if value else None
+    except ValueError:
+        return None
+
+
+def get_filter_values():
+    return {
+        "brand": request.args.get("brand", "").strip(),
+        "min_price": request.args.get("min_price", "").strip(),
+        "max_price": request.args.get("max_price", "").strip(),
+        "sort": request.args.get("sort", "name").strip(),
+    }
 
 
 def get_power_usage(item):
@@ -555,6 +590,11 @@ def PC_builder():
     return render_template("PC_builder.html")
 
 
+@views.route("/<path:patch>")
+def catch_all(patch):
+    return redirect(url_for("views.home"))
+
+
 @views.route("/api/builder/options/<component_type>")
 def builder_component_options(component_type):
     search_text = request.args.get("q", "").strip()
@@ -822,36 +862,49 @@ def learn_component(component):
 @views.route("/gpu")
 def gpu_list():
     q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
+    filter = get_filter_values()
 
-    gpus = GPU.query.join(Brand).all()
+    min_price = get_float_filter("min_price")
+    max_price = get_float_filter("max_price")
+    min_vram = get_int_filter("min_vram")
+    max_power = get_int_filter("max_power")
 
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
+    query = GPU.query.join(Brand)
 
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
+    if filter["brand"]:
+        query = query.filter(GPU.brand_id == filter["brand"])
 
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"gpu graphics card "
-            f"{item.vram} gb vram "
-            f"{item.power_usage} w watt"
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
+    if min_price is not None:
+        query = query.filter(GPU.price >= min_price)
 
-    gpus = [gpu for gpu in gpus if matches(gpu)]
+    if max_price is not None:
+        query = query.filter(GPU.price <= max_price)
 
-    return render_template("gpu_list.html", gpus=gpus, q=q)
+    if min_vram is not None:
+        query = query.filter(GPU.vram >= min_vram)
+
+    if max_power is not None:
+        query = query.filter(GPU.power_usage <= max_power)
+
+    sort_options = {
+        "name": GPU.model.asc(),
+        "price_low": GPU.price.asc(),
+        "price_high": GPU.price.desc(),
+        "vram_high": GPU.vram.desc(),
+        "performance_high": GPU.performance_score.desc(),
+    }
+
+    gpus = query.order_by(
+        sort_options.get(filter["sort"], GPU.model.asc())
+    ).all()
+
+    return render_template(
+        "gpu_list.html",
+        gpus=gpus,
+        q=q,
+        filters=filter,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/cpu")

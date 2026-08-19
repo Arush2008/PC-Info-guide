@@ -22,4 +22,20 @@ Main focus of this website includes:
 
 
 Target Audience : 
-    - 
+    - My targeted audience will be anyone who is willing to build their own pc or just wanting to learn on how pcs work what each parts does and why each part is important to add in the pc. Audience may include a large amout of young teens a less larger amout of young adults and few adults as well. 
+    this website will be user freindly and will help the user to under the learning components easily and will make sure the user understands what to do and how each things work. I made sure that the structure dont confuse the user and use as easy language as I can. Although All the data is AI generated I have refined to be user freinds so the target audience can be anyone.
+
+
+Main Features :
+
+    Home Page
+        - The home page introduce all my pages features and explain what users can do and how they can go with different steps like step 1 user can explore and learn from learning page and so on. The home page have all the buttons including the navigation bar which takes the user to the different page. The user can choose to just use the navigation bar or scroll down read the home page and click the buttons there to go to next the next page.
+    
+    Learning Pgae
+        - The learning page includes all 9 needed components for a PC. Each component have a dadincated half page for the information so the user knows what part thye are actually learning and dont get confused while they are deeply reading a part. I tried to made the learning page as simpolified as I can where each section is seprated and have a lot of informations including the most common mistakes the user can make and also fun facts to keep the website entertaning insted of deep learning so the feel more like a fun interactive learning hub insted of a dedicated learning website. 
+    
+    Components Page
+        - The components page have all the components in a row and the user can scroll to the right to see other componets in the same raw each component scroll have a dedicated page for that component so the user can have easy access to the page and see what they are doing instead of getting confused on what part is what. There will also be a button for all components where the user can see all the components which will be in blocks instead of scroll so the user can have a look to all the components and dont have to keep switching pages to find the different parts. 
+
+    Build PC 
+        - In Build PC page the user can build thier own pc by choosing the parts they like and the web page will help them to find the correct parts which are compatible with each other and can handel the parts properly. It also shows the total price of the choosen pc parts and also shows the total power usage of the choosen parts combined. There are some other features like the user can see the performance score of the pc they build which scores the pc out of 100. While the user is chooseing the part they could search their desired part and choose the part after searching it which will make finding the parts easy. and they could eather change that part by clicking the change button or remove the part which will remove the part they can also click clear button to clear the whole pc build. The build will locally be stored in the users computer but they cannot be save the pc they build. 
