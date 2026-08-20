@@ -72,22 +72,25 @@
 
     <button type="submit">Apply filters</button>
     <a class="clear_filters" href="/gpu">Clear</a>
-    <main class="catalog_layout">
-    <aside class="catalog_sidebar">
-        <form class="catalog_filters" method="get">
-        </form>
+        <main class="catalog_layout">
+            <aside class="catalog_sidebar">
+                <form class="catalog_filters" method="get">
+                </form>
+            
+
+            <section class="catalog_results">
+                <p class="catalog_result_count">
+                    {{ gpus|length }} graphics cards found
+                </p>
+
+                <div class="component_grid">
+                    {% for gpu in gpus %}
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </form>
     </aside>
-
-    <section class="catalog_results">
-        <p class="catalog_result_count">
-            {{ gpus|length }} graphics cards found
-        </p>
-
-        <div class="component_grid">
-        </div>
-    </section>
-</main>
-</form>
 
 <section class="component_section">
 

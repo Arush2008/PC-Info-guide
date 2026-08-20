@@ -1666,14 +1666,21 @@ body.modal_open {
     align-items: start;
 }
 
-.catalog_results {
-    min-width: 0;
+.catalog_sidebar {
+    position: sticky;
+    top: 92px;
 }
 
-.catalog_result_count {
-    margin: 0 0 14px;
-    color: #9eabbc;
-    font-size: 14px;
+.catalog_filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+}
+
+.catalog_results {
+    min-width: 0;
 }
 
 @media (max-width: 850px) {
@@ -1683,18 +1690,5 @@ body.modal_open {
 
     .catalog_sidebar {
         position: static;
-    }
-
-    .catalog_filters {
-        display: grid;
-        grid-template-columns: repeat(
-            auto-fit,
-            minmax(150px, 1fr)
-        );
-    }
-
-    .catalog_filters button,
-    .clear_filters {
-        width: 100%;
     }
 }
