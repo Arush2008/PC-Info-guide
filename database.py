@@ -122,6 +122,7 @@ class PSU(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     wattage = db.Column(db.Integer, nullable=False)
     brand = db.relationship('Brand', backref='psus', lazy=True)
+    image = db.Column(db.String(100), nullable=False)
 
 
 class Cooler(db.Model):

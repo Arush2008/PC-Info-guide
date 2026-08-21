@@ -995,7 +995,6 @@ body.modal_open {
 .modal_add_button:disabled { cursor: wait; opacity: .7; }
 .modal_price { color: #3bfc8b; font-size: 24px; font-weight: 800; white-space: nowrap; }
 @media (max-width: 650px) { .component_modal_layout { grid-template-columns: 1fr; } .modal_image_panel { min-height: 230px; max-height: 280px; } .modal_content { padding: 30px 22px 24px; } .modal_details { grid-template-columns: 1fr; } .modal_footer { align-items: flex-start; flex-direction: column-reverse; } }
-}
 
 
 

@@ -6,6 +6,8 @@ app = Flask(__name__)
 app.secret_key = 'This_key_will_save_session_of_user'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Always serve current CSS and JavaScript while developing this project.
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 @app.url_defaults

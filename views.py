@@ -8,6 +8,7 @@ from flask import (
     url_for
 )
 import re
+from pathlib import Path
 from sqlalchemy.inspection import inspect
 from database import (
     db,
@@ -43,6 +44,29 @@ COMPONENT_MODELS = {
     "fan": (Fan, "fan_id"),
 }
 
+STATIC_DIRECTORY = Path(__file__).resolve().parent / "static"
+
+
+def get_component_display_name(item):
+    """Avoid repeating the brand when it is already included in a model name."""
+    brand_name = item.brand.name.strip()
+    model_name = item.model.strip()
+    if model_name.lower().startswith(brand_name.lower() + " "):
+        return model_name
+    return f"{brand_name} {model_name}"
+
+
+def get_component_image_url(item):
+    """Use a recorded image, then the PSU image library, then a safe fallback."""
+    image_path = getattr(item, "image", None)
+
+    if not image_path and isinstance(item, PSU):
+        candidate = f"Images for my website/PSUS/{item.model}.jpeg"
+        if (STATIC_DIRECTORY / candidate).is_file():
+            image_path = candidate
+
+    return url_for("static", filename=image_path or "background.png")
+
 
 def format_component_label(column_name):
     """Turn database column names into labels suitable for the catalogue."""
@@ -67,10 +91,18 @@ def get_component_specifications(model, item):
     for column in inspect(model).columns:
         if column.primary_key or column.name in {"brand_id", "image", "price"}:
             continue
-        value = getattr(item, column.name)
+        # RAM and Storage both store this field in a SQL column named "type",
+        # but use clearer Python attribute names to avoid confusion with type().
+        attribute_name = column.name
+        if column.name == "type" and model is RAM:
+            attribute_name = "ram_type"
+        elif column.name == "type" and model is Storage:
+            attribute_name = "storage_type"
+
+        value = getattr(item, attribute_name)
         if value is not None and value != "":
             specifications.append({
-                "label": format_component_label(column.name),
+                "label": format_component_label(attribute_name),
                 "value": str(value),
             })
     return specifications
@@ -629,9 +661,9 @@ def get_build_summary():
 
         selected_parts[component_type] = {
             "id": component_id,
-            "name": f"{item.brand.name} {item.model}",
+            "name": get_component_display_name(item),
             "price": item_price,
-            "image_url": url_for("static", filename=item.image) if item.image else None,
+            "image_url": get_component_image_url(item),
         }
 
     selected_count = len(selected_parts)
@@ -681,9 +713,9 @@ def builder_component_options(component_type):
     for item in items:
         rows.append({
             "id": getattr(item, id_attr),
-            "name": f"{item.brand.name} {item.model}",
+            "name": get_component_display_name(item),
             "price": float(item.price),
-            "image_url": url_for("static", filename=item.image) if item.image else None,
+            "image_url": get_component_image_url(item),
             "details": get_component_specifications(COMPONENT_MODELS[component_type][0], item),
         })
     return jsonify(rows)
@@ -714,7 +746,7 @@ def component_details(component_type, component_id):
         "brand": item.brand.name,
         "model": item.model,
         "price": float(item.price),
-        "image_url": url_for("static", filename=item.image) if item.image else None,
+        "image_url": get_component_image_url(item),
         "details": get_component_specifications(model, item),
     })
 

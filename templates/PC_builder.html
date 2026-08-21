@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body class="builder_page">
+<body class="builder_page" style="min-height: 100vh; background: rgb(10, 10, 15);">
 
 <nav class="top_nav_bar">
     <h1 class="logo">PCforce</h1>
@@ -662,7 +662,7 @@ async function renderOptions() {
         optionAction.append(optionPrice, selectButton);
         optionButton.append(optionContent, optionAction);
 
-        selectButton.addEventListener("click", async () => {
+        const chooseComponent = async () => {
             const response = await fetch(
                 `/api/builder/selection/${encodeURIComponent(type)}`,
                 {
@@ -685,6 +685,12 @@ async function renderOptions() {
 
             applySummary(summary);
             closeModal();
+        };
+
+        optionButton.addEventListener("click", chooseComponent);
+        selectButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            chooseComponent();
         });
 
         pickerList.appendChild(optionButton);
