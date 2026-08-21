@@ -17,82 +17,10 @@
 
 <h1 class="page_title">All Graphics Cards</h1>
 
-<form class="catalog_filters" method="get">
-    <input
-        type="search"
-        name="q"
-        placeholder="brand or model search"
-        value="{{ q }}"
-    >
-
-    <select name="brand">
-        <option value="">All brands</option>
-
-        {% for brand in brands %}
-            <option
-                value="{{ brand.brand_id }}"
-                {% if filters.brand == brand.brand_id  %}selected{% endif %}
-            >{{ brand.name }}</option>
-        {% endfor %}
-
-    </select>
-
-    <input
-        type="number"
-        name="min_price"
-        min="0"
-        placeholder="min price"
-        value="{{ filters.min_price }}"
-    >
-
-    <input
-        type="number"
-        name="max_price"
-        min="0"
-        placeholder="Max price"
-        value="{{ filters.max_price }}"
-    >
-
-    <select name="min_vram">
-        <option value="">Any Vram</option>
-        <option value="8">8</option>
-        <option value="12">12</option>
-        <option value="16">16</option>
-        <option value="24">24</option>
-        <option value="32">32</option>
-    </select>
-
-    <select name="sort">
-        <option value="name">Name A–Z</option>
-        <option value="price_low">Price: low to high</option>
-        <option value="price_high">Price: high to low</option>
-        <option value="vram_high">Highest VRAM </option>
-        <option value="performance_high">Best Performance</option>        
-    </select>
-
-    <button type="submit">Apply filters</button>
-    <a class="clear_filters" href="/gpu">Clear</a>
-        <main class="catalog_layout">
-            <aside class="catalog_sidebar">
-                <form class="catalog_filters" method="get">
-                </form>
-            
-
-            <section class="catalog_results">
-                <p class="catalog_result_count">
-                    {{ gpus|length }} graphics cards found
-                </p>
-
-                <div class="component_grid">
-                    {% for gpu in gpus %}
-                    {% endfor %}
-                </div>
-            </section>
-        </main>
-    </form>
-    </aside>
-
-<section class="component_section">
+<main class="catalog_layout">
+    <aside class="catalog_sidebar">{% include "_catalog_filters.html" %}</aside>
+    <section class="catalog_results component_section">
+        <p class="catalog_result_count">{{ gpus|length }} graphics cards found</p>
 
     <div class="component_grid">
 
@@ -101,6 +29,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="gpu"
+            data-component-id="{{ gpu.gpu_id }}"
             data-model="{{ gpu.model }}"
             data-image="{{ url_for('static', filename=gpu.image) }}"
             data-details='{{ {
@@ -126,7 +56,8 @@
 
     </div>
 
-</section>
+    </section>
+</main>
 
 <div class="details_modal" id="detailsModal">
     <div class="modal_box">
@@ -186,5 +117,6 @@
             });
         </script>
 
+<script src="{{ url_for('static', filename='component-modal.js') }}"></script>
 </body>
 </html>

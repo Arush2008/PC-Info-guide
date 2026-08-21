@@ -16,20 +16,12 @@
 
 <h1 class="page_title">All Components</h1>
 
-<form method="get" action="/component_list">
-    <input type="text" name="q" placeholder="Search all components" value="{{ q or '' }}">
-    <button type="submit">Search</button>
-        <option value=""></option>
-        <option value="gpu">Graphics Cards</option>
-        <option value="cpu">Processors</option>
-        <option value="motherboard">Motherboards</option>
-        <option value="ram">RAM</option>
-        <option value="storage">Storage</option>
-        <option value="psu">Power Sjpplies</option>
-        <option value="cooler">Coolers</option>
-        <option value="case">Cases</option>
-        <option value="fan">Case Fans</option>
-</form>
+<main class="catalog_layout">
+    <aside class="catalog_sidebar">
+        {% set show_type_filter = true %}
+        {% include "_catalog_filters.html" %}
+    </aside>
+    <section class="catalog_results">
 
 {% if q %}
     <p>{{ total_results }} result{{ "" if total_results == 1 else "s" }} for "{{ q }}"</p>
@@ -48,6 +40,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="gpu"
+            data-component-id="{{ gpu.gpu_id }}"
             data-model="{{ gpu.model }}"
             data-image="{{ url_for('static', filename=gpu.image) }}"
             data-details='{{ {
@@ -83,6 +77,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="cpu"
+            data-component-id="{{ cpu.cpu_id }}"
             data-model="{{ cpu.model }}"
             data-image="{{ url_for('static', filename=cpu.image) }}"
             data-details='{{ {
@@ -120,6 +116,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="ram"
+            data-component-id="{{ ram.ram_id }}"
             data-model="{{ ram.model }}"
             data-image="{{ url_for('static', filename=ram.image) }}"
             data-details='{{ {
@@ -155,6 +153,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="storage"
+            data-component-id="{{ storage.storage_id }}"
             data-model="{{ storage.model }}"
             data-image="{{ url_for('static', filename=storage.image) }}"
             data-details='{{ {
@@ -190,6 +190,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="psu"
+            data-component-id="{{ psu.psu_id }}"
             data-model="{{ psu.model }}"
             data-image="{{ url_for('static', filename=psu.image) }}"
             data-details='{{ {
@@ -225,6 +227,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="cooler"
+            data-component-id="{{ cooler.cooler_id }}"
             data-model="{{ cooler.model }}"
             data-image="{{ url_for('static', filename=cooler.image) }}"
             data-details='{{ {
@@ -260,6 +264,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="case"
+            data-component-id="{{ case.case_id }}"
             data-model="{{ case.model }}"
             data-image="{{ url_for('static', filename=case.image) }}"
             data-details='{{ {
@@ -295,6 +301,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="fan"
+            data-component-id="{{ case_fan.fan_id }}"
             data-model="{{ case_fan.model }}"
             data-image="{{ url_for('static', filename=case_fan.image) }}"
             data-details='{{ {
@@ -330,6 +338,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="motherboard"
+            data-component-id="{{ motherboard.motherboard_id }}"
             data-model="{{ motherboard.model }}"
             data-image="{{ url_for('static', filename=motherboard.image) }}"
             data-details='{{ {
@@ -355,6 +365,9 @@
     </div>
 </section>
 {% endif %}
+
+    </section>
+</main>
 
 <div class="details_modal" id="detailsModal">
     <div class="modal_box">
@@ -414,5 +427,6 @@
             });
         </script>
 
+<script src="{{ url_for('static', filename='component-modal.js') }}"></script>
 </body>
 </html>

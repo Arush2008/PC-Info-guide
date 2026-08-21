@@ -17,17 +17,9 @@
 
 <h1 class="page_title">All Power Supplies</h1>
 
-<form method="get" action="">
-    <input
-        type="text"
-        name="q"
-        placeholder="Search by model or brand"
-        value="{{ q }}"
-    >
-    <button type="submit">Search</button>
-</form>
-
-<section class="component_section">
+<main class="catalog_layout">
+    <aside class="catalog_sidebar">{% include "_catalog_filters.html" %}</aside>
+    <section class="catalog_results component_section">
 
     <div class="component_grid">
 
@@ -36,6 +28,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="psu"
+            data-component-id="{{ psu.psu_id }}"
             data-model="{{ psu.model }}"
             data-image="{{ url_for('static', filename=psu.image) }}"
             data-details='{{ {
@@ -60,7 +54,8 @@
 
     </div>
 
-</section>
+    </section>
+</main>
 
 <div class="details_modal" id="detailsModal">
     <div class="modal_box">
@@ -120,5 +115,6 @@
             });
         </script>
 
+<script src="{{ url_for('static', filename='component-modal.js') }}"></script>
 </body>
 </html>

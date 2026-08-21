@@ -483,11 +483,16 @@ function updateSummary(summary) {
 
 
 function updateComponentRows(summary) {
+    document.querySelectorAll(".component_icon").forEach((icon) => {
+        if (!icon.dataset.defaultIcon) icon.dataset.defaultIcon = icon.textContent.trim();
+    });
+
     document.querySelectorAll(".add_button").forEach((addButton) => {
         const type = addButton.dataset.componentType;
         const row = addButton.closest(".component_row_in_pcbuilder");
         const text = row.querySelector(".selection_text");
         const removeButton = row.querySelector(".remove_button");
+        const icon = row.querySelector(".component_icon");
         const selectedPart = summary.parts[type];
 
         if (selectedPart) {
@@ -497,6 +502,10 @@ function updateComponentRows(summary) {
 
             addButton.innerHTML = "<span>+</span> Change";
             removeButton.hidden = false;
+            if (selectedPart.image_url) {
+                icon.innerHTML = `<img src="${selectedPart.image_url}" alt="">`;
+                icon.classList.add("has_component_image");
+            }
         } else {
             text.textContent = text.dataset.emptyText;
             text.classList.remove("selected_component");
@@ -504,6 +513,8 @@ function updateComponentRows(summary) {
 
             addButton.innerHTML = "<span>+</span> Add";
             removeButton.hidden = true;
+            icon.textContent = icon.dataset.defaultIcon;
+            icon.classList.remove("has_component_image");
         }
     });
 }
@@ -617,13 +628,41 @@ async function renderOptions() {
     }
 
     options.forEach((item) => {
-        const optionButton = document.createElement("button");
-
-        optionButton.type = "button";
+        const optionButton = document.createElement("article");
         optionButton.className = "picker_option";
-        optionButton.textContent = `${item.name} — ${formatPrice(item.price)}`;
 
-        optionButton.addEventListener("click", async () => {
+        if (item.image_url) {
+            const image = document.createElement("img");
+            image.className = "picker_option_image";
+            image.src = item.image_url;
+            image.alt = "";
+            optionButton.appendChild(image);
+        }
+
+        const optionContent = document.createElement("div");
+        optionContent.className = "picker_option_content";
+        const optionName = document.createElement("h3");
+        optionName.textContent = item.name;
+        const specificationList = document.createElement("div");
+        specificationList.className = "picker_specifications";
+        item.details.forEach((detail) => {
+            const specification = document.createElement("span");
+            specification.textContent = `${detail.label}: ${detail.value}`;
+            specificationList.appendChild(specification);
+        });
+        optionContent.append(optionName, specificationList);
+
+        const optionAction = document.createElement("div");
+        optionAction.className = "picker_option_action";
+        const optionPrice = document.createElement("strong");
+        optionPrice.textContent = formatPrice(item.price);
+        const selectButton = document.createElement("button");
+        selectButton.type = "button";
+        selectButton.textContent = "Choose";
+        optionAction.append(optionPrice, selectButton);
+        optionButton.append(optionContent, optionAction);
+
+        selectButton.addEventListener("click", async () => {
             const response = await fetch(
                 `/api/builder/selection/${encodeURIComponent(type)}`,
                 {

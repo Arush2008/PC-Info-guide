@@ -1,0 +1,38 @@
+<form class="catalog_filters" method="get">
+    <h2>Filter components</h2>
+    <input type="search" name="q" placeholder="Search brand or model" value="{{ q or '' }}">
+
+    {% if show_type_filter %}
+    <select name="type">
+        <option value="">All component types</option>
+        <option value="gpu" {% if component_type == 'gpu' %}selected{% endif %}>Graphics Cards</option>
+        <option value="cpu" {% if component_type == 'cpu' %}selected{% endif %}>Processors</option>
+        <option value="motherboard" {% if component_type == 'motherboard' %}selected{% endif %}>Motherboards</option>
+        <option value="ram" {% if component_type == 'ram' %}selected{% endif %}>RAM</option>
+        <option value="storage" {% if component_type == 'storage' %}selected{% endif %}>Storage</option>
+        <option value="psu" {% if component_type == 'psu' %}selected{% endif %}>Power Supplies</option>
+        <option value="cooler" {% if component_type == 'cooler' %}selected{% endif %}>Coolers</option>
+        <option value="case" {% if component_type == 'case' %}selected{% endif %}>Cases</option>
+        <option value="fan" {% if component_type == 'fan' %}selected{% endif %}>Case Fans</option>
+    </select>
+    {% endif %}
+
+    <select name="brand">
+        <option value="">All brands</option>
+        {% for brand in brands %}
+        <option value="{{ brand.brand_id }}" {% if filters.brand == brand.brand_id %}selected{% endif %}>{{ brand.name }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="number" name="min_price" min="0" placeholder="Minimum price" value="{{ filters.min_price }}">
+    <input type="number" name="max_price" min="0" placeholder="Maximum price" value="{{ filters.max_price }}">
+
+    <select name="sort">
+        <option value="name" {% if filters.sort == 'name' %}selected{% endif %}>Name A–Z</option>
+        <option value="price_low" {% if filters.sort == 'price_low' %}selected{% endif %}>Price: low to high</option>
+        <option value="price_high" {% if filters.sort == 'price_high' %}selected{% endif %}>Price: high to low</option>
+    </select>
+
+    <button type="submit">Apply filters</button>
+    <a class="clear_filters" href="{{ request.path }}">Clear filters</a>
+</form>

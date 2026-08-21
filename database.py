@@ -65,6 +65,7 @@ class motherboard(db.Model):
     form_factor = db.Column(db.String(50), nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     brand = db.relationship('Brand', backref='motherboards', lazy=True)
+    image = db.Column(db.String(100), nullable=False)
 
 
 class RAM(db.Model):
@@ -84,6 +85,7 @@ class RAM(db.Model):
     performance_score = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     brand = db.relationship('Brand', backref='rams', lazy=True)
+    image = db.Column(db.String(100), nullable=False)
 
 
 class Storage(db.Model):
@@ -102,6 +104,7 @@ class Storage(db.Model):
     capacity = db.Column(db.Integer, nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     brand = db.relationship('Brand', backref='storages', lazy=True)
+    image = db.Column(db.String(100), nullable=False)
 
 
 class PSU(db.Model):

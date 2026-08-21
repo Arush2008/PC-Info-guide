@@ -8,6 +8,7 @@ from flask import (
     url_for
 )
 import re
+from sqlalchemy.inspection import inspect
 from database import (
     db,
     GPU,
@@ -43,6 +44,38 @@ COMPONENT_MODELS = {
 }
 
 
+def format_component_label(column_name):
+    """Turn database column names into labels suitable for the catalogue."""
+    labels = {
+        "vram": "VRAM",
+        "ram_type": "RAM type",
+        "storage_type": "Storage type",
+        "psu": "PSU",
+        "socket_support": "Socket support",
+        "power_usage": "Power usage",
+        "performance_score": "Performance score",
+        "cooling_capacity": "Cooling capacity",
+        "radiator_size": "Radiator size",
+        "noise_level": "Noise level",
+    }
+    return labels.get(column_name, column_name.replace("_", " ").capitalize())
+
+
+def get_component_specifications(model, item):
+    """Return shopper-facing fields, without internal IDs or media paths."""
+    specifications = []
+    for column in inspect(model).columns:
+        if column.primary_key or column.name in {"brand_id", "image", "price"}:
+            continue
+        value = getattr(item, column.name)
+        if value is not None and value != "":
+            specifications.append({
+                "label": format_component_label(column.name),
+                "value": str(value),
+            })
+    return specifications
+
+
 def get_int_filter(name):
     value = request.args.get(name, "").strip()
 
@@ -68,6 +101,36 @@ def get_filter_values():
         "max_price": request.args.get("max_price", "").strip(),
         "sort": request.args.get("sort", "name").strip(),
     }
+
+
+def get_catalog_items(model, search_fields=()):
+    """Apply the common catalogue filters used by every component list."""
+    q = request.args.get("q", "").strip()
+    filters = get_filter_values()
+    min_price = get_float_filter("min_price")
+    max_price = get_float_filter("max_price")
+
+    query = model.query.join(Brand)
+
+    if q:
+        search = f"%{q}%"
+        query = query.filter(
+            db.or_(model.model.ilike(search), Brand.name.ilike(search))
+        )
+
+    if filters["brand"]:
+        query = query.filter(model.brand_id == filters["brand"])
+    if min_price is not None:
+        query = query.filter(model.price >= min_price)
+    if max_price is not None:
+        query = query.filter(model.price <= max_price)
+
+    sort_options = {
+        "name": model.model.asc(),
+        "price_low": model.price.asc(),
+        "price_high": model.price.desc(),
+    }
+    return query.order_by(sort_options.get(filters["sort"], model.model.asc())).all(), q, filters
 
 
 def get_power_usage(item):
@@ -245,20 +308,29 @@ def calculate_system_health(
     return max(score, 0)
 
 
-def get_gaming_estimate(score):
-    if score is None:
+def get_gaming_estimate(cpu, gpu):
+    """Base gaming guidance on CPU/GPU capability, not build-completeness points."""
+    if not cpu or not gpu:
         return "Not Available", "Select a CPU and GPU"
 
-    if score >= 90:
-        return "4K High / Ultra", "80–140 FPS"
-    if score >= 75:
-        return "1440p High / Ultra", "70–120 FPS"
-    if score >= 60:
-        return "1440p Medium / High", "60–90 FPS"
-    if score >= 45:
-        return "1080p High", "60–100 FPS"
+    cpu_score = normalize_score(cpu.performance_score, 100)
+    gpu_score = normalize_score(gpu.performance_score, 150)
+    gaming_score = gpu_score * 0.70 + cpu_score * 0.30
 
-    return "1080p Medium", "40–70 FPS"
+    if gaming_score >= 90:
+        return "4K High / Ultra", "80–140 FPS"
+    if gaming_score >= 75:
+        return "1440p High / Ultra", "70–120 FPS"
+    if gaming_score >= 60:
+        return "1440p Medium / High", "60–90 FPS"
+    if gaming_score >= 48:
+        return "1080p High", "60–100 FPS"
+    if gaming_score >= 35:
+        return "1080p Medium", "45–75 FPS"
+    if gaming_score >= 22:
+        return "1080p Low", "35–55 FPS"
+
+    return "720p / 900p Low", "30–45 FPS"
 
 
 def get_build_performance():
@@ -342,7 +414,7 @@ def get_build_performance():
             + system_health_score * 0.20
         )
 
-    gaming_resolution, gaming_fps = get_gaming_estimate(final_score)
+    gaming_resolution, gaming_fps = get_gaming_estimate(cpu, gpu)
 
     return {
         "performance_score": final_score,
@@ -559,6 +631,7 @@ def get_build_summary():
             "id": component_id,
             "name": f"{item.brand.name} {item.model}",
             "price": item_price,
+            "image_url": url_for("static", filename=item.image) if item.image else None,
         }
 
     selected_count = len(selected_parts)
@@ -610,6 +683,8 @@ def builder_component_options(component_type):
             "id": getattr(item, id_attr),
             "name": f"{item.brand.name} {item.model}",
             "price": float(item.price),
+            "image_url": url_for("static", filename=item.image) if item.image else None,
+            "details": get_component_specifications(COMPONENT_MODELS[component_type][0], item),
         })
     return jsonify(rows)
 
@@ -617,6 +692,31 @@ def builder_component_options(component_type):
 @views.route("/api/builder/summary")
 def builder_summary():
     return jsonify(get_build_summary())
+
+
+@views.route("/api/components/<component_type>/<int:component_id>")
+def component_details(component_type, component_id):
+    """Return display-ready catalogue details without exposing database IDs."""
+    component_data = COMPONENT_MODELS.get(component_type)
+
+    if component_data is None:
+        return jsonify({"error": "Invalid component type"}), 404
+
+    model, _ = component_data
+    item = db.session.get(model, component_id)
+
+    if item is None:
+        return jsonify({"error": "Component not found"}), 404
+
+    return jsonify({
+        "component_type": component_type,
+        "component_id": component_id,
+        "brand": item.brand.name,
+        "model": item.model,
+        "price": float(item.price),
+        "image_url": url_for("static", filename=item.image) if item.image else None,
+        "details": get_component_specifications(model, item),
+    })
 
 
 @views.route("/api/builder/selection/<component_type>", methods=["PUT"])
@@ -663,6 +763,8 @@ def clear_builder_selection():
 
 @views.route("/components")
 def components():
+    q = request.args.get("q", "").strip()
+    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
     gpus = GPU.query.all()
     cpus = CPU.query.all()
     motherboards = motherboard.query.all()
@@ -681,11 +783,33 @@ def components():
     )
 
 
+def normalise(text):
+    raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
+    tokens = set(raw_tokens)
+
+    for token in raw_tokens:
+        match = re.fullmatch(r"(\d+)([a-z]+)", token)
+        if match:
+            tokens.add(match.group(1))
+            tokens.add(match.group(2))
+
+    return tokens
+
+
+def matches(search_text):
+    item_tokens = normalise(search_text)
+    return all(token in item_tokens for token in search_tokens)
+
+
 @views.route("/component_list")
 def component_list():
 
     q = request.args.get("q", "").strip()
     search_tokens = re.findall(r"[a-z0-9]+", q.lower())
+    filters = get_filter_values()
+    component_type = request.args.get("type", "").strip()
+    min_price = get_float_filter("min_price")
+    max_price = get_float_filter("max_price")
 
     catalogue = [
         {
@@ -826,11 +950,23 @@ def component_list():
     }
 
     for group in catalogue:
+        if component_type and group["name"] != component_type:
+            continue
 
         matched_items = [
             item for item in group["items"]
             if matches(item, group["search_text"](item))
+            and (not filters["brand"] or item.brand_id == filters["brand"])
+            and (min_price is None or item.price >= min_price)
+            and (max_price is None or item.price <= max_price)
         ]
+
+        if filters["sort"] == "price_low":
+            matched_items.sort(key=lambda item: item.price)
+        elif filters["sort"] == "price_high":
+            matched_items.sort(key=lambda item: item.price, reverse=True)
+        else:
+            matched_items.sort(key=lambda item: item.model.lower())
 
         results[result_keys[group["name"]]] = matched_items
 
@@ -839,6 +975,9 @@ def component_list():
     return render_template(
         "components_list.html",
         q=q,
+        filters=filters,
+        component_type=component_type,
+        brands=Brand.query.order_by(Brand.name).all(),
         total_results=total_results,
         **results
     )
@@ -861,318 +1000,71 @@ def learn_component(component):
 
 @views.route("/gpu")
 def gpu_list():
-    q = request.args.get("q", "").strip()
-    filter = get_filter_values()
-
-    min_price = get_float_filter("min_price")
-    max_price = get_float_filter("max_price")
+    gpus, q, filters = get_catalog_items(GPU)
     min_vram = get_int_filter("min_vram")
-    max_power = get_int_filter("max_power")
-
-    query = GPU.query.join(Brand)
-
-    if filter["brand"]:
-        query = query.filter(GPU.brand_id == filter["brand"])
-
-    if min_price is not None:
-        query = query.filter(GPU.price >= min_price)
-
-    if max_price is not None:
-        query = query.filter(GPU.price <= max_price)
-
     if min_vram is not None:
-        query = query.filter(GPU.vram >= min_vram)
-
-    if max_power is not None:
-        query = query.filter(GPU.power_usage <= max_power)
-
-    sort_options = {
-        "name": GPU.model.asc(),
-        "price_low": GPU.price.asc(),
-        "price_high": GPU.price.desc(),
-        "vram_high": GPU.vram.desc(),
-        "performance_high": GPU.performance_score.desc(),
-    }
-
-    gpus = query.order_by(
-        sort_options.get(filter["sort"], GPU.model.asc())
-    ).all()
+        gpus = [gpu for gpu in gpus if gpu.vram >= min_vram]
 
     return render_template(
         "gpu_list.html",
         gpus=gpus,
         q=q,
-        filters=filter,
+        filters=filters,
         brands=Brand.query.order_by(Brand.name).all(),
     )
 
 
 @views.route("/cpu")
 def cpu_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    cpus = CPU.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"cpu processor "
-            f"{item.cores} cores "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    cpus = [cpu for cpu in cpus if matches(cpu)]
-
-    return render_template("cpu_list.html", cpus=cpus, q=q)
+    cpus, q, filters = get_catalog_items(CPU)
+    return render_template("cpu_list.html", cpus=cpus, q=q, filters=filters,
+                           brands=Brand.query.order_by(Brand.name).all())
 
 
 @views.route("/motherboard")
 def motherboard_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    motherboards = motherboard.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"motherboard "
-            f"{item.ram_slots} ram slots "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    motherboards = [
-        motherboard for motherboard in motherboards if matches(motherboard)
-        ]
-
-    return render_template(
-        "motherboard_list.html", motherboards=motherboards, q=q)
+    motherboards, q, filters = get_catalog_items(motherboard)
+    return render_template("motherboard_list.html", motherboards=motherboards, q=q,
+                           filters=filters, brands=Brand.query.order_by(Brand.name).all())
 
 
 @views.route("/ram")
 def ram_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    rams = RAM.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"ram "
-            f"{item.capacity} gb "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    rams = [ram for ram in rams if matches(ram)]
-
-    return render_template("ram_list.html", rams=rams, q=q)
+    rams, q, filters = get_catalog_items(RAM)
+    return render_template("ram_list.html", rams=rams, q=q, filters=filters,
+                           brands=Brand.query.order_by(Brand.name).all())
 
 
 @views.route("/storage")
 def storage_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    storages = Storage.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"storage drive "
-            f"{item.capacity} gb "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    storages = [storage for storage in storages if matches(storage)]
-
-    return render_template("storage_list.html", storages=storages, q=q)
+    storages, q, filters = get_catalog_items(Storage)
+    return render_template("storage_list.html", storages=storages, q=q,
+                           filters=filters, brands=Brand.query.order_by(Brand.name).all())
 
 
 @views.route("/psu")
 def psu_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    psus = PSU.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"psu power supply "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    psus = [psu for psu in psus if matches(psu)]
-
-    return render_template("psu_list.html", psus=psus, q=q)
+    psus, q, filters = get_catalog_items(PSU)
+    return render_template("psu_list.html", psus=psus, q=q, filters=filters,
+                           brands=Brand.query.order_by(Brand.name).all())
 
 
 @views.route("/cooler")
 def cooler_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    coolers = Cooler.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"cooler cpu cooling "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    coolers = [cooler for cooler in coolers if matches(cooler)]
-
-    return render_template("cooler_list.html", coolers=coolers, q=q)
+    coolers, q, filters = get_catalog_items(Cooler)
+    return render_template("cooler_list.html", coolers=coolers, q=q, filters=filters,
+                           brands=Brand.query.order_by(Brand.name).all())
 
 
 @views.route("/case")
 def case_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    cases = Case.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"case pc case "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    cases = [case for case in cases if matches(case)]
-
-    return render_template("case_list.html", cases=cases, q=q)
+    cases, q, filters = get_catalog_items(Case)
+    return render_template("case_list.html", cases=cases, q=q, filters=filters,
+                           brands=Brand.query.order_by(Brand.name).all())
 
 
 @views.route("/case_fans")
 def case_fans_list():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
-
-    fans = Fan.query.join(Brand).all()
-
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item):
-        search_text = (
-            f"{item.brand.name} "
-            f"{item.model} "
-            f"case fan "
-            f"{item.price}"
-        )
-        item_tokens = normalise(search_text)
-        return all(token in item_tokens for token in search_tokens)
-
-    fans = [fan for fan in fans if matches(fan)]
-
-    return render_template("case_fans_list.html", case_fans=fans, q=q)
+    fans, q, filters = get_catalog_items(Fan)
+    return render_template("case_fans_list.html", case_fans=fans, q=q,
+                           filters=filters, brands=Brand.query.order_by(Brand.name).all())

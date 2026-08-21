@@ -34,6 +34,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="gpu"
+            data-component-id="{{ gpu.gpu_id }}"
             data-model="{{ gpu.model }}"
             data-image="{{ url_for('static', filename=gpu.image) }}"
             data-details='{{ {
@@ -76,6 +78,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="cpu"
+            data-component-id="{{ cpu.cpu_id }}"
             data-model="{{ cpu.model }}"
             data-image="{{ url_for('static', filename=cpu.image) }}"
             data-details='{{ {
@@ -119,6 +123,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="motherboard"
+            data-component-id="{{ motherboard.motherboard_id }}"
             data-model="{{ motherboard.model }}"
             data-image="{{ url_for('static', filename=motherboard.image) }}"
             data-details='{{ {
@@ -161,6 +167,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="ram"
+            data-component-id="{{ ram.ram_id }}"
             data-model="{{ ram.model }}"
             data-image="{{ url_for('static', filename=ram.image) }}"
             data-details='{{ {
@@ -204,6 +212,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="storage"
+            data-component-id="{{ storage_item.storage_id }}"
             data-model="{{ storage_item.model }}"
             data-image="{{ url_for('static', filename=storage_item.image) }}"
             data-details='{{ {
@@ -247,6 +257,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="psu"
+            data-component-id="{{ psu.psu_id }}"
             data-model="{{ psu.model }}"
             data-image="{{ url_for('static', filename=psu.image) }}"
             data-details='{{ {
@@ -290,6 +302,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="cooler"
+            data-component-id="{{ cooler.cooler_id }}"
             data-model="{{ cooler.model }}"
             data-image="{{ url_for('static', filename=cooler.image) }}"
             data-details='{{ {
@@ -333,6 +347,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="case"
+            data-component-id="{{ case.case_id }}"
             data-model="{{ case.model }}"
             data-image="{{ url_for('static', filename=case.image) }}"
             data-details='{{ {
@@ -375,6 +391,8 @@
         <button
             type="button"
             class="component_card"
+            data-component-type="fan"
+            data-component-id="{{ fan.fan_id }}"
             data-model="{{ fan.model }}"
             data-image="{{ url_for('static', filename=fan.image) }}"
             data-details='{{ {
@@ -459,5 +477,6 @@
             });
         </script>
 
+<script src="{{ url_for('static', filename='component-modal.js') }}"></script>
 </body>
 </html>
