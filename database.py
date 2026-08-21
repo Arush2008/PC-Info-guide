@@ -142,6 +142,7 @@ class Cooler(db.Model):
     socket_support = db.Column(db.String(100), nullable=False)
     power_usage = db.Column(db.Integer, nullable=False)
     brand = db.relationship("Brand", backref="coolers", lazy=True)
+    image = db.Column(db.String(100), nullable=False)
 
 
 class Case(db.Model):
@@ -158,6 +159,7 @@ class Case(db.Model):
     size = db.Column(db.String(50), nullable=False)
     form_factor = db.Column(db.String(100), nullable=False)
     brand = db.relationship('Brand', backref='cases', lazy=True)
+    image = db.Column(db.String(100), nullable=False)
 
 
 class Fan(db.Model):
@@ -176,3 +178,4 @@ class Fan(db.Model):
     noise_level = db.Column(db.String(50), nullable=False)
     brand = db.relationship('Brand', backref='case_fans', lazy=True)
     power_usage = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(100), nullable=False)
