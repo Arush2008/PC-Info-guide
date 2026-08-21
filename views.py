@@ -48,7 +48,6 @@ STATIC_DIRECTORY = Path(__file__).resolve().parent / "static"
 
 
 def get_component_display_name(item):
-    """Avoid repeating the brand when it is already included in a model name."""
     brand_name = item.brand.name.strip()
     model_name = item.model.strip()
     if model_name.lower().startswith(brand_name.lower() + " "):
@@ -57,7 +56,6 @@ def get_component_display_name(item):
 
 
 def get_component_image_url(item):
-    """Use a recorded image, then the PSU image library, then a safe fallback."""
     image_path = getattr(item, "image", None)
 
     if not image_path and isinstance(item, PSU):
@@ -69,7 +67,6 @@ def get_component_image_url(item):
 
 
 def format_component_label(column_name):
-    """Turn database column names into labels suitable for the catalogue."""
     labels = {
         "vram": "VRAM",
         "ram_type": "RAM type",
@@ -86,13 +83,10 @@ def format_component_label(column_name):
 
 
 def get_component_specifications(model, item):
-    """Return shopper-facing fields, without internal IDs or media paths."""
     specifications = []
     for column in inspect(model).columns:
         if column.primary_key or column.name in {"brand_id", "image", "price"}:
             continue
-        # RAM and Storage both store this field in a SQL column named "type",
-        # but use clearer Python attribute names to avoid confusion with type().
         attribute_name = column.name
         if column.name == "type" and model is RAM:
             attribute_name = "ram_type"
@@ -136,7 +130,6 @@ def get_filter_values():
 
 
 def get_catalog_items(model, search_fields=()):
-    """Apply the common catalogue filters used by every component list."""
     q = request.args.get("q", "").strip()
     filters = get_filter_values()
     min_price = get_float_filter("min_price")
@@ -162,7 +155,8 @@ def get_catalog_items(model, search_fields=()):
         "price_low": model.price.asc(),
         "price_high": model.price.desc(),
     }
-    return query.order_by(sort_options.get(filters["sort"], model.model.asc())).all(), q, filters
+    sort_order = sort_options.get(filters["sort"], model.model.asc())
+    return query.order_by(sort_order).all(), q, filters
 
 
 def get_power_usage(item):
@@ -341,7 +335,6 @@ def calculate_system_health(
 
 
 def get_gaming_estimate(cpu, gpu):
-    """Base gaming guidance on CPU/GPU capability, not build-completeness points."""
     if not cpu or not gpu:
         return "Not Available", "Select a CPU and GPU"
 
@@ -716,7 +709,9 @@ def builder_component_options(component_type):
             "name": get_component_display_name(item),
             "price": float(item.price),
             "image_url": get_component_image_url(item),
-            "details": get_component_specifications(COMPONENT_MODELS[component_type][0], item),
+            "details": get_component_specifications(
+                COMPONENT_MODELS[component_type][0], item
+            ),
         })
     return jsonify(rows)
 
@@ -795,8 +790,6 @@ def clear_builder_selection():
 
 @views.route("/components")
 def components():
-    q = request.args.get("q", "").strip()
-    search_tokens = re.findall(r"[a-z0-9]+", q.lower())
     gpus = GPU.query.all()
     cpus = CPU.query.all()
     motherboards = motherboard.query.all()
@@ -828,7 +821,7 @@ def normalise(text):
     return tokens
 
 
-def matches(search_text):
+def matches(search_text, search_tokens):
     item_tokens = normalise(search_text)
     return all(token in item_tokens for token in search_tokens)
 
@@ -1049,54 +1042,94 @@ def gpu_list():
 @views.route("/cpu")
 def cpu_list():
     cpus, q, filters = get_catalog_items(CPU)
-    return render_template("cpu_list.html", cpus=cpus, q=q, filters=filters,
-                           brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "cpu_list.html",
+        cpus=cpus,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/motherboard")
 def motherboard_list():
     motherboards, q, filters = get_catalog_items(motherboard)
-    return render_template("motherboard_list.html", motherboards=motherboards, q=q,
-                           filters=filters, brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "motherboard_list.html",
+        motherboards=motherboards,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/ram")
 def ram_list():
     rams, q, filters = get_catalog_items(RAM)
-    return render_template("ram_list.html", rams=rams, q=q, filters=filters,
-                           brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "ram_list.html",
+        rams=rams,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/storage")
 def storage_list():
     storages, q, filters = get_catalog_items(Storage)
-    return render_template("storage_list.html", storages=storages, q=q,
-                           filters=filters, brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "storage_list.html",
+        storages=storages,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/psu")
 def psu_list():
     psus, q, filters = get_catalog_items(PSU)
-    return render_template("psu_list.html", psus=psus, q=q, filters=filters,
-                           brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "psu_list.html",
+        psus=psus,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/cooler")
 def cooler_list():
     coolers, q, filters = get_catalog_items(Cooler)
-    return render_template("cooler_list.html", coolers=coolers, q=q, filters=filters,
-                           brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "cooler_list.html",
+        coolers=coolers,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/case")
 def case_list():
     cases, q, filters = get_catalog_items(Case)
-    return render_template("case_list.html", cases=cases, q=q, filters=filters,
-                           brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "case_list.html",
+        cases=cases,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
 
 
 @views.route("/case_fans")
 def case_fans_list():
     fans, q, filters = get_catalog_items(Fan)
-    return render_template("case_fans_list.html", case_fans=fans, q=q,
-                           filters=filters, brands=Brand.query.order_by(Brand.name).all())
+    return render_template(
+        "case_fans_list.html",
+        case_fans=fans,
+        q=q,
+        filters=filters,
+        brands=Brand.query.order_by(Brand.name).all(),
+    )
