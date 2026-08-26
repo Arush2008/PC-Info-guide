@@ -6,15 +6,14 @@ app = Flask(__name__)
 app.secret_key = 'This_key_will_save_session_of_user'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# Always serve current CSS and JavaScript while developing this project.
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 @app.url_defaults
 def supply_static_fallback(endpoint, values):
-    """Keep catalogue pages usable when an older database row has no image path."""
     if endpoint == "static" and not values.get("filename"):
         values["filename"] = "background.png"
+
 
 db.init_app(app)
 app.register_blueprint(views)
