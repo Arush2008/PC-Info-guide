@@ -39,3 +39,25 @@ Main Features :
 
     Build PC 
         - In Build PC page the user can build thier own pc by choosing the parts they like and the web page will help them to find the correct parts which are compatible with each other and can handel the parts properly. It also shows the total price of the choosen pc parts and also shows the total power usage of the choosen parts combined. There are some other features like the user can see the performance score of the pc they build which scores the pc out of 100. While the user is chooseing the part they could search their desired part and choose the part after searching it which will make finding the parts easy. and they could eather change that part by clicking the change button or remove the part which will remove the part they can also click clear button to clear the whole pc build. The build will locally be stored in the users computer but they cannot be save the pc they build. 
+
+
+
+
+
+
+
+Update ------------
+
+I am going to add new feature which saves all the builds at one place and it will be visible to everyone insted of single user since for that I will have to add login feature which will take time so I will just add a public visible feature to add pc builds and the user have to keep the name uniqe.
+I will write everything here like what I did 1 by 1 to prove that I did not user AI and the codes writed are mine and I understand what I have writte.
+
+STEP - 1
+ I added a new table named builds which will have all the components and I added all the components in that table with a refrence to the other tables which just uses the id insted of the whole new text and I also added a build name which will be unique all over so the builds can be specified and easier to find. 
+
+ STEP - 2
+ - I added a builds model in the database.py which shows all the things of the database.
+ - Then I added a new route in the views.py to send the content to the html.
+ - I added new html page to show all the builds
+
+ -I tested it by first addig random components to a build in the database and then running it and check if the html does work or not. (it did not work first but then I fixed few things to make it work and it does work now !)
+

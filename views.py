@@ -1,3 +1,4 @@
+# views.py
 from flask import (
     Blueprint,
     render_template,
@@ -22,16 +23,20 @@ from database import (
     PSU,
     Case,
     Fan,
+    Builds
 )
 
 views = Blueprint('views', __name__)
 
 
+# Function to get the first number
 def _extract_number(query):
     match = re.search(r"(\d+)", query.lower())
     return int(match.group(1)) if match else None
 
 
+# To define the componnets and thier IDs used for the
+# builder and compatibility checks
 COMPONENT_MODELS = {
     "cpu": (CPU, "cpu_id"),
     "gpu": (GPU, "gpu_id"),
@@ -47,6 +52,7 @@ COMPONENT_MODELS = {
 STATIC_DIRECTORY = Path(__file__).resolve().parent / "static"
 
 
+# Helps to display the component name.
 def get_component_display_name(item):
     brand_name = item.brand.name.strip()
     model_name = item.model.strip()
@@ -55,6 +61,7 @@ def get_component_display_name(item):
     return f"{brand_name} {model_name}"
 
 
+# It helps to get the image URL for a specific component.
 def get_component_image_url(item):
     image_path = getattr(item, "image", None)
 
@@ -66,6 +73,7 @@ def get_component_image_url(item):
     return url_for("static", filename=image_path or "background.png")
 
 
+# It displays the component label to show the detials of the component
 def format_component_label(column_name):
     labels = {
         "vram": "VRAM",
@@ -82,6 +90,7 @@ def format_component_label(column_name):
     return labels.get(column_name, column_name.replace("_", " ").capitalize())
 
 
+# It is used to find the specification of the component.
 def get_component_specifications(model, item):
     specifications = []
     for column in inspect(model).columns:
@@ -102,6 +111,7 @@ def get_component_specifications(model, item):
     return specifications
 
 
+# It shows the values of the filter
 def get_int_filter(name):
     value = request.args.get(name, "").strip()
 
@@ -129,6 +139,7 @@ def get_filter_values():
     }
 
 
+# It displays the item based on the model and the search bar
 def get_catalog_items(model, search_fields=()):
     q = request.args.get("q", "").strip()
     filters = get_filter_values()
@@ -159,6 +170,8 @@ def get_catalog_items(model, search_fields=()):
     return query.order_by(sort_order).all(), q, filters
 
 
+# It is used to calculate the power for the component and
+# return 0 if the item is not selected or no power usage for the component.
 def get_power_usage(item):
     try:
         return int(float(item.power_usage or 0))
@@ -180,6 +193,7 @@ def normalize_score(score, maximum):
     return min(round(score / maximum * 100), 100)
 
 
+# It displays the score rating based on the score value.
 def get_score_rating(score):
     if score is None:
         return "Not Available"
@@ -195,6 +209,7 @@ def get_score_rating(score):
     return "Low"
 
 
+# calculates the raw performance using cpu, gpu, ram and storage.
 def calculate_raw_performance(cpu, gpu, ram, storage):
     if not cpu or not gpu:
         return None
@@ -227,6 +242,7 @@ def calculate_raw_performance(cpu, gpu, ram, storage):
     return round(raw_score)
 
 
+# It calculates the balance score using cpu, gpu and ram.
 def calculate_balance_score(cpu, gpu, ram):
     if not cpu or not gpu:
         return None, "Select a CPU and GPU"
@@ -266,6 +282,7 @@ def calculate_balance_score(cpu, gpu, ram):
     return balance_score, message
 
 
+# calculatees the total power usage and the recommends the power value.
 def get_recommended_psu(total_power, gpu_power):
     if total_power == 0:
         return 0
@@ -282,6 +299,7 @@ def get_recommended_psu(total_power, gpu_power):
     return 1600
 
 
+# to calculate the system health
 def calculate_system_health(
     build,
     cpu,
@@ -334,6 +352,8 @@ def calculate_system_health(
     return max(score, 0)
 
 
+# It show the estimated gaming performance using gpu
+# and cpu and returns the resolution and fps.
 def get_gaming_estimate(cpu, gpu):
     if not cpu or not gpu:
         return "Not Available", "Select a CPU and GPU"
@@ -358,6 +378,8 @@ def get_gaming_estimate(cpu, gpu):
     return "720p / 900p Low", "30–45 FPS"
 
 
+# it uses all the components to calculate the performance score,
+# balance score and sytem health to return the final score.
 def get_build_performance():
     build = session.get("build", {})
 
@@ -599,6 +621,8 @@ def check_compatibility(build):
     return checks
 
 
+# Used to check the compatibility of the seleccted components in
+# the builder and returns it as a json response.
 @views.route("/api/builder/compatibility")
 def builder_compatibility():
     build = session.get("build", {})
@@ -1132,4 +1156,14 @@ def case_fans_list():
         q=q,
         filters=filters,
         brands=Brand.query.order_by(Brand.name).all(),
+    )
+
+
+# Displayes the saved builds route !
+@views.route("/saved_builds")
+def saved_builds():
+    Build = Builds.query.all()
+    return render_template(
+        "saved_builds.html",
+        Build=Build
     )

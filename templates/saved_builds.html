@@ -1,0 +1,16 @@
+<h1> Saved Builds</h1>
+
+{% for build in Build %}
+    <div class="build_card">
+        <h2>{{ build.build_name }}</h2>
+        <p>CPU: {{ build.cpu.model }}</p>
+        <p>GPU: {{ build.gpu.model }}</p>
+        <p>RAM: {{ build.ram.model }}</p>
+        <p>Storage: {{ build.storage.model }}</p>
+        <p>Motherboard: {{ build.motherboard.model }}</p>
+        <p>PSU: {{ build.psu.model }}</p>
+        <p>Case: {{ build.case.model }}</p>
+        <p>Fan: {{ build.fan.model }}</p>
+        ------------------------------------------
+    </div>
+{% endfor %}

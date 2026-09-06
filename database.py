@@ -179,3 +179,39 @@ class Fan(db.Model):
     brand = db.relationship('Brand', backref='case_fans', lazy=True)
     power_usage = db.Column(db.Integer, nullable=False)
     image = db.Column(db.String(100), nullable=False)
+
+
+# Table for storing saved builds
+class Builds(db.Model):
+    __tablename___ = 'builds'
+
+    build_id = db.Column(db.Integer, primary_key=True)
+    build_name = db.Column(db.String(100), nullable=False)
+    cpu_id = db.Column(db.Integer, db.ForeignKey('cpu.cpu_id'), nullable=False)
+    gpu_id = db.Column(db.Integer, db.ForeignKey('gpu.gpu_id'), nullable=False)
+    motherboard_id = db.Column(
+        db.Integer,
+        db.ForeignKey('motherboard.motherboard_id'),
+        nullable=False)
+    ram_id = db.Column(db.Integer, db.ForeignKey('ram.ram_id'), nullable=False)
+    storage_id = db.Column(
+        db.Integer, db.ForeignKey('storage.storage_id'),
+        nullable=False)
+    psu_id = db.Column(db.Integer, db.ForeignKey('psu.psu_id'), nullable=False)
+    cooler_id = db.Column(
+        db.Integer, db.ForeignKey('cooler.cooler_id'),
+        nullable=False)
+    case_id = db.Column(db.Integer, db.ForeignKey('case.case_id'),
+                        nullable=False)
+    fan_id = db.Column(db.Integer, db.ForeignKey('fan.fan_id'), nullable=False)
+
+# Relationships to tell the components name.
+    cpu = db.relationship("CPU")
+    gpu = db.relationship("GPU")
+    motherboard = db.relationship("motherboard")
+    ram = db.relationship("RAM")
+    storage = db.relationship("Storage")
+    psu = db.relationship("PSU")
+    cooler = db.relationship("Cooler")
+    case = db.relationship("Case")
+    fan = db.relationship("Fan")
