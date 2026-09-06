@@ -183,7 +183,7 @@ class Fan(db.Model):
 
 # Table for storing saved builds
 class Builds(db.Model):
-    __tablename___ = 'builds'
+    __tablename__ = 'builds'
 
     build_id = db.Column(db.Integer, primary_key=True)
     build_name = db.Column(db.String(100), nullable=False)

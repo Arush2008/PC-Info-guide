@@ -1,16 +1,61 @@
-<h1> Saved Builds</h1>
+<!DOCTYPE html>
+<html>
 
-{% for build in Build %}
-    <div class="build_card">
-        <h2>{{ build.build_name }}</h2>
-        <p>CPU: {{ build.cpu.model }}</p>
-        <p>GPU: {{ build.gpu.model }}</p>
-        <p>RAM: {{ build.ram.model }}</p>
-        <p>Storage: {{ build.storage.model }}</p>
-        <p>Motherboard: {{ build.motherboard.model }}</p>
-        <p>PSU: {{ build.psu.model }}</p>
-        <p>Case: {{ build.case.model }}</p>
-        <p>Fan: {{ build.fan.model }}</p>
-        ------------------------------------------
-    </div>
-{% endfor %}
+<head>
+    <title>Saved Builds</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="components_page">
+
+<nav class="top_nav_bar">
+    <h1 class="logo">PCforce</h1>
+    <a href="/">Home</a>
+    <a href="/learn">Learn</a>
+    <a href="/components">Components</a>
+    <a href="/PC_builder">PC Builder</a>
+</nav>
+
+<h1 class="page_title">Saved Builds (Public)</h1>
+
+{% if Build %}
+        {% for build in Build %}
+            <div class="saved_build">
+                <h2>{{ build.build_name }}</h2>
+                <div class="build_components">
+                    <p>
+                        CPU : {{ build.cpu.model }}
+                    </p>
+                    <p>
+                        GPU : {{ build.gpu.model }}
+                    </p>
+                    <p>
+                        Motherboard : {{ build.motherboard.model }}
+                    </p>
+                    <p>
+                        RAM : {{ build.ram.model }}
+                    </p>
+                    <p>
+                        Storage : {{ build.storage.model }}
+                    </p>
+                    <p>
+                        PSU : {{ build.psu.model }}
+                    </p>
+                    <p>
+                        Cooler : {{ build.cooler.model }}
+                    </p>
+                    <p>
+                        Case : {{ build.case.model }}
+                    </p>
+                    <p>
+                        Fan : {{ build.fan.model }}
+                    </p>
+
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No saved builds found.</p>
+    {% endif %}
+</body>
+</html>

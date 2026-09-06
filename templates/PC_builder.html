@@ -34,7 +34,15 @@
                     <h2>Components</h2>
                     <p>Select the parts for your PC.</p>
                 </div>
+                <div class="builder_section">
+                    <button class="save_button" type="button">
+                        Save Build
+                    </button>
+                    <a href="/saved_builds" class="saved_builds">Saved Builds</a>
+                </div>
             </div>
+
+            
 
             <div class="component_row_in_pcbuilder">
                 <div class="component_icon">CPU</div>
@@ -767,8 +775,39 @@ document.querySelector(".clear_button").addEventListener("click", async () => {
     applySummary(summary);
 });
 
-
 getBuildSummary().then(applySummary);
+
+
+/* This section of the JS is used to */
+document.querySelector(".save_button").addEventListener("click", async function() {
+
+    const name = prompt("Enter a name for your build:");
+
+    if (!name) {
+        return;
+    }
+
+    const response = await fetch("/api/builder/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name
+        })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        alert(result.error);
+        return;
+    }
+
+    alert("Build saved successfully.");
+});
+
+
 </script>
 
 </body>

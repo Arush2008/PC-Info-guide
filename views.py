@@ -482,6 +482,8 @@ def get_build_performance():
     }
 
 
+# Calculates the performance of the components
+# and returns it as a json response.
 @views.route("/api/builder/performance")
 def builder_performance():
     return jsonify(get_build_performance())
@@ -621,8 +623,8 @@ def check_compatibility(build):
     return checks
 
 
-# Used to check the compatibility of the seleccted components in
-# the builder and returns it as a json response.
+# Used to check the compatibility of the seleccted components
+# in the builder and returns it as a json response.
 @views.route("/api/builder/compatibility")
 def builder_compatibility():
     build = session.get("build", {})
@@ -656,6 +658,7 @@ def get_component_options(component_type, search_text=""):
     return components, id_attr
 
 
+# Finds the summary of the selected components.
 def get_build_summary():
     build = session.get("build", {})
     selected_parts = {}
@@ -697,26 +700,31 @@ def get_build_summary():
     }
 
 
+# Home page route
 @views.route("/")
 def home():
     return render_template("index.html")
 
 
+# Learning page route
 @views.route("/learn")
 def learn():
     return render_template("learn.html")
 
 
+# PC builder page route
 @views.route("/PC_builder")
 def PC_builder():
     return render_template("PC_builder.html")
 
 
+# It takes the user to the home page from random URLS.
 @views.route("/<path:patch>")
 def catch_all(patch):
     return redirect(url_for("views.home"))
 
 
+# finds the components opetions by searching the component type.
 @views.route("/api/builder/options/<component_type>")
 def builder_component_options(component_type):
     search_text = request.args.get("q", "").strip()
@@ -740,14 +748,15 @@ def builder_component_options(component_type):
     return jsonify(rows)
 
 
+# to get summary of the selected components.
 @views.route("/api/builder/summary")
 def builder_summary():
     return jsonify(get_build_summary())
 
 
+# to get the details of the components.
 @views.route("/api/components/<component_type>/<int:component_id>")
 def component_details(component_type, component_id):
-    """Return display-ready catalogue details without exposing database IDs."""
     component_data = COMPONENT_MODELS.get(component_type)
 
     if component_data is None:
@@ -770,6 +779,7 @@ def component_details(component_type, component_id):
     })
 
 
+# Selects the component to save it locally.
 @views.route("/api/builder/selection/<component_type>", methods=["PUT"])
 def select_builder_component(component_type):
     component_data = COMPONENT_MODELS.get(component_type)
@@ -796,6 +806,7 @@ def select_builder_component(component_type):
     return jsonify(get_build_summary())
 
 
+# Remove button to remove the component.
 @views.route("/api/builder/selection/<component_type>", methods=["DELETE"])
 def remove_builder_component(component_type):
     build = session.get("build", {})
@@ -805,6 +816,7 @@ def remove_builder_component(component_type):
     return jsonify(get_build_summary())
 
 
+# Clears the selected componets and return.
 @views.route("/api/builder/selection", methods=["DELETE"])
 def clear_builder_selection():
     session["build"] = {}
@@ -812,6 +824,7 @@ def clear_builder_selection():
     return jsonify(get_build_summary())
 
 
+# components page route
 @views.route("/components")
 def components():
     gpus = GPU.query.all()
@@ -850,6 +863,7 @@ def matches(search_text, search_tokens):
     return all(token in item_tokens for token in search_tokens)
 
 
+# Displays the component list using search and fiters.
 @views.route("/component_list")
 def component_list():
 
@@ -1032,6 +1046,7 @@ def component_list():
     )
 
 
+# It is used to display the learn page for the specific component.
 @views.route("/learn/<component>")
 def learn_component(component):
 
@@ -1047,6 +1062,7 @@ def learn_component(component):
     return render_template("learn.html", active=component)
 
 
+# Under are all the components only things ----------------------
 @views.route("/gpu")
 def gpu_list():
     gpus, q, filters = get_catalog_items(GPU)
@@ -1167,3 +1183,48 @@ def saved_builds():
         "saved_builds.html",
         Build=Build
     )
+
+
+# This route will save the build to the databse.
+@views.route("/api/builder/save", methods=["POST"])
+def savebuilder__build():
+    build = session.get("build", {})
+    required_parts = (
+        "cpu",
+        "gpu",
+        "motherboard",
+        "ram",
+        "storage",
+        "psu",
+        "cooler",
+        "case",
+        "fan",
+    )
+
+    for part in required_parts:
+        if part not in build:
+            return jsonify({"error": f"{part} is missing"}), 400
+
+    data = request.get_json()
+    build_name = data.get("name", "")
+
+    if not build_name:
+        return jsonify({"error": "Build name is required"}), 400
+
+    saved_build = Builds(
+            build_name=build_name,
+            cpu_id=build["cpu"],
+            gpu_id=build["gpu"],
+            motherboard_id=build["motherboard"],
+            ram_id=build["ram"],
+            storage_id=build["storage"],
+            psu_id=build["psu"],
+            cooler_id=build["cooler"],
+            case_id=build["case"],
+            fan_id=build["fan"],
+    )
+
+    db.session.add(saved_build)
+    db.session.commit()
+
+    return jsonify({"message": "Build saved successfully"}), 201

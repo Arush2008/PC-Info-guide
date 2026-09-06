@@ -46,7 +46,7 @@ Main Features :
 
 
 
-Update ------------
+----------Update ------------ for resubmittion --------------------------------------
 
 I am going to add new feature which saves all the builds at one place and it will be visible to everyone insted of single user since for that I will have to add login feature which will take time so I will just add a public visible feature to add pc builds and the user have to keep the name uniqe.
 I will write everything here like what I did 1 by 1 to prove that I did not user AI and the codes writed are mine and I understand what I have writte.
@@ -61,3 +61,25 @@ STEP - 1
 
  -I tested it by first addig random components to a build in the database and then running it and check if the html does work or not. (it did not work first but then I fixed few things to make it work and it does work now !)
 
+ STEP - 3 
+ -added a save build button and a button to take the user to the saved builds page !
+    save build does not currently works but the button to take the user to the saved builds works. 
+-Added function and route to make the save button work and save the things
+    -How did I do that Step by step process...
+        1. It creates the API for javascript to communicate!
+        2. Then it see the current build in json if there is any.
+        3. It list all the components so no components are missing
+        4. Checks the list weather all components are selected which are in list
+        5. Then if something is missing it gives a pop up showing the name of the component which is missing.
+        6. when saved button is clicked the json files are read by theis and returned
+        7. check the name if it is entered or not if not give error that the name is not written.
+        8. Lastly it creates the databse column with the selected components and name saving each component and the name in the database which is being displayed in the saved build page. 
+-Lastly when everything is working I just added the proper HTML page and then styled the whole page to make it look batter. 
+
+I could add more stuff to it like removing or editing but as I am a student I am busy with other school work as it is exam times so I didnt get time to add more features.
+
+I dont know if these stuff would be enough but I honestly know what is going on in my codes and mostly everything is writen by myself (have used auto fill but know what I am doing).
+
+I believe if the codes are breaking the 30% AI requirement then it might cuz all my learning materials are AI generated since finding and adding them myself will take a lot of time but I did read through each of them and made sure the data is close to pefect and legit. But the functions and routes are created by me did use AI but just to understand and learn the new things which I didnt know before 
+for example how to make the search functions without wild card quaries in python.
+But I think this whole event is about learning and I did learn a lot from this project but didnt try to make an AI generated project. 
