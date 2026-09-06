@@ -1833,34 +1833,41 @@ body.modal_open {
 
 
 
+.saved_builds_container {
+    width: min(90%, 100%);
+    margin: 0 auto 60px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: start;
+}
+
 .saved_build {
-    background: transparent;
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 12px;
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 500px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-    border: 1px solid #ddd;
+    background: #151922;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
 
 .saved_build h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin: 0 0 18px;
     color: #3bfc8b;
+    font-size: 22px;
+    overflow-wrap: anywhere;
 }
 
 .build_components {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid;
+    gap: 8px;
 }
 
 .build_components p {
     margin: 0;
-    padding: 12px 15px;
-}
-
-.build_components strong {
-    display: block;
-    margin-bottom: 4px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd0da;
+    font-size: 14px;
 }

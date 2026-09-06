@@ -18,7 +18,9 @@
 
 <h1 class="page_title">Saved Builds (Public)</h1>
 
-{% if Build %}
+    {% if Build %}
+
+    <div class="saved_builds_container">
         {% for build in Build %}
             <div class="saved_build">
                 <h2>{{ build.build_name }}</h2>
@@ -54,7 +56,7 @@
                 </div>
             </div>
         {% endfor %}
-    {% else %}
+        {% else %}
         <p>No saved builds found.</p>
     {% endif %}
 </body>
