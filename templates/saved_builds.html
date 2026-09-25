@@ -21,8 +21,17 @@
     {% if builds %}
             <div class="saved_builds_container">
                 {% for build in builds %}
-                    <div class="saved_build">
-                        <h2>{{ build.name }}</h2>
+                    <div class="saved_build" data-build-id="{{ build.id }}">
+                        <h2 class="saved_build_name">{{ build.name }}</h2>
+
+                        <div class="saved_build_actions">
+                            <button type="button" class="rename_build_button">
+                                Rename
+                            </button>
+                            <button type="button" class="delete_build_button">
+                                Delete
+                            </button>
+                        </div>
 
                         <div class="build_components">
                             {% for component in build.components %}
@@ -38,5 +47,52 @@
         {% else %}
             <p>No saved builds found.</p>
     {% endif %}
+
+<script>
+    document.querySelectorAll(".saved_build").forEach((buildCard) => {
+        const buildId = buildCard.dataset.buildId;
+        const buildName = buildCard.querySelector(".saved_build_name");
+        const renameButton = buildCard.querySelector(".rename_build_button");
+        const deleteButton = buildCard.querySelector(".delete_build_button");
+
+        renameButton.addEventListener("click", async () => {
+            const newName = prompt("Enter a new name:", buildName.textContent.trim());
+            if (newName === null) return;
+
+            const response = await fetch(`/api/saved-builds/${buildId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: newName })
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.error || "Unable to rename build.");
+                return;
+            }
+
+            buildName.textContent = result.name;
+        });
+
+        deleteButton.addEventListener("click", async () => {
+            if (!confirm(`Delete "${buildName.textContent.trim()}"?`)) return;
+
+            const response = await fetch(`/api/saved-builds/${buildId}`, {
+                method: "DELETE"
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.error || "Unable to delete build.");
+                return;
+            }
+
+            buildCard.remove();
+            if (!document.querySelector(".saved_build")) {
+                window.location.reload();
+            }
+        });
+    });
+</script>
 </body>
 </html>

@@ -1907,6 +1907,58 @@ body.modal_open {
     overflow-wrap: anywhere;
 }
 
+.saved_build_actions {
+    display: flex;
+    gap: 9px;
+    margin: -6px 0 18px;
+}
+
+.saved_build_actions button {
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+        color 0.2s ease, transform 0.2s ease;
+}
+
+.saved_build_actions button:hover {
+    transform: translateY(-1px);
+}
+
+.saved_build_actions button:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+}
+
+.rename_build_button {
+    border-color: rgba(59, 252, 139, 0.6) !important;
+    background: rgba(59, 252, 139, 0.1);
+    color: #3bfc8b;
+}
+
+.rename_build_button:hover {
+    border-color: #3bfc8b !important;
+    background: #3bfc8b;
+    color: #08110d;
+}
+
+.delete_build_button {
+    border-color: rgba(255, 111, 111, 0.45) !important;
+    background: rgba(255, 111, 111, 0.08);
+    color: #ff9696;
+}
+
+.delete_build_button:hover {
+    border-color: #ff6f6f !important;
+    background: #ff6f6f;
+    color: #210808;
+}
+
 .build_components {
     display: grid;
     gap: 8px;
@@ -1919,4 +1971,21 @@ body.modal_open {
     background: rgba(255, 255, 255, 0.05);
     color: #cbd0da;
     font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+    .saved_builds_container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .saved_builds_container {
+        grid-template-columns: 1fr;
+        width: min(94%, 520px);
+    }
+
+    .saved_build_actions button {
+        flex: 1;
+    }
 }

@@ -40,7 +40,7 @@ from database import (
 views = Blueprint('views', __name__)
 
 
-# Function to get the first number
+# It is used to take the number from the string to return the number value.
 def _extract_number(query):
     match = re.search(r"(\d+)", query.lower())
     return int(match.group(1)) if match else None
@@ -63,7 +63,7 @@ COMPONENT_MODELS = {
 STATIC_DIRECTORY = Path(__file__).resolve().parent / "static"
 
 
-# Helps to display the component name.
+# to get the display name of the component and return the brand and model name.
 def get_component_display_name(item):
     brand_name = item.brand.name.strip()
     model_name = item.model.strip()
@@ -122,7 +122,7 @@ def get_component_specifications(model, item):
     return specifications
 
 
-# It shows the values of the filter
+# It is used to get the filter values from the request by the user.
 def get_int_filter(name):
     value = request.args.get(name, "").strip()
 
@@ -1264,6 +1264,7 @@ def saved_builds():
                 })
 
         saved_builds_data.append({
+            "id": build.build_id,
             "name": build.build_name,
             "components": parts,
         })
@@ -1272,6 +1273,64 @@ def saved_builds():
         "saved_builds.html",
         builds=saved_builds_data
     )
+
+
+@views.route("/api/saved-builds/<int:build_id>", methods=["DELETE"])
+def delete_saved_build(build_id):
+    build = db.session.get(Build, build_id)
+
+    if build is None:
+        return jsonify({"error": "Build not found"}), 404
+
+    try:
+        db.session.delete(build)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({"error": "Failed to delete build"}), 500
+
+    return jsonify({"message": "Build deleted successfully"})
+
+
+@views.route("/api/saved-builds/<int:build_id>", methods=["PATCH"])
+def rename_saved_build(build_id):
+    build = db.session.get(Build, build_id)
+
+    if build is None:
+        return jsonify({"error": "Build not found"}), 404
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid request data"}), 400
+
+    build_name = str(data.get("name", "")).strip()
+    if not build_name:
+        return jsonify({"error": "Build name is required"}), 400
+    if len(build_name) > 100:
+        return jsonify({
+            "error": "Build name must be 100 characters or less"
+        }), 400
+
+    duplicate = Build.query.filter(
+        Build.build_name == build_name,
+        Build.build_id != build_id,
+    ).first()
+    if duplicate:
+        return jsonify({
+            "error": "A build with that name already exists"
+        }), 409
+
+    try:
+        build.build_name = build_name
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({"error": "Failed to rename build"}), 500
+
+    return jsonify({
+        "message": "Build renamed successfully",
+        "name": build.build_name,
+    })
 
 
 # This route will save the build to the databse.
@@ -1319,7 +1378,6 @@ def savebuilder__build():
                 build_id=saved_build.build_id,
                 component_type=component_type,
                 component_id=component_id,
-                quantity=1,
             ))
 
         db.session.commit()
