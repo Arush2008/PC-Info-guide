@@ -155,6 +155,10 @@ def get_filter_values():
     }
 
 
+def escape_like_query(value):
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 # It displays the item based on the model and the search bar
 def get_catalog_items(model):
     q = request.args.get("q", "").strip()
@@ -165,9 +169,12 @@ def get_catalog_items(model):
     query = model.query.join(Brand)
 
     if q:
-        search = f"%{q}%"
+        search = f"%{escape_like_query(q)}%"
         query = query.filter(
-            db.or_(model.model.ilike(search), Brand.name.ilike(search))
+            db.or_(
+                model.model.ilike(search, escape="\\"),
+                Brand.name.ilike(search, escape="\\"),
+            )
         )
 
     if filters["brand"]:
@@ -1058,13 +1065,16 @@ def component_list():
         "fan": "case_fans",
     }
 
+    has_search_text_without_tokens = bool(q and not search_tokens)
+
     for group in catalogue:
         if component_type and group["name"] != component_type:
             continue
 
         matched_items = [
             item for item in group["items"]
-            if matches(group["search_text"](item), search_tokens)
+            if not has_search_text_without_tokens
+            and matches(group["search_text"](item), search_tokens)
             and (not filters["brand"] or item.brand_id == filters["brand"])
             and (min_price is None or item.price >= min_price)
             and (max_price is None or item.price <= max_price)
@@ -1306,9 +1316,13 @@ def rename_saved_build(build_id):
     build_name = str(data.get("name", "")).strip()
     if not build_name:
         return jsonify({"error": "Build name is required"}), 400
-    if len(build_name) > 100:
+    if len(build_name.split()) > 20:
         return jsonify({
-            "error": "Build name must be 100 characters or less"
+            "error": "Build name must be 20 characters or less"
+        }), 400
+    if len(build_name) > 20:
+        return jsonify({
+            "error": "Build name must be 20 characters or less"
         }), 400
 
     duplicate = Build.query.filter(
@@ -1362,6 +1376,11 @@ def savebuilder__build():
 
     if not build_name:
         return jsonify({"error": "Build name is required"}), 400
+
+    if len(build_name.split()) > 20:
+        return jsonify({
+            "error": "Build name must be 20 words or less"
+        }), 400
 
     if Build.query.filter_by(build_name=build_name).first():
         return jsonify({

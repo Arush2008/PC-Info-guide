@@ -778,12 +778,14 @@ document.querySelector(".clear_button").addEventListener("click", async () => {
 getBuildSummary().then(applySummary);
 
 
-/* This section of the JS is used to */
+
+/* This section of the JS is used to save the current build */
 document.querySelector(".save_button").addEventListener("click", async function() {
+    const name = prompt("Enter a name for your build (maximum 20 characters):");
+    if (name === null) return;
 
-    const name = prompt("Enter a name for your build:");
-
-    if (!name) {
+    if (name.trim().length > 20) {
+        alert("Build name must be 20 characters or less.");
         return;
     }
 

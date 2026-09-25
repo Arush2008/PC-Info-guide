@@ -56,8 +56,16 @@
         const deleteButton = buildCard.querySelector(".delete_build_button");
 
         renameButton.addEventListener("click", async () => {
-            const newName = prompt("Enter a new name:", buildName.textContent.trim());
+            const newName = prompt(
+                "Enter a new name (maximum 20 characters):",
+                buildName.textContent.trim()
+            );
             if (newName === null) return;
+
+            if (newName.trim().length > 20) {
+                alert("Build name must be 20 characters or less.");
+                return;
+            }
 
             const response = await fetch(`/api/saved-builds/${buildId}`, {
                 method: "PATCH",
