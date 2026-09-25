@@ -182,36 +182,27 @@ class Fan(db.Model):
 
 
 # Table for storing saved builds
-class Builds(db.Model):
-    __tablename__ = 'builds'
+class Build(db.Model):
+    __tablename__ = "Build"
 
     build_id = db.Column(db.Integer, primary_key=True)
-    build_name = db.Column(db.String(100), nullable=False)
-    cpu_id = db.Column(db.Integer, db.ForeignKey('cpu.cpu_id'), nullable=False)
-    gpu_id = db.Column(db.Integer, db.ForeignKey('gpu.gpu_id'), nullable=False)
-    motherboard_id = db.Column(
-        db.Integer,
-        db.ForeignKey('motherboard.motherboard_id'),
-        nullable=False)
-    ram_id = db.Column(db.Integer, db.ForeignKey('ram.ram_id'), nullable=False)
-    storage_id = db.Column(
-        db.Integer, db.ForeignKey('storage.storage_id'),
-        nullable=False)
-    psu_id = db.Column(db.Integer, db.ForeignKey('psu.psu_id'), nullable=False)
-    cooler_id = db.Column(
-        db.Integer, db.ForeignKey('cooler.cooler_id'),
-        nullable=False)
-    case_id = db.Column(db.Integer, db.ForeignKey('case.case_id'),
-                        nullable=False)
-    fan_id = db.Column(db.Integer, db.ForeignKey('fan.fan_id'), nullable=False)
+    build_name = db.Column(db.String(100), unique=True)
 
-# Relationships to tell the components name.
-    cpu = db.relationship("CPU")
-    gpu = db.relationship("GPU")
-    motherboard = db.relationship("motherboard")
-    ram = db.relationship("RAM")
-    storage = db.relationship("Storage")
-    psu = db.relationship("PSU")
-    cooler = db.relationship("Cooler")
-    case = db.relationship("Case")
-    fan = db.relationship("Fan")
+    components = db.relationship(
+        "BuildComponent",
+        backref="build",
+        cascade="all, delete-orphan"
+    )
+
+
+class BuildComponent(db.Model):
+    __tablename__ = "BuildComponent"
+
+    build_component_id = db.Column(db.Integer, primary_key=True)
+    build_id = db.Column(
+        db.Integer,
+        db.ForeignKey("Build.build_id"),
+        nullable=False
+    )
+    component_type = db.Column(db.String(50), nullable=False)
+    component_id = db.Column(db.Integer, nullable=False)

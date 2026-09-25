@@ -18,46 +18,25 @@
 
 <h1 class="page_title">Saved Builds (Public)</h1>
 
-    {% if Build %}
+    {% if builds %}
+            <div class="saved_builds_container">
+                {% for build in builds %}
+                    <div class="saved_build">
+                        <h2>{{ build.name }}</h2>
 
-    <div class="saved_builds_container">
-        {% for build in Build %}
-            <div class="saved_build">
-                <h2>{{ build.build_name }}</h2>
-                <div class="build_components">
-                    <p>
-                        CPU : {{ build.cpu.model }}
-                    </p>
-                    <p>
-                        GPU : {{ build.gpu.model }}
-                    </p>
-                    <p>
-                        Motherboard : {{ build.motherboard.model }}
-                    </p>
-                    <p>
-                        RAM : {{ build.ram.model }}
-                    </p>
-                    <p>
-                        Storage : {{ build.storage.model }}
-                    </p>
-                    <p>
-                        PSU : {{ build.psu.model }}
-                    </p>
-                    <p>
-                        Cooler : {{ build.cooler.model }}
-                    </p>
-                    <p>
-                        Case : {{ build.case.model }}
-                    </p>
-                    <p>
-                        Fan : {{ build.fan.model }}
-                    </p>
-
-                </div>
+                        <div class="build_components">
+                            {% for component in build.components %}
+                                <p>
+                                    {{ component.type }}:
+                                    {{ component.name }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
         {% else %}
-        <p>No saved builds found.</p>
+            <p>No saved builds found.</p>
     {% endif %}
 </body>
 </html>

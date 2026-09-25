@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 from sqlalchemy.inspection import inspect
 from database import (
+    Build,
     db,
     GPU,
     CPU,
@@ -23,7 +24,7 @@ from database import (
     PSU,
     Case,
     Fan,
-    Builds
+    BuildComponent
 )
 
 views = Blueprint('views', __name__)
@@ -1178,10 +1179,53 @@ def case_fans_list():
 # Displayes the saved builds route !
 @views.route("/saved_builds")
 def saved_builds():
-    Build = Builds.query.all()
+    component_labels = {
+        "cpu": "CPU",
+        "gpu": "GPU",
+        "motherboard": "Motherboard",
+        "ram": "RAM",
+        "storage": "Storage",
+        "psu": "PSU",
+        "cooler": "Cooler",
+        "case": "Case",
+        "fan": "Fan",
+    }
+
+    saved_builds_data = []
+
+    for build in Build.query.all():
+        parts = []
+
+        for build_component in build.components:
+            component_data = COMPONENT_MODELS.get(
+                build_component.component_type
+            )
+
+            if component_data is None:
+                continue
+
+            model, _ = component_data
+            component = db.session.get(
+                model,
+                build_component.component_id
+            )
+
+            if component is not None:
+                parts.append({
+                    "type": component_labels[
+                        build_component.component_type
+                    ],
+                    "name": get_component_display_name(component),
+                })
+
+        saved_builds_data.append({
+            "name": build.build_name,
+            "components": parts,
+        })
+
     return render_template(
         "saved_builds.html",
-        Build=Build
+        builds=saved_builds_data
     )
 
 
@@ -1211,20 +1255,17 @@ def savebuilder__build():
     if not build_name:
         return jsonify({"error": "Build name is required"}), 400
 
-    saved_build = Builds(
-            build_name=build_name,
-            cpu_id=build["cpu"],
-            gpu_id=build["gpu"],
-            motherboard_id=build["motherboard"],
-            ram_id=build["ram"],
-            storage_id=build["storage"],
-            psu_id=build["psu"],
-            cooler_id=build["cooler"],
-            case_id=build["case"],
-            fan_id=build["fan"],
-    )
-
+    saved_build = Build(build_name=build_name)
     db.session.add(saved_build)
+    db.session.flush()  # gives the new build its build_id
+
+    for component_type, component_id in build.items():
+        db.session.add(BuildComponent(
+            build_id=saved_build.build_id,
+            component_type=component_type,
+            component_id=component_id,
+        ))
+
     db.session.commit()
 
     return jsonify({"message": "Build saved successfully"}), 201
