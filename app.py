@@ -1,3 +1,6 @@
+"""This is the very start of the PCforce website. It is made using html css
+and puthon and flask under the python."""
+
 from flask import Flask
 from views import views
 from database import db
@@ -11,6 +14,8 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 @app.url_defaults
 def supply_static_fallback(endpoint, values):
+    """If the image does not exist in the website
+    this image will be used as a filler image."""
     if endpoint == "static" and not values.get("filename"):
         values["filename"] = "background.png"
 

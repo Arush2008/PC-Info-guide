@@ -1,9 +1,19 @@
+"""This file contains all the database models for the website
+including the components and saved builds. It uses SQALchemy
+to create the database and tables. The builds table is an idea
+of many to many relationship between the buyilds. The other
+tables are mainly components and brand for all the components. """
+
+# SQLAlchemy model classes mainly define columns and relationships.
+# pylint: disable=too-few-public-methods,invalid-name
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
 
 class Brand(db.Model):
+    """Store the brand name for all components."""
     __tablename__ = 'brand'
 
     brand_id = db.Column(db.String(50), primary_key=True)
@@ -11,6 +21,7 @@ class Brand(db.Model):
 
 
 class GPU(db.Model):
+    """Store graphics-card specifications."""
     __tablename__ = 'gpu'
 
     gpu_id = db.Column(db.Integer, primary_key=True)
@@ -29,6 +40,7 @@ class GPU(db.Model):
 
 
 class CPU(db.Model):
+    """Store CPU specifications."""
     __tablename__ = 'cpu'
 
     cpu_id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +61,7 @@ class CPU(db.Model):
 
 
 class motherboard(db.Model):
+    """Store motherboard specifications."""
     __tablename__ = 'motherboard'
 
     motherboard_id = db.Column(db.Integer, primary_key=True)
@@ -69,6 +82,7 @@ class motherboard(db.Model):
 
 
 class RAM(db.Model):
+    """Store memory specifications."""
     __tablename__ = 'ram'
 
     ram_id = db.Column(db.Integer, primary_key=True)
@@ -89,6 +103,7 @@ class RAM(db.Model):
 
 
 class Storage(db.Model):
+    """Store storage specifications."""
     __tablename__ = 'storage'
 
     storage_id = db.Column(db.Integer, primary_key=True)
@@ -108,6 +123,7 @@ class Storage(db.Model):
 
 
 class PSU(db.Model):
+    """Store power-supply specifications."""
     __tablename__ = 'psu'
 
     psu_id = db.Column(db.Integer, primary_key=True)
@@ -126,6 +142,7 @@ class PSU(db.Model):
 
 
 class Cooler(db.Model):
+    """Store CPU-cooler specifications."""
     __tablename__ = "cooler"
 
     cooler_id = db.Column(db.Integer, primary_key=True)
@@ -146,6 +163,7 @@ class Cooler(db.Model):
 
 
 class Case(db.Model):
+    """Store case specifications."""
     __tablename__ = 'case'
 
     case_id = db.Column(db.Integer, primary_key=True)
@@ -163,6 +181,7 @@ class Case(db.Model):
 
 
 class Fan(db.Model):
+    """Store case-fan specifications."""
     __tablename__ = 'fan'
 
     fan_id = db.Column(db.Integer, primary_key=True)
@@ -183,6 +202,7 @@ class Fan(db.Model):
 
 # Table for storing saved builds
 class Build(db.Model):
+    """Store saved builds with their associated components."""
     __tablename__ = "Build"
 
     build_id = db.Column(db.Integer, primary_key=True)
@@ -196,6 +216,7 @@ class Build(db.Model):
 
 
 class BuildComponent(db.Model):
+    """Store the association between builds and their components."""
     __tablename__ = "BuildComponent"
 
     build_component_id = db.Column(db.Integer, primary_key=True)

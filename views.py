@@ -1,4 +1,15 @@
-# views.py
+"""This is the views.py file for this website
+and it is mainly used to make the app.py cleaner
+and separate from all the routes."""
+
+# This file intentionally contains the routes and their helper functions.
+# pylint: disable=missing-function-docstring,too-many-lines
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+# pylint: disable=too-many-return-statements,too-many-locals
+
+import re
+from pathlib import Path
+
 from flask import (
     Blueprint,
     render_template,
@@ -8,8 +19,7 @@ from flask import (
     redirect,
     url_for
 )
-import re
-from pathlib import Path
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.inspection import inspect
 from database import (
     Build,
@@ -125,10 +135,15 @@ def get_int_filter(name):
 def get_float_filter(name):
     value = request.args.get(name, "").strip()
 
+    if not value:
+        return None
+
     try:
-        return float(value) if value else None
+        number = float(value)
     except ValueError:
         return None
+
+    return number if number >= 0 else None
 
 
 def get_filter_values():
@@ -141,7 +156,7 @@ def get_filter_values():
 
 
 # It displays the item based on the model and the search bar
-def get_catalog_items(model, search_fields=()):
+def get_catalog_items(model):
     q = request.args.get("q", "").strip()
     filters = get_filter_values()
     min_price = get_float_filter("min_price")
@@ -512,13 +527,15 @@ def check_compatibility(build):
     checks = []
 
     if cpu and motherboard_item:
-        is_compatible = cpu.socket.lower() == motherboard_item.socket.lower()
+        compatibility_result = (
+            cpu.socket.lower() == motherboard_item.socket.lower()
+        )
         checks.append({
             "name": "CPU and Motherboard Socket Compatibility",
-            "compatible": is_compatible,
+            "compatible": compatibility_result,
             "reason": (
                 f"Both use {cpu.socket}."
-                if is_compatible
+                if compatibility_result
                 else f"CPU uses {cpu.socket}, but motherboared uses "
                     f"{motherboard_item.socket}."
             )
@@ -534,16 +551,16 @@ def check_compatibility(build):
         })
 
     if ram and motherboard_item:
-        is_compatible = (
+        compatibility_result = (
             ram.ram_type.lower() == motherboard_item.ram_type.lower()
         )
 
         checks.append({
             "name": "RAM and Motherboard Type",
-            "compatible": is_compatible,
+            "compatible": compatibility_result,
             "reason": (
                 f"Both use {ram.ram_type}."
-                if is_compatible
+                if compatibility_result
                 else f"RAM uses {ram.ram_type}, but motherboard uses "
                     f"{motherboard_item.ram_type}."
             )
@@ -559,13 +576,15 @@ def check_compatibility(build):
         })
 
     if cpu and cooler:
-        is_compatible = cpu.socket.lower() in cooler.socket_support.lower()
+        compatibility_result = (
+            cpu.socket.lower() in cooler.socket_support.lower()
+        )
         checks.append({
             "name": "CPU and Cooler Socket Compatibility",
-            "compatible": is_compatible,
+            "compatible": compatibility_result,
             "reason": (
                 f"Cooler supports {cooler.socket_support}."
-                if is_compatible
+                if compatibility_result
                 else f"Cooler supports {cooler.socket_support}, but CPU uses "
                     f"{cpu.socket}."
             )
@@ -595,16 +614,16 @@ def check_compatibility(build):
 
         recommended_wattage = round(total_power * 1.2)
 
-        is_compatible = psu.wattage >= recommended_wattage
+        compatibility_result = psu.wattage >= recommended_wattage
 
         checks.append({
             "name": "PSU Wattage",
-            "compatible": is_compatible,
+            "compatible": compatibility_result,
             "reason": (
                 f"Build uses about {total_power}W. "
                 f"{psu.wattage}W PSU meets the "
                 f"{recommended_wattage}W recommendation."
-                if is_compatible
+                if compatibility_result
                 else
                 f"Build uses about {total_power}W and needs about "
                 f"{recommended_wattage}W. "
@@ -634,29 +653,71 @@ def builder_compatibility():
     })
 
 
+def is_compatible(component_type, item, build):
+    def selected_component(selected_type):
+        component_data = COMPONENT_MODELS.get(selected_type)
+        component_id = build.get(selected_type)
+
+        if not component_data or not component_id:
+            return None
+
+        model, _ = component_data
+        return db.session.get(model, component_id)
+
+    cpu = selected_component("cpu")
+    motherboard_item = selected_component("motherboard")
+    ram = selected_component("ram")
+
+    if component_type == "cpu" and motherboard_item:
+        if item.socket.lower() != motherboard_item.socket.lower():
+            return False
+
+    if component_type == "motherboard":
+        if cpu and item.socket.lower() != cpu.socket.lower():
+            return False
+        if ram and item.ram_type.lower() != ram.ram_type.lower():
+            return False
+
+    if component_type == "ram" and motherboard_item:
+        if item.ram_type.lower() != motherboard_item.ram_type.lower():
+            return False
+
+    if component_type == "cooler" and cpu:
+        if cpu.socket.lower() not in item.socket_support.lower():
+            return False
+
+    return True
+
+
 def get_component_options(component_type, search_text=""):
     component_data = COMPONENT_MODELS.get(component_type)
 
     if component_data is None:
         return None, None
 
-    model, id_attr = component_data
+    model, id_attribute = component_data
     query = model.query.join(Brand)
 
-    components = query.order_by(model.model).all()
+    component_items = query.order_by(model.model).all()
 
     if search_text:
         search_text = search_text.lower().strip()
 
-        components = [
-            item for item in components
+        component_items = [
+            item for item in component_items
             if (
                 search_text in item.model.lower()
                 or search_text in item.brand.name.lower()
             )
         ]
 
-    return components, id_attr
+    build = session.get("build", {})
+    component_items = [
+        item for item in component_items
+        if is_compatible(component_type, item, build)
+    ]
+
+    return component_items, id_attribute
 
 
 # Finds the summary of the selected components.
@@ -715,13 +776,13 @@ def learn():
 
 # PC builder page route
 @views.route("/PC_builder")
-def PC_builder():
+def pc_builder():
     return render_template("PC_builder.html")
 
 
 # It takes the user to the home page from random URLS.
 @views.route("/<path:patch>")
-def catch_all(patch):
+def catch_all(_patch):
     return redirect(url_for("views.home"))
 
 
@@ -973,22 +1034,6 @@ def component_list():
         },
     ]
 
-    def normalise(text):
-        raw_tokens = re.findall(r"[a-z0-9]+", str(text).lower())
-        tokens = set(raw_tokens)
-
-        for token in raw_tokens:
-            match = re.fullmatch(r"(\d+)([a-z]+)", token)
-            if match:
-                tokens.add(match.group(1))
-                tokens.add(match.group(2))
-        return tokens
-
-    def matches(item, searchable_text):
-
-        item_tokens = (normalise(searchable_text))
-        return all(token in item_tokens for token in search_tokens)
-
     results = {
         "gpus": [],
         "cpus": [],
@@ -1019,7 +1064,7 @@ def component_list():
 
         matched_items = [
             item for item in group["items"]
-            if matches(item, group["search_text"](item))
+            if matches(group["search_text"](item), search_tokens)
             and (not filters["brand"] or item.brand_id == filters["brand"])
             and (min_price is None or item.price >= min_price)
             and (max_price is None or item.price <= max_price)
@@ -1249,23 +1294,38 @@ def savebuilder__build():
         if part not in build:
             return jsonify({"error": f"{part} is missing"}), 400
 
-    data = request.get_json()
-    build_name = data.get("name", "")
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid request data"}), 400
+
+    build_name = str(data.get("name", "")).strip()
 
     if not build_name:
         return jsonify({"error": "Build name is required"}), 400
 
-    saved_build = Build(build_name=build_name)
-    db.session.add(saved_build)
-    db.session.flush()  # gives the new build its build_id
+    if Build.query.filter_by(build_name=build_name).first():
+        return jsonify({
+            "error": "A build with that name already exists"
+        }), 409
 
-    for component_type, component_id in build.items():
-        db.session.add(BuildComponent(
-            build_id=saved_build.build_id,
-            component_type=component_type,
-            component_id=component_id,
-        ))
+    try:
+        saved_build = Build(build_name=build_name)
+        db.session.add(saved_build)
+        db.session.flush()
 
-    db.session.commit()
+        for component_type, component_id in build.items():
+            db.session.add(BuildComponent(
+                build_id=saved_build.build_id,
+                component_type=component_type,
+                component_id=component_id,
+                quantity=1,
+            ))
+
+        db.session.commit()
+
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({"error": "Failed to save build"}), 500
 
     return jsonify({"message": "Build saved successfully"}), 201
